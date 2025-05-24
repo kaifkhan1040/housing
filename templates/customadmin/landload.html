@@ -38,42 +38,47 @@
                         <div class="card-body border-bottom">
                             <div class="row">
                                 <div class="col-md-4 user_role">
-                                    Car Company
+                                    Landload
                                 </div>
                                 <div class="col-md-6 user_plan">
                                 </div>
                                 <div class="col-md-2 user_status">
-                                    <a href="{% url 'customadmin:add_carlist' %}"><button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Car</button></a>
+                                    <a href="{% url 'customadmin:add_landload' %}"><button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Landload</button></a>
                                 </div>
                             </div>
                         </div>
-                        {% if car %}
+                        {% if landload %}
                         <div class="card-datatable table-responsive pt-0">
                             <table class="user-list-table table">
                                 <thead class="table-light">
                                     <tr>
                                         <th></th>
-                                        <th>Car Name</th>
-                                        <th>Country Name</th>
+                                        <th>Landload Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for i in car %}
+                                    {% for i in landload %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
-                                        <td>{{i.name}}</td>
-                                        <td>{{i.country}}</td>
+                                        <td>{{i.first_name}} {{i.last_name}}</td>
+                                        <td>{{i.phone_number}}</td>
+                                        <td>{{i.email}}</td>
+                                        <td>{{i.address}}</td>
+                             
 
                                         <td>
-                                           <a href="{% url 'customadmin:update_carlist' id=i.id %}">
+                                           <a href="{% url 'customadmin:update_landload' id=i.id %}">
                                             <i data-feather="edit" class="text-primary w-60 waves-effect waves-float waves-light"></i>
  
                                             {% comment %} <button class="btn btn-primary w-60 waves-effect waves-float waves-light">View Details</button> {% endcomment %}
                                             </a>
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Show Attendance">
 
-                                            <a href="{% url 'customadmin:delete_carlist' id=i.id %}">
+                                            <a href="{% url 'customadmin:delete_landload' id=i.id %}">
                                               <i data-feather="trash" class="text-danger w-60 waves-effect waves-float waves-light"></i>
 
                                             </a>

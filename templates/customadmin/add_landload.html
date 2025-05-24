@@ -37,7 +37,7 @@
                                     </div>
                                 <!-- Account Tab starts -->
                                 <div class="card-header border-bottom">
-                                    <h4 class="card-title">Car Company</h4>
+                                    <h4 class="card-title">Add Landload</h4>
                                 </div>
                                 <div class="card-body py-2 my-25">
                                     
@@ -47,17 +47,50 @@
                                         <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
                                             {% csrf_token %}
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="username">Name</label>
-                                                        {{form.name}}
+                                                        <label for="username">First Name</label>
+                                                        {{form.first_name}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="username">Country</label>
-                                                        {{form.country}}
+                                                        <label for="username">Last Name</label>
+                                                        {{form.last_name}}
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="username">Email</label>
+                                                        {{form.email}}
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="username">Number</label>
+                                                        {{form.phone_number}}
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="username">Address</label>
+                                                        {{form.address}}
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="username">Description</label>
+                                                        {{form.description}}
                                                         
                                                     </div>
                                                 </div>
@@ -65,7 +98,7 @@
                                 
                                             </div>
                                             <div class="col-12 d-flex flex-sm-row flex-column mt-2">
-                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1">Save Changes</button>
+                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 ">Sent Invite</button>
                                                 <button type="reset" class="btn btn-outline-secondary">Reset</button>
                                             </div>
                                         </div>
