@@ -36,6 +36,7 @@ country_choices =(
 )
 
 class CustomUserCreationForm(UserCreationForm):
+    
     def __init__(self, *args, **kwargs):
         # super(UserProfileForm, self).__init__(*args, **kwargs)
         # self.helper = FormHelper()
@@ -48,9 +49,10 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'hidden': False,"id":'account-upload-form'})
+        self.fields['role'].widget.attrs.update({'class': 'form-control'})
     class Meta:
         model = CustomUser
-        fields = ('first_name', 'last_name','email','phone_number','image','dob','doj')
+        fields = ('first_name', 'last_name','email','phone_number','image','dob','doj','role')
         widgets = {
             'dob':DateInput(attrs={
                 'type': 'date',

@@ -1,0 +1,168 @@
+{% extends 'landload/basic.html' %} 
+{% load static %}
+
+    {% block style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/select/select2.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
+    <!-- END: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/forms/pickers/form-flat-pickr.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/forms/form-validation.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/app-user.css' %}">
+    {% endblock style %}
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body class="vertical-layout vertical-menu-modern  navbar-floating footer-static  " data-open="click" data-menu="vertical-menu-modern" data-col="">
+    {% block content %}
+
+
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper container-xxl p-0">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <!-- users edit start -->
+                <section class="app-user-edit">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="row">
+                                    <div class="col-md-7"></div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-3">
+                                          </div>
+                                <!-- Account Tab starts -->
+                                <div class="card-header border-bottom">
+                                    <h4 class="card-title">Room</h4>
+                                </div>
+                                <div class="card-body py-2 my-25">
+                                    
+                                        <!-- upload and reset button -->
+                                    <form class="form-validate" method="POST" enctype="multipart/form-data">
+                                  
+                                        <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
+                                            {% csrf_token %}
+                                            
+                                            {% for room in rooms %}
+                                           <input type="hidden" name="room_id" value="{{ room.id }}">
+                                            
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        {% comment %} <label for="username"></label> {% endcomment %}
+                                                        <h4 class="mt-2">Room: {{forloop.counter}}</h4>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="username">Room Type</label>
+                                                        <select name="type_of_room" class="form-control">
+                                                            <option value="Single" {% if room.type_of_room == "Single" %}selected{% endif %}>Single</option>
+                                                            <option value="Double" {% if room.type_of_room == "Double" %}selected{% endif %}>Double</option>
+                                                        </select>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="username">Ensuite</label>
+                                                       <select name="ensuite" class="form-control">
+                                                            <option value="1" {% if room.ensuite %}selected{% endif %}>Yes</option>
+                                                            <option value="0" {% if not room.ensuite %}selected{% endif %}>No</option>
+                                                        </select>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="username">Total Capacity</label>
+                                                        <select name="total_capacity" class="form-control">
+                                                            {% for n in "12345" %}
+                                                            <option value="{{ n }}" {% if room.total_capacity == n %}selected{% endif %}>{{ n }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                           
+                                           
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="username">Rent</label>
+                                                        <input type="number" name="rent" value="{{ room.rent }}" step="0.01" class="form-control">
+
+                                                        
+                                                    </div>
+                                                </div>
+                                               
+                                                
+                                
+                                            </div>
+                                             {% endfor %}
+                                                
+                                            </div>
+                                            <div class="col-12 d-flex flex-sm-row flex-column mt-2">
+                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1">Save Changes</button>
+                                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- users edit ends -->
+
+            </div>
+        </div>
+    <!-- END: Content-->
+    {% endblock content %}
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+    <script>
+        console.log('hello')
+    </script>
+
+    <!-- BEGIN Vendor JS-->
+    {% block scriptjs %}
+        
+       <!-- BEGIN: Page Vendor JS-->
+       <script href="{% static 'app-assets/vendors/js/forms/select/select2.full.min.js' %}"></script>
+       <script href="{% static 'app-assets/vendors/js/forms/validation/jquery.validate.min.js' %}"></script>
+       <script href="{% static 'app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+       <!-- END: Page Vendor JS-->
+   
+   
+       <!-- BEGIN: Page JS-->
+       <script href="{% static 'app-assets/js/scripts/pages/app-user-edit.js' %}"></script>
+       <script href="{% static 'app-assets/js/scripts/components/components-navs.js' %}"></script>
+       <script>
+        console.log('aaaaaa');
+        
+        </script>
+       <!-- END: Page JS-->
+    {% endblock scriptjs %}
+ 
+
+    <script>
+        $(window).on('load', function() {
+            if (feather) {
+                feather.replace({
+                    width: 14,
+                    height: 14
+                });
+            }
+        })
+    </script>
+</body>
+<!-- END: Body-->
+
+</html>

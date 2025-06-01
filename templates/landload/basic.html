@@ -1,7 +1,8 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading " lang="en" data-textdirection="ltr">
 <!-- BEGIN: Head-->
+ 
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -251,7 +252,7 @@
                     <a class="nav-link dropdown-toggle dropdown-user-link" id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <div class="user-nav d-sm-flex d-none">
                             <span class="user-name fw-bolder">{{user.email}}</span>
-                            <span class="user-status">{% if user.is_superuser %}superuser{% else %}Employee{% endif %}</span>
+                            <span class="user-status">{% if user.is_superuser %}superuser{% else %}Landload{% endif %}</span>
                         </div>
                         <span class="avatar">
                             <img class="round" {% if user.image %} src={{user.image.url}}{% else %} src="{% static 'app-assets/images/portrait/small/avatar-s-11.jpg' %}" {% endif %} alt="avatar" height="40" width="40">
@@ -397,7 +398,7 @@
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'landload:home' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a> {% endcomment %}
-                    <li class=" nav-item"><a class="d-flex align-items-center" href="{% url "customadmin:home" %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a>
+                    <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'landload:home' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a>
                     {% comment %} <ul class="menu-content">
                         <li><a class="d-flex align-items-center" href="dashboard-analytics.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Analytics">Analytics</span></a>
                         </li>
@@ -451,11 +452,12 @@
                         </li>
                     </ul>
                 </li>  {% endcomment %}
-                <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:landload_list' %}"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">landloads</span></a>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:home' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="User">Properties</span></a>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:home' %}"><i data-feather="user-check"></i><span class="menu-title text-truncate" data-i18n="User">Agents</span></a>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:home' %}"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Tenants</span></a>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:home' %}"><i data-feather="headphones"></i><span class="menu-title text-truncate" data-i18n="User">Support</span></a>
+                <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">landloads</span></a> -->
+                <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'landload:listing' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="User">Listings</span></a>
+                    <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'landload:tenant' %}"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Tenants</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Dues n Collection</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="activity"></i><span class="menu-title text-truncate" data-i18n="User">Action</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="trending-up"></i><span class="menu-title text-truncate" data-i18n="User">Promotion</span></a>
                             {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:leave' %}"><i data-feather="calendar"></i><span class="menu-title text-truncate" data-i18n="User">User Attendance</span></a> {% endcomment %}
                                 
                                 {% comment %} <ul class="menu-content">

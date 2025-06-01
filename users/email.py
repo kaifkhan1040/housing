@@ -77,7 +77,21 @@ def send_from_template(to, subject, template, context, **kwargs):
     send(to, subject, html_body, **kwargs)
     return print('send') 
 
-
+def account_activation_mail(name,email):
+    '''just for customized the email via admin'''
+    mail_list, email_subject = email, 'Your Account Has Been Approved!'
+    email_template = "email/activate.html"
+    # objectdata=Email.object.get(id=2)
+    context = {
+        "data": name,
+        # "object":objectdata
+        
+        # "base_url": settings.DOMAIN + settings.MEDIA_URL,
+    }
+    Thread(
+        target=send_from_template,
+        args=(mail_list, email_subject, email_template, context),
+    ).start()
 
 def verification_mail(token,email):
     mail_list, email_subject = email, 'Registration Verification'
@@ -96,6 +110,34 @@ def verification_mail(token,email):
     # objectdata=EmailTemplate.objects.get(id=2)
     context = {
         "data": token,
+        # "object":objectdata
+        
+        # "base_url": settings.DOMAIN + settings.MEDIA_URL,
+    }
+    Thread(
+        target=send_from_template,
+        args=(mail_list, email_subject, email_template, context),
+    ).start()
+
+
+def sent_invitation(token,email):
+    mail_list, email_subject = email.email, 'Landload Registration Invitation'
+    print("pass1")
+    # if obj.status == "Waiting":
+    #     mail_list = obj.doctors_call.user.email
+    #     print("mail_list", mail_list)
+    #     email_subject = f"patient {obj.patients_call.user} schedule a {'Emergency' if obj.call_type == 'Emergency' else ''} meeting with you."
+    
+    email_template = "email/invitation.html"
+    # context = {
+    #     "data": token,
+    #     # "base_url": settings.DOMAIN + settings.MEDIA_URL,
+    # }
+    # email_template = "email/customemail.html"
+    # objectdata=EmailTemplate.objects.get(id=2)
+    context = {
+        "token": token,
+        "obj":email
         # "object":objectdata
         
         # "base_url": settings.DOMAIN + settings.MEDIA_URL,

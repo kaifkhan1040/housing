@@ -32,10 +32,12 @@ class CustomUser(AbstractUser):
     zipcode = models.CharField(max_length=8,null=True,blank=True)
     country = models.CharField(max_length=255,null=True,blank=True)
     description = models.TextField()
-    status = models.CharField(choices=[('landload','landload'),('agent','agent'),('tenant','tenant'),('maintenance','maintenance')],null=True,blank=True)
+    is_verify = models.BooleanField(default=0)
+    role = models.CharField(choices=[('landload','landload'),('agent','agent'),('tenant','tenant'),('maintenance','maintenance')],null=True,blank=True)
     dob = models.DateField(null=True,blank=True)
     doj = models.DateField(null=True,blank=True)
     address = models.CharField(max_length=500,null=True,blank=True)
+    middle_name= models.CharField(max_length=255,null=True,blank=True)
     def __str__(self):
         return self.email
 

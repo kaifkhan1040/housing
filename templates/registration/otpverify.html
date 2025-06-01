@@ -54,7 +54,6 @@
             <div class="content-body">
                 <div class="auth-wrapper auth-cover">
                     <div class="auth-inner row m-0">
-                        
                         <!-- Left Text-->
                         <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
                             <div class="w-100 d-lg-flex align-items-center justify-content-center px-5"><img class="img-fluid" src="{% static 'app-assets/images/pages/login-v2.svg' %}" alt="Login V2" /></div>
@@ -63,19 +62,30 @@
                         <!-- Login-->
                         <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
-                                <h2 class="card-title fw-bold mb-1">Forgot Password? 🔒</h2>
-                                <p class="card-text mb-2">Enter your email and we'll send you instructions to reset your password</p>
-                               
-                            <form class="auth-login-form mt-2" method="POST"> {% csrf_token %}
-                                <div class="mb-1">
-                                    <label class="form-label text-white" for="login-email">Email</label>
-                                    <input class="form-control" required id="forgot-password-email" type="text" name="forgot-password-email" placeholder="john@example.com" aria-describedby="login-email" autofocus="" tabindex="1" />
-                                </div>
-
-
-                                <button class="btn btn-primary w-100 waves-effect waves-float waves-light" tabindex="2">Send reset link</button>
-                            </form>
-                            <p class="text-center mt-2 info-text"><span class="">New on our platform?</span><a href="{% url 'user:signup' %}" class="mono-clr"><span>&nbsp;Create an account</span></a></p>
+                                <h2 class="card-title fw-bold mb-1">Welcome to Help Desk</h2>
+                                <p class="card-text mb-2">Please Verify your OTP</p>
+                                {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                            <div class="alert alert-danger" role="alert">
+                                {{message}}
+                            </div>
+                                {% else %}
+                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                {{message}}
+                            </div>
+                                {% endif %}
+                            {% endfor %}{% endif %}
+                                <form class="auth-login-form mt-2" action="" method="POST">{% csrf_token %}
+                                    <div class="mb-1">
+                                        <label class="form-label" for="register-email">OTP</label>
+                                        <input class="form-control" id="register-email"  type="text" maxlength="6" minlength="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Enter your number" aria-describedby="register-email" name="otp_number" tabindex="2" />
+                                    </div>
+                                    <div class="mb-1">
+                                    </div>
+                                    <button class="btn btn-primary w-100" tabindex="4">Verify</button>
+                                </form>
+                                <p class="text-center mt-2"><span>New on our platform?</span><a href="/user/signup/"><span>&nbsp;Create an account</span></a></p>
                                 {% comment %} <div class="divider my-2">
                                     <div class="divider-text">or</div>
                                 </div>
@@ -107,37 +117,7 @@
     <!-- BEGIN: Page JS-->
     <script src="{% static 'app-assets/js/scripts/pages/auth-login.js' %}"></script>
     <!-- END: Page JS-->
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {% if messages %}
-    <script>
-        {% for message in messages %}
-            let messageType = "{{ message.tags }}";  // Django message type (error, success, etc.)
-            let title = "Notification";  // Default title
-            let icon = "info";  // Default icon
 
-            // Set title and icon based on message type
-            if (messageType.includes("error")) {
-                title = "Error!";
-                icon = "error";
-            } else if (messageType.includes("success")) {
-                title = "Success!";
-                icon = "success";
-            } else if (messageType.includes("warning")) {
-                title = "Warning!";
-                icon = "warning";
-            } else if (messageType.includes("info")) {
-                title = "Information!";
-                icon = "info";
-            }
-
-            Swal.fire({
-                title: title,
-                text: "{{ message|striptags }}",  // Remove unwanted HTML
-                icon: icon
-            });
-        {% endfor %}
-    </script>
-    {% endif %}
     <script>
         $(window).on('load', function() {
             if (feather) {
