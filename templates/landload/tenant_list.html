@@ -37,14 +37,18 @@
                         
                         <div class="card-body border-bottom">
                             <div class="row">
-                                <div class="col-md-4 user_role">
+                                <div class="col-md-5 user_role">
                                     Tenants
                                 </div>
-                                <div class="col-md-6 user_plan">
+                                <div class="col-md-4 user_plan">
                                 </div>
-                                <div class="col-md-2 user_status">
+                                <div class="col-md-3 user_status">
                                     <a href="{% url 'landload:tenant_add' %}">
-                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Tenant</button></a>
+                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Tenant</button>
+                                      </a>
+                                    <a href="{% url 'landload:tenant_invite_add' %}">
+                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Invite Tenant</button>
+                                      </a>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +75,7 @@
                                         <td><a href="{% url 'landload:tenant_view' id=i.id %}">{{i.custom_id}}</a></td>
                                         <td>{% if i.user.first_name %}{{i.user.first_name}}{% endif %} {% if i.user.last_name %}{{i.user.last_name}}{% endif %}</td>
                                         <td>{{ i.property }}</td>
-                                        <td>{{rent}}</td>
+                                        <td>{{i.rent}}</td>
                                         <td>----</td>
                                         <td>{{ i.rooms }}</td>
                                         <td>{{ i.cost }}</td>

@@ -73,7 +73,7 @@
                                         <td><a href="{% url 'landload:dues_view' id=i.id %}">{{i.custom_id}}</a></td>
                                         <td>{{i.tenant_name}}</td>
                                         <td>{{ i.property }}</td>
-                                        <td>-----</td>
+                                        <td>{{ i.room.rent}}</td>
                                         <td>-----</td>
                                         <td>-----</td>
                                         <td>-----</td>

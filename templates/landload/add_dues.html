@@ -47,7 +47,7 @@
                                     <form class="form-validate" method="POST" enctype="multipart/form-data">
                                     <div class="d-flex mb-2">
                                             <a href="#" class="me-25">
-                                                <img src="{% if property_obj.prop_thumbnail %}{{ property_obj.prop_thumbnail.url }}{% else %}{% static 'image/logo/payment_proff.jpg' %}{% endif %}"
+                                                <img src="{% if property_obj.proof %}{{ property_obj.proof.url }}{% else %}{% static 'image/logo/payment_proff.jpg' %}{% endif %}"
                                                     id="account-upload-img" class="uploadedAvatar rounded me-50" 
                                                     alt="profile image" height="100" width="100" />
                                             </a>
