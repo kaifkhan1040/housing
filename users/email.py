@@ -93,6 +93,25 @@ def account_activation_mail(name,email):
         args=(mail_list, email_subject, email_template, context),
     ).start()
 
+def tenant_invitation_email(name,email,landload,token):
+    '''just for customized the email via admin'''
+    mail_list, email_subject = email, 'You have been invited to create Tenant profile for the Property'
+    email_template = "email/tenant_invitation.html"
+    # objectdata=Email.object.get(id=2)
+    context = {
+        "name": name,
+        "email":email,
+        'landload':landload,
+        'token':token
+        # "object":objectdata
+        
+        # "base_url": settings.DOMAIN + settings.MEDIA_URL,
+    }
+    Thread(
+        target=send_from_template,
+        args=(mail_list, email_subject, email_template, context),
+    ).start()
+
 def verification_mail(token,email):
     mail_list, email_subject = email, 'Registration Verification'
     print("pass1")

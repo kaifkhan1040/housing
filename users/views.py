@@ -192,5 +192,5 @@ def checkemail(request):
     # email_template = "email/invitation.html"
     # context_data = {'data': 'kaifkhan'}
     # objectdata_rendered = Template(objectdata.body).render(Context(context_data))
-    return render(request,'email/invitation.html',#{'object':objectdata,"data":"kaif","objectdata_rendered":objectdata_rendered}
+    return render(request,'email/tenant_invitation.html',#{'object':objectdata,"data":"kaif","objectdata_rendered":objectdata_rendered}
                   )

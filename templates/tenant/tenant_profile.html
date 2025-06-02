@@ -1,4 +1,4 @@
-{% extends 'landload/basic.html' %} 
+{% extends 'tenant/basic.html' %} 
 {% load static %}
 
     {% block style %}
@@ -53,23 +53,23 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">First Name</label>
-                                                        <input type="text" name="first_name" id="first_name" class="form-control" value="{{tenant_obj.user.first_name}}" {% if more_fun %} readonly disable {% endif %} required>
-
+                                                        <input type="text" name="first_name" id="first_name" class="form-control" value="{{tenant_obj.user.first_name}}" {% if tenant_obj.user.first_name%}readonly disable{% endif %} {% if more_fun %} readonly disable {% endif %} required>
+                                                            
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Middle Name</label>
-                                                        <input type="text" name="middle_name" id="middle_name" {% if tenant_obj.user.middle_name %} value="{{tenant_obj.user.middle_name}}" {% endif %} {% if more_fun %} readonly disable {% endif %} class="form-control" >
-
+                                                        <input type="text" name="middle_name" id="middle_name" {% if tenant_obj.user.middle_name %} value="{{tenant_obj.user.middle_name}}"  {% endif %}  {% if more_fun %} readonly disable {% endif %} class="form-control" {% if tenant_obj.user.middle_name %}readonly disable{% endif %} >
+                                                        
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Last name</label>
-                                                        <input type="text" name="last_name" id="last_name" value="{{tenant_obj.user.last_name}}" {% if more_fun %} readonly disable {% endif %} class="form-control" >
+                                                        <input type="text" name="last_name" id="last_name" value="{{tenant_obj.user.last_name}}" {% if more_fun %} readonly disable {% endif %} class="form-control" {% if tenant_obj.user.last_name %}readonly disable{% endif %}  >
                                                         
                                                     </div>
                                                 </div>
@@ -79,28 +79,29 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Phone Number</label>
-                                                        <input type="text" name="phone_number" id="last_name" class="form-control" value="{{tenant_obj.user.phone_number}}" {% if more_fun %} readonly disable {% endif %} required>
+                                                        <input type="text" name="phone_number" id="last_name" class="form-control" value="{{tenant_obj.user.phone_number}}" {% if more_fun %} readonly disable {% endif %} required {% if tenant_obj.user.phone_number %}readonly disable{% endif %} >
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Email</label>
-                                                        <input type="email" name="email" id="email" class="form-control" value="{{tenant_obj.user.email}}" {% if more_fun %} readonly disable {% endif %} required>
+                                                        <input type="email" name="email" id="email" class="form-control" value="{{tenant_obj.user.email}}" {% if more_fun %} readonly disable {% endif %} required {% if tenant_obj.user.email %}readonly disable{% endif %} >
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Property</label>
-                                                        <select name="property" id="property_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
+                                                        <select name="property" id="property_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required {% if tenant_obj.property %}readonly disable{% endif %} >
                                                             <option >select property</option>
                                                             {% for u in property %}
-                                                                <option value="{{ u.id }}" {% if u.id == saved_property_id %}selected{% endif %}>
+                                                                <option value="{{ u.id }}" {% if u.id == tenant_obj.property.id %}selected{% endif %}>
                                                                     {{ u.short_name }}
                                                                 </option>
                                                             {% endfor %}
                                                         </select>
+                                                        {% comment %} {{form.property}} {% endcomment %}
                                                         
                                                     </div>
                                                 </div>
@@ -111,9 +112,14 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Room</label>
-                                                        <select name="room" id="Room_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
-                                                            
+                                                        <select name="room" id="Room_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required {% if tenant_obj.room %}readonly disable{% endif %} >
+                                                            {% for u in room %}
+                                                                <option value="{{ u.id }}" {% if u.id == tenant_obj.room.id %}selected{% endif %}>
+                                                                    {{ u.room_code }}
+                                                                </option>
+                                                            {% endfor %}
                                                         </select>
+                                                        {% comment %} {{form.room}} {% endcomment %}
                                                         
                                                     </div>
                                                 </div>
@@ -121,38 +127,77 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Rent</label>
-                                                        {{form.rent}}
+                                                               <input type="number" name="rent" id="id_rent" class="form-control" value="{{ form.initial.rent }}" {% if form.initial.rent %}readonly{% endif %} required {% if tenant_obj.rent %}readonly disable{% endif %} >
+
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Deposite</label>
-                                                            {{form.deposit}}
+                                                            <input type="number" name="deposit" id="id_deposit" class="form-control" value="{{ form.initial.deposit }}" {% if form.initial.deposit %}readonly{% endif %} required {% if tenant_obj.deposit %}readonly disable{% endif %} >
                                                             
                                                         </div>
                                                     </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        
+                                                            <label for="password" class="form-label">Password</label>
+                                                            <input type="password" name="password1" class="form-control" id="password" required>
+                                                       
+                                                       
+                                                           
+                                                        
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                         <label for="password" class="form-label">Confirm Password</label>
+                                                            <input type="password" name="password2" class="form-control" id="password" required>
+                                                       
+                                                        
+                                                    </div>
+                                                </div>
+                                               
                                             </div>
                                                 <div class="row mt-2">
                                                     <h3>Upload Docs</h3>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Photo</label>
-                                                            {{form.photo}}
+                                                            {% if form.instance.photo %}
+                                                                <p>Current file: 
+                                                                    <a href="{{ form.instance.photo.url }}" target="_blank">View Uploaded ID Proof</a>
+                                                                </p>
+                                                            {% endif %}
+                                                            <input type="file" name="photo" id="id_photo" class="form-control" {% if tenant_obj.photo %} disabled{% endif %}>
                                                             
                                                         </div>
                                                     </div>
                                                      <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Id Proof</label>
-                                                            {{form.id_proof}}
+                                                            {% if form.instance.id_proof %}
+                                                                <p>Current file: 
+                                                                    <a href="{{ form.instance.id_proof.url }}" target="_blank">View Uploaded ID Proof</a>
+                                                                </p>
+                                                            {% endif %}
+                                                            <input type="file" name="id_proof" id="id_photo" class="form-control" {% if tenant_obj.id_proof %}readonly disable{% endif %}>
                                                             
                                                         </div>
                                                     </div>
                                                      <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Address Proof</label>
-                                                            {{form.address_proof}}
+                                                            {% if form.instance.address_proof %}
+                                                                <p>Current file: 
+                                                                    <a href="{{ form.instance.address_proof.url }}" target="_blank">View Uploaded ID Proof</a>
+                                                                </p>
+                                                            {% endif %}
+                                                            <input type="file" name="address_proof" id="id_address_proof" class="form-control" {% if tenant_obj.address_proof %}readonly disable{% endif %}>
                                                             
                                                         </div>
                                                     </div>
@@ -163,14 +208,24 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Visa Copy</label>
-                                                            {{form.visa_proof}}
+                                                            {% if form.instance.visa_proof %}
+                                                                <p>Current file: 
+                                                                    <a href="{{ form.instance.visa_proof.url }}" target="_blank">View Uploaded ID Proof</a>
+                                                                </p>
+                                                            {% endif %}
+                                                            <input type="file" name="visa_proof" id="id_visa_proof" class="form-control" {% if tenant_obj.visa_proof %}readonly disable{% endif %}>
                                                             
                                                         </div>
                                                     </div>
                                                      <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Bank Statement</label>
-                                                            {{form.bank_statement}}
+                                                            {% if form.instance.bank_statement %}
+                                                                <p>Current file: 
+                                                                    <a href="{{ form.instance.bank_statement.url }}" target="_blank">View Uploaded ID Proof</a>
+                                                                </p>
+                                                            {% endif %}
+                                                            <input type="file" name="bank_statement" id="id_bank_statement" class="form-control" {% if tenant_obj.bank_statement %}readonly disable{% endif %}>
                                                             
                                                         </div>
                                                     </div>

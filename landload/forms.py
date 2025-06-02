@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant
+from .models import Property,Rooms,Tenant,Dues
 
 class PropertyForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -57,6 +57,23 @@ class RoomsForm(ModelForm):
             model = Rooms
             fields = "__all__"
 
+class DuesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+            model = Dues
+            fields = "__all__"
+
+class DuesReadOnlyForm(DuesForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+            field.widget.attrs['disabled'] = True
+
 
 class TenantForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -74,3 +91,60 @@ class TenantReadOnlyForm(TenantForm):
         for field in self.fields.values():
             field.widget.attrs['readonly'] = True
             field.widget.attrs['disabled'] = True
+
+class TenantInviteForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter tenant email'})
+    )
+    class Meta:
+            model = Tenant
+            fields = ['property','room','rent','deposit','email']
+
+
+class TenantInviteReadOnlyForm(TenantForm):
+    first_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+    )
+    middle_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Middle Name'})
+    )
+    last_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'last Name'})
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter tenant email'})
+    )
+    phone_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'})
+    )
+
+    class Meta:
+        model = Tenant
+        fields = ['property', 'room', 'rent', 'deposit', 'first_name', 'middle_name', 'email','phone_number',
+                  'photo','id_proof','address_proof','visa_proof','bank_statement']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.user:
+            self.fields['first_name'].initial = self.instance.user.first_name
+            self.fields['middle_name'].initial = self.instance.user.middle_name
+            self.fields['last_name'].initial = self.instance.user.last_name
+            self.fields['email'].initial = self.instance.user.email
+            self.fields['phone_number'].initial = self.instance.user.phone_number
+
+        for name, field in self.fields.items():
+            value = self.initial.get(name) or getattr(self.instance, name, None)
+
+            if value:  
+                field.widget.attrs['readonly'] = True
+                field.widget.attrs['disabled'] = True

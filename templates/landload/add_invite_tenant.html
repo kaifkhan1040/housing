@@ -49,40 +49,8 @@
                                    
                                         <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
                                             {% csrf_token %}
+                                            
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">First Name</label>
-                                                        <input type="text" name="first_name" id="first_name" class="form-control" value="{{tenant_obj.user.first_name}}" {% if more_fun %} readonly disable {% endif %} required>
-
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Middle Name</label>
-                                                        <input type="text" name="middle_name" id="middle_name" {% if tenant_obj.user.middle_name %} value="{{tenant_obj.user.middle_name}}" {% endif %} {% if more_fun %} readonly disable {% endif %} class="form-control" >
-
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Last name</label>
-                                                        <input type="text" name="last_name" id="last_name" value="{{tenant_obj.user.last_name}}" {% if more_fun %} readonly disable {% endif %} class="form-control" >
-                                                        
-                                                    </div>
-                                                </div>
-                                                
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Phone Number</label>
-                                                        <input type="text" name="phone_number" id="last_name" class="form-control" value="{{tenant_obj.user.phone_number}}" {% if more_fun %} readonly disable {% endif %} required>
-                                                        
-                                                    </div>
-                                                </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Email</label>
@@ -104,10 +72,6 @@
                                                         
                                                     </div>
                                                 </div>
-                                                
-                                
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Room</label>
@@ -117,6 +81,11 @@
                                                         
                                                     </div>
                                                 </div>
+                                                
+                                
+                                            </div>
+                                            <div class="row">
+                                                
                                                 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -133,50 +102,11 @@
                                                         </div>
                                                     </div>
                                             </div>
-                                                <div class="row mt-2">
-                                                    <h3>Upload Docs</h3>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="username">Photo</label>
-                                                            {{form.photo}}
-                                                            
-                                                        </div>
-                                                    </div>
-                                                     <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="username">Id Proof</label>
-                                                            {{form.id_proof}}
-                                                            
-                                                        </div>
-                                                    </div>
-                                                     <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="username">Address Proof</label>
-                                                            {{form.address_proof}}
-                                                            
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                               
 
-                                            <div class="row mt-2 ">
-                                                   
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="username">Visa Copy</label>
-                                                            {{form.visa_proof}}
-                                                            
-                                                        </div>
-                                                    </div>
-                                                     <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="username">Bank Statement</label>
-                                                            {{form.bank_statement}}
-                                                            
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            
                                             <div class="col-12 d-flex flex-sm-row flex-column mt-2">
-                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1"  {% if more_fun %} disabled  readonly {% endif %} >Save Changes</button>
+                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1"  {% if more_fun %} disabled  readonly {% endif %} >Send Invite</button>
                                                 <button type="reset" class="btn btn-outline-secondary"  {% if more_fun %} disabled  readonly {% endif %} >Reset</button>
                                             </div>
                                         </div>

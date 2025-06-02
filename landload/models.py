@@ -86,6 +86,8 @@ class Rooms(models.Model):
         super().save(*args, **kwargs)
 
 
+
+
 class Tenant(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,blank=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='landload_properties')
@@ -125,6 +127,48 @@ class Tenant(models.Model):
 
         super().save(*args, **kwargs)
 
+class TenentProfileVerify(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    link = models.CharField(max_length=500)
+    verify = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.tenant)
 
 
+class Dues(models.Model):
+    custom_id = models.CharField(max_length=10, unique=True, blank=True)
+    property=models.ForeignKey(Property,on_delete=models.CASCADE)
+    room=models.ForeignKey(Rooms,on_delete=models.CASCADE)
+    tenant_name=models.CharField(max_length=255)
+    m_for = models.CharField(choices=[('Rent WS','Rent WS'),('Deposit','Deposit'),('Penalty','Penalty'),('Custom','Custom')], max_length=50)
+    amount = models.FloatField()
+    method = models.CharField(choices=[("Cash",'cash'),('Account Transfer','Account Transfer')])
+    paid_date = models.DateField(auto_now_add=True)
+    proof = models.ImageField(upload_to='Dues/proof/')
+    is_active=models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.custom_id:
+            with transaction.atomic():
+                # Lock the table during ID generation
+                last_obj = Dues.objects.select_for_update().order_by('-id').first()
+                if last_obj and last_obj.custom_id.startswith('RE'):
+                    try:
+                        last_number = int(last_obj.custom_id[2:])
+                    except ValueError:
+                        last_number = 100
+                    next_number = last_number + 1
+                else:
+                    next_number = 101
+
+                # Loop to ensure uniqueness
+                while True:
+                    candidate_id = f'RE{next_number}'
+                    if not Dues.objects.filter(custom_id=candidate_id).exists():
+                        self.custom_id = candidate_id
+                        break
+                    next_number += 1
+
+        super().save(*args, **kwargs)
 

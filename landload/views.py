@@ -1,10 +1,16 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Property,Rooms,Tenant
-from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm
+from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues
+from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
+    DuesReadOnlyForm
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from users.models import CustomUser
+from users.email import tenant_invitation_email
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.crypto import get_random_string
+
+
 # Create your views here.
 def index(request):
     return render(request,'landload/index.html')
@@ -221,3 +227,103 @@ def tenant_update(request,id):
     return render(request,'landload/add_tenant.html',{'form':form,'tenant_id':id,'tenant_obj':tenant_obj,
                                                       'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
     'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property})
+
+@login_required(login_url='/')
+def deactivate_tenant(request,pk):
+    obj=Tenant.objects.get(id=pk)
+    obj.is_active=False
+    obj.save()
+    return JsonResponse(True,safe=False)
+
+
+def tenant_invite_add(request):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    form=TenantInviteForm()
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        post_data['is_active']=True
+        form = TenantInviteForm(post_data,request.FILES)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            if CustomUser.objects.filter(email=email).exists():
+               messages.error(request, f'Email already exixts')
+               return redirect('landload:tenant')
+            user = CustomUser.objects.create_user(email=email, password='Root@123',role='tenant')
+            tenant = form.save(commit=False)
+            tenant.user = user
+            tenant.landload = request.user
+            tenant.save()
+            token = get_random_string(16)
+            TenentProfileVerify(tenant=tenant, link=token).save()
+            temp_url=redirect('tenant:tenantverify', id=token)
+            token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
+            tenant_invitation_email(user.first_name if user.first_name else ''+' '+user.last_name if user.last_name else "",
+            user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token)
+            messages.success(request, f'Tenant has been Created successfully!')
+            return redirect('landload:tenant')
+        else:
+            print('errr',form.errors)
+            messages.error(request, f'{form.errors}')
+
+    return render(request,'landload/add_invite_tenant.html',{'form':form,'property':property})
+
+
+def dues(request):
+    dues = Dues.objects.filter(is_active=True)
+    return render(request,'landload/dues.html',{'dues':dues})    
+
+
+def dues_add(request):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    form = DuesForm()
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        print('post')
+        print(request.POST)
+        # post_data['landload']=request.user
+        post_data['is_active']=True
+        form = DuesForm(post_data,request.FILES)
+        if form.is_valid():
+            # form['landload']=request.user
+       
+            property_obj=form.save()
+            messages.success(request, f'Record has been Created successfully!')
+            return redirect('landload:dues')
+        else:
+            print('errr',form.errors)
+            messages.error(request, f'{form.errors}')
+    return render(request,'landload/add_dues.html',{'form':form,'property':property})
+
+
+def dues_view(request,id):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    property_obj = get_object_or_404(Dues, pk=id)
+    form = DuesReadOnlyForm(instance=property_obj)
+    rooms=Rooms.objects.filter(property=property_obj.property)
+    return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,
+                                                    'rooms':rooms})
+
+
+def dues_update(request,id):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    property_obj = get_object_or_404(Dues, pk=id)
+    rooms=Rooms.objects.filter(property=property_obj.property)
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        # post_data['landload']=request.user
+        post_data['is_active']=True
+        form = DuesForm(post_data, request.FILES, instance=property_obj)
+        if form.is_valid():
+            obj=form.save()
+            
+
+            messages.success(request, f'Record has been updated successfully!')
+            return redirect('landload:dues')
+        else:
+            print(form.errors)
+    else:
+        form = DuesForm(instance=property_obj)
+    return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'property':property,
+                                                    'rooms':rooms})
+
+
