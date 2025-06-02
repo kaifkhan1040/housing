@@ -138,15 +138,17 @@ class TenentProfileVerify(models.Model):
 
 class Dues(models.Model):
     custom_id = models.CharField(max_length=10, unique=True, blank=True)
-    property=models.ForeignKey(Property,on_delete=models.CASCADE)
-    room=models.ForeignKey(Rooms,on_delete=models.CASCADE)
-    tenant_name=models.CharField(max_length=255)
+    property = models.ForeignKey(Property,on_delete=models.CASCADE)
+    room = models.ForeignKey(Rooms,on_delete=models.CASCADE)
+    tenant_name = models.CharField(max_length=255)
     m_for = models.CharField(choices=[('Rent WS','Rent WS'),('Deposit','Deposit'),('Penalty','Penalty'),('Custom','Custom')], max_length=50)
     amount = models.FloatField()
     method = models.CharField(choices=[("Cash",'cash'),('Account Transfer','Account Transfer')])
     paid_date = models.DateField(auto_now_add=True)
     proof = models.ImageField(upload_to='Dues/proof/')
-    is_active=models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+
 
     def save(self, *args, **kwargs):
         if not self.custom_id:

@@ -74,7 +74,7 @@
                                 <form class="auth-login-form mt-2" action="" method="POST">{% csrf_token %}
                                     <div class="mb-1">
                                         <label class="form-label" for="login-email">Email</label>
-                                        <input class="form-control" id="login-email" type="text" value="{{cookies1}}" name="email" placeholder="john@example.com" aria-describedby="login-email" autofocus="" tabindex="1" />
+                                        <input class="form-control" id="login-email" type="text" required value="{{cookies1}}" name="email" placeholder="john@example.com" aria-describedby="login-email" autofocus="" tabindex="1" />
                                     </div>
                                     <div class="mb-1">
                                         <div class="d-flex justify-content-between">

@@ -37,11 +37,21 @@
                         
                         <div class="card-body border-bottom">
                             <div class="row">
-                                <div class="col-md-4 user_role">
+                                <div class="col-md-2 user_role">
                                     Dues & Collection
                                 </div>
-                                <div class="col-md-6 user_plan">
-                                </div>
+                                
+                                    <div class="col-md-6 user_plan">
+                                        <form method="get" action="">
+    <input type="text" name="q" placeholder="Search by ID, Name, Property" value="{{ query }}" class="form-control" style="width: 300px; display: inline-block; margin-bottom: 10px;">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+                                        {% comment %} <input type="text" id="0001search" class="form-control" placeholder="search"> {% endcomment %}
+                                    </div>
+                                    <div class="col-md-2 user_plan">
+                                        {% comment %} <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Search</button>  {% endcomment %}
+                                    </div>
+                               
                                 <div class="col-md-2 user_status">
                                     <a href="{% url 'landload:dues_add' %}">
                                         <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >
@@ -55,6 +65,10 @@
                         <div class="card-datatable table-responsive pt-0">
                             <table class="user-list-table table">
                                 <thead class="table-light">
+                                    <tr>
+                                        <th colspan="6" >Dues</th>
+                                        <th colspan="3" >Sort by</th>
+                                    </tr>
                                     <tr>
                                         <th>Sn.</th>
                                         <th>Id</th>
@@ -72,7 +86,7 @@
                                         <td>{{forloop.counter}}</td>
                                         <td><a href="{% url 'landload:dues_view' id=i.id %}">{{i.custom_id}}</a></td>
                                         <td>{{i.tenant_name}}</td>
-                                        <td>{{ i.property }}</td>
+                                        <td>{{ i.property.short_name }}</td>
                                         <td>{{ i.room.rent}}</td>
                                         <td>-----</td>
                                         <td>-----</td>

@@ -2,6 +2,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
     DuesReadOnlyForm
+from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -164,14 +165,24 @@ def tenant_add(request):
         email=request.POST.get('email')
         form = TenantForm(post_data,request.FILES)
         if form.is_valid():
+            
+            if CustomUser.objects.filter(email=email).exists():
+               messages.error(request, f'Email already exixts')
+               return redirect('landload:tenant')
             user_data=CustomUser.objects.create(first_name=first_name,last_name=last_name,
                                       middle_name=middle_name,email=email,password='Tenant@123',
-                                      phone_number=phone_number)
+                                      phone_number=phone_number,role='tenant')
             # form['landload']=request.user
        
             property_obj = form.save(commit=False)
             property_obj.user = user_data  
             property_obj.save()
+            token = get_random_string(16)
+            TenentProfileVerify(tenant=property_obj, link=token).save()
+            temp_url=redirect('tenant:tenantverify', id=token)
+            token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
+            tenant_invitation_email(property_obj.user.first_name if property_obj.user.first_name else ''+' '+property_obj.user.last_name if property_obj.user.last_name else "",
+            property_obj.user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token)
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:
@@ -269,7 +280,15 @@ def tenant_invite_add(request):
 
 
 def dues(request):
-    dues = Dues.objects.filter(is_active=True)
+    query = request.GET.get('q', '')
+    dues = Dues.objects.filter(landload=request.user,is_active=True)
+    if query:
+        dues = dues.filter(
+            Q(tenant_name__icontains=query) |
+            Q(custom_id__icontains=query) |
+            Q(property__name__icontains=query) |
+            Q(property__short_name__icontains=query)
+        )
     return render(request,'landload/dues.html',{'dues':dues})    
 
 
@@ -280,7 +299,7 @@ def dues_add(request):
         post_data = request.POST.copy()
         print('post')
         print(request.POST)
-        # post_data['landload']=request.user
+        post_data['landload']=request.user
         post_data['is_active']=True
         form = DuesForm(post_data,request.FILES)
         if form.is_valid():

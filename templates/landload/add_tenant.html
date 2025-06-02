@@ -79,7 +79,8 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="username">Phone Number</label>
-                                                        <input type="text" name="phone_number" id="last_name" class="form-control" value="{{tenant_obj.user.phone_number}}" {% if more_fun %} readonly disable {% endif %} required>
+                                                        <input type="text" name="phone_number" pattern="\d{10}" maxlength="10"
+                                                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" id="last_name" class="form-control" value="{{tenant_obj.user.phone_number}}" {% if more_fun %} readonly disable {% endif %} required>
                                                         
                                                     </div>
                                                 </div>
