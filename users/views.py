@@ -29,13 +29,16 @@ def loginPage(request):
         print(email)
         password = request.POST.get('password', None)
         login_as = request.POST.get('login_as', None)
-        
+
         print(password)
         if email is not None and password is not None:
             try:
                 usercheck=CustomUser.objects.get(email=email)
             except:
-                usercheck=CustomUser.objects.get(email=email,is_active=False)
+                try:
+                    usercheck=CustomUser.objects.get(email=email,is_active=False)
+                except:
+                    messages.error(request, 'Username and password is Invalid' )
             if usercheck.is_verify==False:
                 if not usercheck.is_superuser==True:
                     if usercheck.role=='landload':
@@ -58,7 +61,7 @@ def loginPage(request):
                         return HttpResponseRedirect(reverse_lazy('customadmin:home'))
                     elif login_as=='landload':
                         return HttpResponseRedirect(reverse_lazy('landload:home'))
-                    
+
                     else:
                         return HttpResponseRedirect(reverse_lazy('tenant:home'))
                 else:
@@ -146,7 +149,7 @@ def email_send(token, email,email_message,email_subject):
     [email],
     # from_email='mohdkaif@radiantinfonet.com',
     headers={'Message-ID': '1'},
-    
+
 )
     email.send(fail_silently=False)
 def create_password(request, id):
