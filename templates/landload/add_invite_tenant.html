@@ -42,75 +42,75 @@
                                         {% endif %}
                                     </div>
                                
-                                <div class="card-body py-2 my-25">
+                                    <div class="card-body py-2 my-25">
                                     
                                         <!-- upload and reset button -->
-                                    <form class="form-validate" method="POST" enctype="multipart/form-data">
-                                   
-                                        <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
-                                            {% csrf_token %}
-                                            
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Email</label>
-                                                        <input type="email" name="email" id="email" class="form-control" value="{{tenant_obj.user.email}}" {% if more_fun %} readonly disable {% endif %} required>
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Property</label>
-                                                        <select name="property" id="property_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
-                                                            <option >select property</option>
-                                                            {% for u in property %}
-                                                                <option value="{{ u.id }}" {% if u.id == saved_property_id %}selected{% endif %}>
-                                                                    {{ u.short_name }}
-                                                                </option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Room</label>
-                                                        <select name="room" id="Room_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
-                                                            
-                                                        </select>
-                                                        
-                                                    </div>
-                                                </div>
+                                        <form class="form-validate" method="POST" enctype="multipart/form-data">
+                                    
+                                            <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
+                                                {% csrf_token %}
                                                 
-                                
-                                            </div>
-                                            <div class="row">
-                                                
-                                                
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="username">Rent</label>
-                                                        {{form.rent}}
-                                                        
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label for="username">Deposite</label>
-                                                            {{form.deposit}}
+                                                            <label for="username">Email</label>
+                                                            <input type="email" name="email" id="email" class="form-control" value="{{tenant_obj.user.email}}" {% if more_fun %} readonly disable {% endif %} required>
                                                             
                                                         </div>
                                                     </div>
-                                            </div>
-                                               
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="username">Property</label>
+                                                            <select name="property" id="property_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
+                                                                <option >select property</option>
+                                                                {% for u in property %}
+                                                                    <option value="{{ u.id }}" {% if u.id == saved_property_id %}selected{% endif %}>
+                                                                        {{ u.short_name }}
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="username">Room</label>
+                                                            <select name="room" id="Room_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
+                                                                
+                                                            </select>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    
+                                    
+                                                </div>
+                                                <div class="row">
+                                                    
+                                                    
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="username">Rent</label>
+                                                            {{form.rent}}
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="username">Deposite</label>
+                                                                {{form.deposit}}
+                                                                
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                                
 
-                                            
-                                            <div class="col-12 d-flex flex-sm-row flex-column mt-2">
-                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1"  {% if more_fun %} disabled  readonly {% endif %} >Send Invite</button>
-                                                <button type="reset" class="btn btn-outline-secondary"  {% if more_fun %} disabled  readonly {% endif %} >Reset</button>
+                                                
+                                                <div class="col-12 d-flex flex-sm-row flex-column mt-2">
+                                                    <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1"  {% if more_fun %} disabled  readonly {% endif %} >Send Invite</button>
+                                                    <button type="reset" class="btn btn-outline-secondary"  {% if more_fun %} disabled  readonly {% endif %} >Reset</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
                                     </div>
                                 </div>
 

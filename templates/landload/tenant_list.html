@@ -38,24 +38,46 @@
                         <div class="card-body border-bottom">
                             <div class="row">
                                 <div class="col-md-5 user_role">
-                                    Tenants
+                                    <a href="{% url 'landload:tenant_add' %}">
+                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Tenant</button>
+                                      </a>
                                 </div>
                                 <div class="col-md-4 user_plan">
                                 </div>
                                 <div class="col-md-3 user_status">
-                                    <a href="{% url 'landload:tenant_add' %}">
-                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Tenant</button>
-                                      </a>
-                                    <a href="{% url 'landload:tenant_invite_add' %}">
+                                    
+                                    {% comment %} <a href="{% url 'landload:tenant_invite_add' %}">
                                         <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Invite Tenant</button>
-                                      </a>
+                                      </a> {% endcomment %}
                                 </div>
                             </div>
                         </div>
-                        {% if tenant %}
+                       
                         <div class="card-datatable table-responsive pt-0">
-                            <table class="user-list-table table">
+                            <table class="user-list-table table table-hover">
                                 <thead class="table-light">
+                                  <tr>
+                                    <td colspan="6" >All Tenants</td>  
+                                    <td colspan="3" ><div class="dropdown">
+                                          {% comment %} Sort by {% endcomment %}
+                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Sort by
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                         Total Dues
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                         Last Payment
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                          </div>
+                                        </td> 
+                                  </tr>
                                     <tr>
                                         <th>Sn.</th>
                                         <th>Id</th>
@@ -65,10 +87,11 @@
                                         <th>Total Dues</th>
                                         <th>Last Payment</th>
                                         <th>Move in date</th>
+                                        <th>Action</th>
                                         {% comment %} <th>Collection</th> {% endcomment %}
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="dues-body">
                                     {% for i in tenant %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
@@ -79,14 +102,35 @@
                                         <td>----</td>
                                         <td>{{ i.rooms }}</td>
                                         <td>{{ i.cost }}</td>
+                                         <td>
+                                          <div class="dropdown">
+                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i data-feather="more-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                        <i data-feather="edit-2" class="me-2"></i> Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                        <i data-feather="trash" class="me-2"></i> Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                          </div>
+
+                                        </td>
                                         
                                         
                                     </tr>
+                                    {% empty %}
+                                      <tr><td colspan="5">No results found.</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                        {% endif %}
                     </div>
                     <!-- list and filter end -->
                 </section>
@@ -322,6 +366,27 @@ $(function () {
       });
     });
   }
+});
+</script>
+<script>
+document.getElementById('searchInput').addEventListener('input', function () {
+  const query = this.value.trim();
+
+  fetch(`/landload/tenant?q=${encodeURIComponent(query)}`, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => response.text())
+  .then(html => {
+    // Extract only the <tbody> content from the response
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const newTbody = tempDiv.querySelector('#dues-body');
+    if (newTbody) {
+      document.getElementById('dues-body').innerHTML = newTbody.innerHTML;
+    }
+  });
 });
 </script>
 

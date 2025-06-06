@@ -10,6 +10,7 @@ from users.models import CustomUser
 from users.email import tenant_invitation_email
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.crypto import get_random_string
+from django.utils.safestring import mark_safe
 
 
 # Create your views here.
@@ -18,18 +19,28 @@ def index(request):
 
 
 def listing(request):
+    query = request.GET.get('q', '')
     property = Property.objects.filter(landload=request.user,is_active=True)
-    return render(request,'landload/listing.html',{'property':property})
+   
+    if query:
+        property = property.filter(
+            Q(short_name__icontains=query) |
+            Q(custom_id__icontains=query) |
+            Q(property_type__icontains=query) |
+            Q(postcode__icontains=query)
+        )
+    return render(request,'landload/listing.html',{'property':property,'search_field':True})
 
 
 def listing_add(request):
     form = PropertyForm()
     if request.method == "POST":
         post_data = request.POST.copy()
-        print('post')
-        print(request.POST)
+        # print('post')
+        # print(request.POST)
         post_data['landload']=request.user
         post_data['is_active']=True
+        post_data['status']=True
         form = PropertyForm(post_data,request.FILES)
         if form.is_valid():
             # form['landload']=request.user
@@ -40,8 +51,11 @@ def listing_add(request):
             messages.success(request, f'Property has been Created successfully!')
             return redirect('landload:listing')
         else:
-            print('errr',form.errors)
-            messages.error(request, f'{form.errors}')
+            # print('errr',form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
     return render(request,'landload/add_listing.html',{'form':form})
 
 
@@ -58,6 +72,7 @@ def listing_update(request,id):
         post_data = request.POST.copy()
         post_data['landload']=request.user
         post_data['is_active']=True
+        post_data['status']=True
         form = PropertyForm(post_data, request.FILES, instance=property_obj)
         if form.is_valid():
             obj=form.save()
@@ -74,7 +89,10 @@ def listing_update(request,id):
             messages.success(request, f'Property has been updated successfully!')
             return redirect('landload:listing_view', id=id)
         else:
-            print(form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
     else:
         form = PropertyForm(instance=property_obj)
     return render(request,'landload/add_listing.html',{'form':form,'property_id':id,'property_obj':property_obj})
@@ -146,16 +164,24 @@ def deactivate_property(request,pk):
 
 
 def tenant(request):
+    query = request.GET.get('q', '')
     tenant = Tenant.objects.filter(landload=request.user,is_active=True)
-    return render(request,'landload/tenant_list.html',{'tenant':tenant})
+   
+    if query:
+        tenant = tenant.filter(
+            Q(user__first_name__icontains=query) |
+            Q(custom_id__icontains=query) |
+            Q(property__short_name__icontains=query) 
+        )
+    return render(request,'landload/tenant_list.html',{'tenant':tenant,'search_field':True})
 
 def tenant_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)
     form = TenantForm()
     if request.method == "POST":
         post_data = request.POST.copy()
-        print('post')
-        print(request.POST)
+        # print('post')
+        # print(request.POST)
         post_data['landload']=request.user
         post_data['is_active']=True
         first_name=request.POST.get('first_name')
@@ -186,8 +212,11 @@ def tenant_add(request):
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:
-            print('errr',form.errors)
-            messages.error(request, f'{form.errors}')
+            # print('errr',form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
     return render(request,'landload/add_tenant.html',{'form':form,'property':property})
 
 
@@ -232,7 +261,10 @@ def tenant_update(request,id):
             messages.success(request, f'Tenant has been updated successfully!')
             return redirect('landload:tenant')
         else:
-            print(form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
     else:
         form = TenantForm(instance=tenant_obj)
     return render(request,'landload/add_tenant.html',{'form':form,'tenant_id':id,'tenant_obj':tenant_obj,
@@ -273,14 +305,19 @@ def tenant_invite_add(request):
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:
-            print('errr',form.errors)
-            messages.error(request, f'{form.errors}')
+            # print('errr',form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
 
     return render(request,'landload/add_invite_tenant.html',{'form':form,'property':property})
 
 
 def dues(request):
     query = request.GET.get('q', '')
+    # print('*'*1000)
+    # print(query)
     dues = Dues.objects.filter(landload=request.user,is_active=True)
     if query:
         dues = dues.filter(
@@ -289,7 +326,7 @@ def dues(request):
             Q(property__name__icontains=query) |
             Q(property__short_name__icontains=query)
         )
-    return render(request,'landload/dues.html',{'dues':dues})    
+    return render(request,'landload/dues.html',{'dues':dues,'search_field':True})    
 
 
 def dues_add(request):
@@ -297,8 +334,8 @@ def dues_add(request):
     form = DuesForm()
     if request.method == "POST":
         post_data = request.POST.copy()
-        print('post')
-        print(request.POST)
+        # print('post')
+        # print(request.POST)
         post_data['landload']=request.user
         post_data['is_active']=True
         form = DuesForm(post_data,request.FILES)
@@ -309,8 +346,11 @@ def dues_add(request):
             messages.success(request, f'Record has been Created successfully!')
             return redirect('landload:dues')
         else:
-            print('errr',form.errors)
-            messages.error(request, f'{form.errors}')
+            # print('errr',form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
     return render(request,'landload/add_dues.html',{'form':form,'property':property})
 
 
@@ -329,7 +369,7 @@ def dues_update(request,id):
     rooms=Rooms.objects.filter(property=property_obj.property)
     if request.method == 'POST':
         post_data = request.POST.copy()
-        # post_data['landload']=request.user
+        post_data['landload']=request.user
         post_data['is_active']=True
         form = DuesForm(post_data, request.FILES, instance=property_obj)
         if form.is_valid():
@@ -339,7 +379,10 @@ def dues_update(request,id):
             messages.success(request, f'Record has been updated successfully!')
             return redirect('landload:dues')
         else:
-            print(form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
     else:
         form = DuesForm(instance=property_obj)
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'property':property,

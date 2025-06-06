@@ -14,7 +14,7 @@ class Property(models.Model):
     address_1 = models.CharField(max_length=255)
     address_2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=100)
-    postcode = models.CharField(max_length=20)
+    postcode = models.CharField(max_length=8)
 
     property_type = models.CharField(max_length=100)
     rooms = models.CharField(choices=ROOM_CHOICES)
@@ -145,7 +145,7 @@ class Dues(models.Model):
     amount = models.FloatField()
     method = models.CharField(choices=[("Cash",'cash'),('Account Transfer','Account Transfer')])
     paid_date = models.DateField(auto_now_add=True)
-    proof = models.ImageField(upload_to='Dues/proof/')
+    proof = models.ImageField(upload_to='Dues/proof/',null=True,blank=True)
     is_active = models.BooleanField(default=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 

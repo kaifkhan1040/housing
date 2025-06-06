@@ -38,14 +38,18 @@
                         <div class="card-body border-bottom">
                             <div class="row">
                                 <div class="col-md-2 user_role">
-                                    Dues & Collection
+                                    <a href="{% url 'landload:dues_add' %}">
+                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >
+                                            Record New
+                                        </button>
+                                    </a>
                                 </div>
                                 
                                     <div class="col-md-6 user_plan">
-                                        <form method="get" action="">
+                                        {% comment %} <form method="get" action="">
     <input type="text" name="q" placeholder="Search by ID, Name, Property" value="{{ query }}" class="form-control" style="width: 300px; display: inline-block; margin-bottom: 10px;">
     <button type="submit" class="btn btn-primary">Search</button>
-</form>
+</form> {% endcomment %}
                                         {% comment %} <input type="text" id="0001search" class="form-control" placeholder="search"> {% endcomment %}
                                     </div>
                                     <div class="col-md-2 user_plan">
@@ -53,21 +57,35 @@
                                     </div>
                                
                                 <div class="col-md-2 user_status">
-                                    <a href="{% url 'landload:dues_add' %}">
-                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >
-                                            Record New
-                                        </button>
-                                    </a>
+                                    
                                 </div>
                             </div>
                         </div>
-                        {% if dues %}
+                        
                         <div class="card-datatable table-responsive pt-0">
-                            <table class="user-list-table table">
+                            <table class=" table table-hover">
                                 <thead class="table-light">
                                     <tr>
-                                        <th colspan="6" >Dues</th>
-                                        <th colspan="3" >Sort by</th>
+                                        <td colspan="6" >Dues</td>
+                                        <td colspan="3" ><div class="dropdown">
+                                          {% comment %} Sort by {% endcomment %}
+                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                                              Sort by
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                         Total Dues
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                         Last Payment
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                          </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Sn.</th>
@@ -78,9 +96,10 @@
                                         <th>Total Dues</th>
                                         <th>Last Payment</th>
                                         <th>Payment Settled till</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="dues-body">
                                     {% for i in dues %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
@@ -91,15 +110,37 @@
                                         <td>-----</td>
                                         <td>-----</td>
                                         <td>-----</td>
+                                        <td>
+                                          <div class="dropdown">
+                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i data-feather="more-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                        <i data-feather="edit-2" class="me-2"></i> Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);">
+                                                        <i data-feather="trash" class="me-2"></i> Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                          </div>
+
+                                        </td>
                                         
 
                                         
                                     </tr>
+                                    {% empty %}
+                                      <tr><td colspan="5">No results found.</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                        {% endif %}
+                       
                     </div>
                     <!-- list and filter end -->
                 </section>
@@ -335,6 +376,29 @@ $(function () {
       });
     });
   }
+});
+
+
+</script>
+<script>
+document.getElementById('searchInput').addEventListener('input', function () {
+  const query = this.value.trim();
+
+  fetch(`/landload/dues?q=${encodeURIComponent(query)}`, {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => response.text())
+  .then(html => {
+    // Extract only the <tbody> content from the response
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const newTbody = tempDiv.querySelector('#dues-body');
+    if (newTbody) {
+      document.getElementById('dues-body').innerHTML = newTbody.innerHTML;
+    }
+  });
 });
 </script>
 

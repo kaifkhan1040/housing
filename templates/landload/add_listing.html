@@ -72,91 +72,93 @@
                                                 };
                                                 reader.readAsDataURL(file);
                                             }
-                                        });
-                                    </script>
+                                            });
+                                        </script>
                                         <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
                                             {% csrf_token %}
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                            <div class="row mb-2">
+                                                <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="username">Short Name</label>
                                                         {{form.short_name}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Name</label>
                                                         {{form.name}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Address 1</label>
                                                         {{form.address_1}}
                                                         
                                                     </div>
                                                 </div>
-                                                
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Address 2</label>
                                                         {{form.address_2}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                
+                                            </div>
+                                            <div class="row mb-2">
+                                                
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">City</label>
                                                         {{form.city}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Postcode</label>
                                                         {{form.postcode}}
                                                         
                                                     </div>
                                                 </div>
-                                                
-                                
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Property Type</label>
                                                         {{form.property_type}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Rooms</label>
                                                         {{form.rooms}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                
+                                
+                                            </div>
+                                            <div class="row mb-2">
+                                                
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Cost</label>
                                                         {{form.cost}}
                                                         
                                                     </div>
                                                 </div>
-                                            </div>
-                                                 <div class="row">
-                                                <div class="col-md-4">
+                                           
+                                                
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">Start Date</label>
                                                         {{form.start_date}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="username">End Date</label>
                                                         {{form.end_date}}
