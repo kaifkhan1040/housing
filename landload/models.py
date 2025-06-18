@@ -1,7 +1,6 @@
 from django.db import models
 from django.db import transaction
 # Create your models here.
-from django.db import models
 from users.models import CustomUser
 
 class Property(models.Model):
@@ -10,21 +9,23 @@ class Property(models.Model):
 
     custom_id = models.CharField(max_length=10, unique=True, blank=True)
     short_name = models.CharField(max_length=100)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200,blank=True,null=True)
     address_1 = models.CharField(max_length=255)
     address_2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=100)
     postcode = models.CharField(max_length=8)
 
-    property_type = models.CharField(max_length=100)
-    rooms = models.CharField(choices=ROOM_CHOICES)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    property_type = models.CharField(max_length=100,choices=(('Detached House','Detached House'),('Private Apartment','Private Apartment')),blank=True,null=True)
+    number_of_flat = models.CharField(choices=ROOM_CHOICES,blank=True,null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2,blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
     status =models.BooleanField(default=True)
     prop_thumbnail = models.ImageField(upload_to='property_thumbnails/', blank=True, null=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True,null=True)
+    rental_type= models.CharField(max_length=25,choices=(('Single Ownership','Single Ownership'),('Multi Ownership','Multi Ownership' )),blank=False)
     is_active =models.BooleanField(default=True)
+    property_description = models.TextField(blank=True,null=True)
 
     def __str__(self):
         return f"{self.short_name} - {self.name}"
@@ -53,6 +54,46 @@ class Property(models.Model):
 
         super().save(*args, **kwargs)
     
+class FinancialBreakdown(models.Model):
+    property = models.OneToOneField(Property, on_delete=models.CASCADE, related_name='financials')
+
+    monthly_rental = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    tax = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    cleaning = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    electricity = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    gas = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    internet = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    water = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    license = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def total_cost(self):
+        fields = [
+            self.monthly_rental, self.tax, self.cleaning, self.electricity,
+            self.gas, self.internet, self.water, self.license,
+        ]
+        return sum(f or 0 for f in fields)
+
+    def __str__(self):
+        return f"Financials for {self.property}"
+    
+class PropertyMedia(models.Model):
+    CATEGORY_CHOICES = [
+        ('outside', 'Outside'),
+        ('parking', 'Parking'),
+        ('garage', 'Garage'),
+        ('garden', 'Garden'),
+        ('common_area', 'Common Area'),
+        ('residence', 'Residence'),
+    ]
+
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='media')
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    photo = models.ImageField(upload_to='property_photos/')
+    caption = models.CharField(max_length=255, blank=True)
+
+class PropertyVideo(models.Model):
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='videos')
+    video_url = models.URLField()
 
 class Rooms(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='room_set')    
@@ -85,6 +126,19 @@ class Rooms(models.Model):
 
         super().save(*args, **kwargs)
 
+class Country(models.Model):
+    name = models.CharField(max_length=60, unique=True)
+    iso = models.CharField(max_length=2)
+    iso3 = models.CharField(max_length=3)
+    dial = models.CharField(max_length=5)
+    currency = models.CharField(max_length=3, null=True, blank=True)
+    currency_name = models.CharField(max_length=60, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('name', 'iso', 'iso3', 'dial')
+
+    def __str__(self):
+        return self.name
 
 
 

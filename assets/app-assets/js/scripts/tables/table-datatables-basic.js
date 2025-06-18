@@ -21,23 +21,53 @@ $(function() {
 
     if (dt_basic_table.length) {
         var dt_basic = dt_basic_table.DataTable({
-            ajax: assetPath + 'data/table-datatable.json',
+           ajax: {
+                    url: '/landload/tenant_list',
+                    dataSrc: 'data'
+                },
             columns: [
-                { data: 'responsive_id' },
-                { data: 'id' },
-                { data: 'id' }, // used for sorting so will hide this column
-                { data: 'full_name' },
-                { data: 'email' },
-                { data: 'start_date' },
-                { data: 'salary' },
-                { data: '' },
-                { data: '' }
-            ],
+    {
+        data: null,
+        render: function (data, type, full, meta) {
+            return ''; // Or some icon / row index
+        }
+    },
+    {
+        data: null,
+        render: function (data, type, full, meta) {
+            return (
+                '<div class="form-check">' +
+                '<input class="form-check-input dt-checkboxes" type="checkbox" value="" id="checkbox' +
+                meta.row +
+                '" />' +
+                '<label class="form-check-label" for="checkbox' +
+                meta.row +
+                '"></label></div>'
+            );
+        },
+        checkboxes: {
+            selectAllRender:
+                '<div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="form-check-label" for="checkboxSelectAll"></label></div>'
+        }
+    },
+    {
+        data: 'custom_id',
+        render: function(data, type, full, meta) {
+            return '<a href="/landload/tenant-view/' + full.id + '">' + data + '</a>';
+        }
+    },
+    { data: 'full_name' },
+    { data: 'property' },
+    { data: 'rent' },
+    { data: 'total_dues' },
+    { data: 'last_payment' },
+    { data: 'move_in_date' }
+],
             columnDefs: [{
                     // For Responsive
                     className: 'control',
                     orderable: false,
-                    responsivePriority: 2,
+                    responsivePriority: 1,
                     targets: 0
                 },
                 {
@@ -46,94 +76,18 @@ $(function() {
                     orderable: false,
                     responsivePriority: 3,
                     render: function(data, type, full, meta) {
-                        return (
-                            '<div class="form-check"> <input class="form-check-input dt-checkboxes" type="checkbox" value="" id="checkbox' +
-                            data +
-                            '" /><label class="form-check-label" for="checkbox' +
-                            data +
-                            '"></label></div>'
-                        );
+                        return '<div class="form-check"> <input class="form-check-input dt-checkboxes" type="checkbox" value="" id="checkbox' +
+                    meta.row + '" /><label class="form-check-label" for="checkbox' +
+                    meta.row + '"></label></div>';
+                        
                     },
                     checkboxes: {
                         selectAllRender: '<div class="form-check"> <input class="form-check-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="form-check-label" for="checkboxSelectAll"></label></div>'
                     }
                 },
-                {
-                    targets: 2,
-                    visible: false
-                },
-                {
-                    // Avatar image/badge, Name and post
-                    targets: 3,
-                    responsivePriority: 4,
-                    render: function(data, type, full, meta) {
-                        var $user_img = full['avatar'],
-                            $name = full['full_name'],
-                            $post = full['post'];
-                        if ($user_img) {
-                            // For Avatar image
-                            var $output =
-                                '<img src="' + assetPath + 'images/avatars/' + $user_img + '" alt="Avatar" width="32" height="32">';
-                        } else {
-                            // For Avatar badge
-                            var stateNum = full['status'];
-                            var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-                            var $state = states[stateNum],
-                                $name = full['full_name'],
-                                $initials = $name.match(/\b\w/g) || [];
-                            $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-                            $output = '<span class="avatar-content">' + $initials + '</span>';
-                        }
-
-                        var colorClass = $user_img === '' ? ' bg-light-' + $state + ' ' : '';
-                        // Creates full output for row
-                        var $row_output =
-                            '<div class="d-flex justify-content-left align-items-center">' +
-                            '<div class="avatar ' +
-                            colorClass +
-                            ' me-1">' +
-                            $output +
-                            '</div>' +
-                            '<div class="d-flex flex-column">' +
-                            '<span class="emp_name text-truncate fw-bold">' +
-                            $name +
-                            '</span>' +
-                            '<small class="emp_post text-truncate text-muted">' +
-                            $post +
-                            '</small>' +
-                            '</div>' +
-                            '</div>';
-                        return $row_output;
-                    }
-                },
-                {
-                    responsivePriority: 1,
-                    targets: 4
-                },
-                {
-                    // Label
-                    targets: -2,
-                    render: function(data, type, full, meta) {
-                        var $status_number = full['status'];
-                        var $status = {
-                            1: { title: 'Current', class: 'badge-light-primary' },
-                            2: { title: 'Professional', class: ' badge-light-success' },
-                            3: { title: 'Rejected', class: ' badge-light-danger' },
-                            4: { title: 'Resigned', class: ' badge-light-warning' },
-                            5: { title: 'Applied', class: ' badge-light-info' }
-                        };
-                        if (typeof $status[$status_number] === 'true') {
-                            return data;
-                        }
-                        return (
-                            '<span class="badge rounded-pill ' +
-                            $status[$status_number].class +
-                            '">' +
-                            $status[$status_number].title +
-                            '</span>'
-                        );
-                    }
-                },
+                
+             
+             
                 {
                     // Actions
                     targets: -1,
@@ -164,6 +118,7 @@ $(function() {
                     }
                 }
             ],
+            responsive: true,
             order: [
                 [2, 'desc']
             ],
@@ -236,23 +191,22 @@ $(function() {
                     type: 'column',
                     renderer: function(api, rowIdx, columns) {
                         var data = $.map(columns, function(col, i) {
-                            return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
-                                ?
-                                '<tr data-dt-row="' +
-                                col.rowIdx +
-                                '" data-dt-column="' +
-                                col.columnIndex +
-                                '">' +
-                                '<td>' +
-                                col.title +
-                                ':' +
-                                '</td> ' +
-                                '<td>' +
-                                col.data +
-                                '</td>' +
-                                '</tr>' :
-                                '';
-                        }).join('');
+                            if (col.title === '') return '';
+        return (
+            '<tr data-dt-row="' +
+            col.rowIdx +
+            '" data-dt-column="' +
+            col.columnIndex +
+            '">' +
+            '<td>' +
+            col.title +
+            ':</td>' +
+            '<td>' +
+            col.data +
+            '</td>' +
+            '</tr>'
+        );
+    }).join('');
 
                         return data ? $('<table class="table"/>').append('<tbody>' + data + '</tbody>') : false;
                     }
@@ -266,7 +220,7 @@ $(function() {
                 }
             }
         });
-        $('div.head-label').html('<h6 class="mb-0">DataTable with Buttons</h6>');
+        $('div.head-label').html('<h6 class="mb-0">All Tenants</h6>');
     }
 
     // Flat Date picker

@@ -1,7 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues
+from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,PropertyMedia
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
-    DuesReadOnlyForm
+    DuesReadOnlyForm,FinancialBreakdownform,PropertyMediaFormSet,PropertyVideoForm
 from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse
@@ -11,12 +11,32 @@ from users.email import tenant_invitation_email
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
-
+from users.forms import SetLocationForm
 
 # Create your views here.
 def index(request):
     return render(request,'landload/index.html')
 
+@login_required
+def setup_location(request):
+    if request.user.role != 'landload':
+        return redirect('landload:home')
+    if request.user.country:  
+        return redirect('landload:home') 
+
+    if request.method == 'POST':
+        form = SetLocationForm(request.POST)
+        if form.is_valid():
+            request.user.country = form.cleaned_data['country']
+            request.user.save()
+            messages.success(request, f'Location Setup successfully!')
+            return redirect('landload:home') 
+        else:
+            print(form.errors)
+    else:
+        form = SetLocationForm()
+    
+    return render(request, 'landload/location_setup.html', {'form': form})
 
 def listing(request):
     query = request.GET.get('q', '')
@@ -31,38 +51,90 @@ def listing(request):
         )
     return render(request,'landload/listing.html',{'property':property,'search_field':True})
 
-
-def listing_add(request):
-    form = PropertyForm()
-    if request.method == "POST":
+def submit_step(request, step):
+    if request.method == 'POST':
         post_data = request.POST.copy()
-        # print('post')
-        # print(request.POST)
         post_data['landload']=request.user
         post_data['is_active']=True
         post_data['status']=True
-        form = PropertyForm(post_data,request.FILES)
-        if form.is_valid():
-            # form['landload']=request.user
+        if step == '1':
+          
+            form = PropertyForm(post_data)
+        elif step == '2':
+            formid = request.POST.get('formid')  
+            property_instance = get_object_or_404(Property, id=formid)
+            form = FinancialBreakdownform(request.POST)
+            if form.is_valid():
+                financial_obj = form.save(commit=False)
+                financial_obj.property = property_instance  # link to saved Property
+                financial_obj.save()
+                return JsonResponse({'success': True})
+
+            return JsonResponse({'success': False, 'errors': form.errors})
+
        
-            property_obj=form.save()
-            for i in range(int(property_obj.rooms)):
-                Rooms.objects.create(property=property_obj)
-            messages.success(request, f'Property has been Created successfully!')
-            return redirect('landload:listing')
+
+        if form.is_valid():
+            temp=form.save()
+            print('temp id',temp.id)
+            return JsonResponse({'success': True,"formid":temp.id})
         else:
-            # print('errr',form.errors)
-            error_messages = '<br>'.join(
-                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
-            )
-            messages.error(request, mark_safe(error_messages))
-    return render(request,'landload/add_listing.html',{'form':form})
+            return JsonResponse({'success': False, 'errors': form.errors})
+        
+def listing_add(request):
+    form = PropertyForm()
+    form2 =FinancialBreakdownform()
+    if request.method == "POST":
+        formid = request.POST.get('formid') 
+        property_obj=get_object_or_404(Property, id=formid)
+        formset = PropertyMediaFormSet(request.POST, request.FILES, queryset=PropertyMedia.objects.none())
+        video_form = PropertyVideoForm(request.POST)
+
+        if formset.is_valid() and video_form.is_valid():
+            for form in formset:
+                media = form.save(commit=False)
+                media.property = property_obj
+                media.save()
+
+            video = video_form.save(commit=False)
+            video.property = property_obj
+            video.save()
+
+            return redirect('success-url')  # update as needed
+    else:
+        formset = PropertyMediaFormSet(queryset=PropertyMedia.objects.none())
+        video_form = PropertyVideoForm()
+        # post_data = request.POST.copy()
+        # # print('post')
+        # # print(request.POST)
+        # post_data['landload']=request.user
+        # post_data['is_active']=True
+        # post_data['status']=True
+        # form = PropertyForm(post_data,request.FILES)
+
+        # if form.is_valid():
+        #     # form['landload']=request.user
+       
+        #     property_obj=form.save()
+        #     for i in range(int(property_obj.rooms)):
+        #         Rooms.objects.create(property=property_obj)
+        #     messages.success(request, f'Property has been Created successfully!')
+        #     return redirect('landload:listing')
+        # else:
+        #     # print('errr',form.errors)
+        #     error_messages = '<br>'.join(
+        #         [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+        #     )
+        #     messages.error(request, mark_safe(error_messages))
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form})
 
 
 def listing_view(request,id):
-    property_obj = get_object_or_404(Property, pk=id)
+    property_obj = get_object_or_404(Property, custom_id=id)
+    property_obj2 = get_object_or_404(FinancialBreakdown, property=property_obj.id)
     form = PropertyReadOnlyForm(instance=property_obj)
-    return render(request,'landload/add_listing.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True})
+    form2=FinancialBreakdownform(instance=property_obj2)
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True})
 
 
 def listing_update(request,id):
@@ -174,6 +246,44 @@ def tenant(request):
             Q(property__short_name__icontains=query) 
         )
     return render(request,'landload/tenant_list.html',{'tenant':tenant,'search_field':True})
+
+def listing_list(request):
+    data = []
+    print('*'*1000)
+    tenant_qs  = Property.objects.filter(landload=request.user,is_active=True)
+    for i, obj in enumerate(tenant_qs, start=1):
+        data.append({
+            'responsive_id':"",
+            'sr':i,
+            'id':obj.custom_id,
+            'name':obj.short_name,
+            'profit': "---",
+            'dues': "---",
+            'loss': "---",
+        })
+
+    return JsonResponse({'data': data}) 
+
+
+
+def tenant_list(request):
+    data = []
+    print('*'*1000)
+    tenant = Tenant.objects.filter(landload=request.user,is_active=True)
+    for obj in tenant:
+        data.append({
+            'id':obj.id,
+            'custom_id': obj.custom_id,
+            'full_name':obj.user.first_name+''+obj.user.last_name if obj.user.last_login else '',
+            'property': obj.property.short_name,
+            'rent': obj.rent,
+            'total_dues': "----",
+            'last_payment': "",  
+            'move_in_date': "",  
+            
+        })
+
+    return JsonResponse({'data': data}) 
 
 def tenant_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)

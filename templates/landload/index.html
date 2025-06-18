@@ -6,23 +6,87 @@
     <div class="content-header row">
     </div>
     <div class="content-body">
+        
         <!-- users list start -->
         <section class="app-user-list">
-        {% comment %} <div class="mb-3 d-flex align-items-center flex-wrap gap-2"> {% endcomment %}
-                <!-- Year Dropdown -->
-            <div class='row'>
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="mb-1 fw-bold text-center">Revenue</h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-1">
+                                    <span class="text-muted">Total Earned:</span>
+                                    <span class="fw-bold text-success float-end">100</span>
+                                </li>
+                                <li class="mb-1">
+                                    <span class="text-muted">Total Spend:</span>
+                                    <span class="fw-bold text-danger float-end">20</span>
+                                </li>
+                                <li class="mb-1">
+                                    <span class="text-muted">Net Revenue:</span>
+                                    <span class="fw-bold text-dark float-end">80</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="mb-1 fw-bold text-center">Listings </h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-1">
+                                    <span class="text-muted">Total listed:</span>
+                                    <span class="fw-bold text-success float-end">10</span>
+                                </li>
+                                <li class="mb-1">
+                                    <span class="text-muted">Occupied:</span>
+                                    <span class="fw-bold text-danger float-end">2</span>
+                                </li>
+                                <li class="mb-1">
+                                    <span class="text-muted">Empty:</span>
+                                    <span class="fw-bold text-dark float-end">8</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="mb-1 fw-bold text-center">Dues </h5>
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-1">
+                                    <span class="text-muted">Total Dues:</span>
+                                    <span class="fw-bold text-success float-end">1000</span>
+                                </li>
+                                <li class="mb-1">
+                                    <span class="text-muted">Longest Dues:</span>
+                                    <span class="fw-bold text-danger float-end">200</span>
+                                </li>
+                                <li class="mb-1">
+                                    <span class="text-muted">Highest Dues:</span>
+                                    <span class="fw-bold text-dark float-end">800</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {% comment %} <div class='row'>
                 <div class="col-md-1 mb-1">
                     <div class="form-group ">
                         <select id="yearSelect" class="form-select">
                             <option value="2025">2025</option>
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
-                            <!-- Add more years as needed -->
+                            
                         </select>
                     </div>
                 </div>
 
-            <!-- Month Dropdown -->
+            
                 <div class="col-md-1 mb-1">
                     <div class="form-group">
                         <select id="monthSelect" class="form-select">
@@ -44,9 +108,8 @@
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1" >Go</button>
                 </div>
-            </div>
-            <h2 class="mb-0 me-3 mb-2">Financials</h2>
-        {% comment %} </div> {% endcomment %}
+            </div> {% endcomment %}
+            <h2 class="mb-0 me-3 mb-2 mt-2">Financials</h2>
 
             <div class="row">
                 <div class="col-lg-3 col-sm-6">
