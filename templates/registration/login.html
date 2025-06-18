@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+<html class="loading dark-layout" lang="en" data-textdirection="ltr" data-layout="dark-layout">
 <!-- BEGIN: Head-->
 
 <head>
@@ -57,7 +57,7 @@
                         <!-- Brand logo-->
                         {% comment %} <img src="{% static 'app-assets/images/ticketing_logo/LOGO.png' %}" width="10px" height="40px"> {% endcomment %}
                         <a class="brand-logo" href="index.html">
-                            
+
                         </a>
                         <!-- /Brand logo-->
                         <!-- Left Text-->
@@ -70,7 +70,7 @@
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
                                 <h2 class="card-title fw-bold mb-1">Welcome to MISU HOUSING</h2>
                                 <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>
-                           
+
                                 <form class="auth-login-form mt-2" action="" method="POST">{% csrf_token %}
                                     <div class="mb-1">
                                         <label class="form-label" for="login-email">Email</label>
@@ -102,7 +102,7 @@
                                     <button class="btn btn-primary w-100" tabindex="4">Sign in</button>
                                 </form>
                                 <p class="text-center mt-2"><span>New on our platform?</span><a href="{% url 'user:signup' %}"><span>&nbsp;Create an account</span></a></p>
-                          
+
                             </div>
                         </div>
                         <!-- /Login-->

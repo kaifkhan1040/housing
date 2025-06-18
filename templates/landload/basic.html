@@ -1,8 +1,8 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="loading " lang="en" data-textdirection="ltr">
+<html class="loading dark-layout" lang="en" data-textdirection="ltr" data-layout="dark-layout">
 <!-- BEGIN: Head-->
- 
+
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -50,12 +50,12 @@
     <!-- BEGIN: Header-->
     <nav class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
         <div class="navbar-container d-flex content">
-           
+
             <div class="bookmark-wrapper d-flex align-items-center">
                 <ul class="nav navbar-nav d-xl-none">
                     <li class="nav-item"><a class="nav-link menu-toggle" href="#"><i class="ficon" data-feather="menu"></i></a></li>
                 </ul>
-                
+
                 {% comment %} <ul class="nav navbar-nav bookmark-icons">
                     <li class="nav-item d-none d-lg-block"><a class="nav-link" href="app-email.html" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Email"><i class="ficon" data-feather="mail"></i></a></li>
                     <li class="nav-item d-none d-lg-block"><a class="nav-link" href="app-chat.html" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Chat"><i class="ficon" data-feather="message-square"></i></a></li>
@@ -358,7 +358,7 @@
         <li class="auto-suggestion justify-content-between"><a class="d-flex align-items-center justify-content-between w-100 py-50">
                 <div class="d-flex justify-content-start"><span class="me-75" data-feather="alert-circle"></span><span>No results found.</span></div>
             </a></li>
-    </ul> 
+    </ul>
     <!-- END: Header-->
 
 
@@ -431,7 +431,7 @@
                         </li>
                         <li><a class="d-flex align-items-center" href="app-invoice-edit.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Edit">Edit</span></a>
                         </li>
-                        <li><a class="d-flex align-items-center" href="app-invoice-add.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">Add</span></a> 
+                        <li><a class="d-flex align-items-center" href="app-invoice-add.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Add">Add</span></a>
                         </li>
                     </ul>
                 </li>
@@ -464,7 +464,7 @@
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="activity"></i><span class="menu-title text-truncate" data-i18n="User">Action</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="trending-up"></i><span class="menu-title text-truncate" data-i18n="User">Promotion</span></a>
                             {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:leave' %}"><i data-feather="calendar"></i><span class="menu-title text-truncate" data-i18n="User">User Attendance</span></a> {% endcomment %}
-                                
+
                                 {% comment %} <ul class="menu-content">
                         <li><a class="d-flex align-items-center" href="app-user-list.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">List</span></a>
                         </li>
