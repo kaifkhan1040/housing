@@ -7,33 +7,7 @@ from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordIn
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
-country_choices =(
-("","Select Country"),
-("Australia","Australia"),
-("Bangladesh","Bangladesh"),
-("Belarus","Belarus"),
-("Brazil","Brazil"),
-("Canada","Canada"),
-("China","China"),
-("France","France"),
-("Germany","Germany"),
-("India","India"),
-("Indonesia","Indonesia"),
-("Israel","Israel"),
-("Italy","Italy"),
-("Japan","Japan"),
-("Korea","Korea, Republic of"),
-("Mexico","Mexico"),
-("Philippines","Philippines"),
-("Russia","Russian Federation"),
-("South Africa","South Africa"),
-("Thailand","Thailand"),
-("Turkey","Turkey"),
-("Ukraine","Ukraine"),
-("United Arab Emirates","United Arab Emirates"),
-("United Kingdom","United Kingdom"),
-("United States","United States"),
-)
+
 
 class CustomUserCreationForm(UserCreationForm):
     
@@ -62,8 +36,23 @@ class CustomUserCreationForm(UserCreationForm):
                 'class': "form-control mb-2",}),
                 }
 
+
+class SetLocationForm(ModelForm):
+    # country = forms.ChoiceField(choices=country_choices,required=False)
+    def __init__(self, *args, **kwargs):
+        # super(UserProfileForm, self).__init__(*args, **kwargs)
+        # self.helper = FormHelper()
+        # self.helper.form_method = 'post'
+        # self.helper.add_input(Submit('submit', 'Submit'))
+        super().__init__(*args, **kwargs)
+        self.fields['country'].widget.attrs.update({'class': 'select2 form-control customtext-change'})
+
+    class Meta:
+            model = CustomUser
+            fields = ('country',)
+
 class UserProfileForm(ModelForm):
-    country = forms.ChoiceField(choices=country_choices,required=False)
+    # country = forms.ChoiceField(choices=country_choices,required=False)
     def __init__(self, *args, **kwargs):
         # super(UserProfileForm, self).__init__(*args, **kwargs)
         # self.helper = FormHelper()
@@ -80,12 +69,12 @@ class UserProfileForm(ModelForm):
         self.fields['designation'].widget.attrs.update({'class': 'form-control'})
         self.fields['zipcode'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'hidden': False,"id":'account-upload-form'})
-        self.fields['country'].widget.attrs.update({'class': 'select2 form-select ','maxlength':8})
+        self.fields['country'].widget.attrs.update({'class': 'select2 form-control customtext-change'})
 
     class Meta:
             model = CustomUser
             fields = ('first_name', 'last_name','email','phone_number','address',
-            'state','zipcode','image','salary','designation','dob','doj')
+            'state','zipcode','image','salary','designation','dob','doj','country')
             widgets = {
             'dob':DateInput(attrs={
                 'type': 'date',

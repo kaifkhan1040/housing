@@ -30,7 +30,7 @@
             </div>
             <div class="content-body">
                 <!-- users list start -->
-                <section class="app-user-list">
+                <section class="basic-datatable">
                 
                     <!-- list and filter start -->
                     <div class="card">
@@ -54,12 +54,12 @@
                         </div>
                        
                         <div class="card-datatable table-responsive pt-0">
-                            <table class="user-list-table table table-hover">
+                            <table class="user-list-table table table-hover datatables-basic">
                                 <thead class="table-light">
-                                  <tr>
+                                  {% comment %} <tr>
                                     <td colspan="6" >All Tenants</td>  
                                     <td colspan="3" ><div class="dropdown">
-                                          {% comment %} Sort by {% endcomment %}
+                                          
                                             <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
                                               Sort by
                                             </button>
@@ -77,9 +77,11 @@
                                             </ul>
                                           </div>
                                         </td> 
-                                  </tr>
+                                  </tr> {% endcomment %}
                                     <tr>
-                                        <th>Sn.</th>
+                                        
+                                        <th></th>
+                                        <th></th>
                                         <th>Id</th>
                                         <th>Full Name</th>
                                         <th>Property</th>
@@ -87,12 +89,12 @@
                                         <th>Total Dues</th>
                                         <th>Last Payment</th>
                                         <th>Move in date</th>
-                                        <th>Action</th>
+                                        {% comment %} <th>Action</th> {% endcomment %}
                                         {% comment %} <th>Collection</th> {% endcomment %}
                                     </tr>
                                 </thead>
                                 <tbody id="dues-body">
-                                    {% for i in tenant %}
+                                    {% comment %} {% for i in tenant %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
                                         <td><a href="{% url 'landload:tenant_view' id=i.id %}">{{i.custom_id}}</a></td>
@@ -127,7 +129,7 @@
                                     </tr>
                                     {% empty %}
                                       <tr><td colspan="5">No results found.</td></tr>
-                                    {% endfor %}
+                                    {% endfor %} {% endcomment %}
                                 </tbody>
                             </table>
                         </div>
@@ -160,9 +162,12 @@
     <script src="{% static 'app-assets/vendors/js/forms/validation/jquery.validate.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/forms/cleave/cleave.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/forms/cleave/addons/cleave-phone.us.js' %}"></script>
+    <script src="{% static 'app-assets/js/scripts/tables/table-datatables-basic.js' %}"></script>
     <!-- END: Page Vendor JS-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    
+        <script>
+          
+        </script>
     <!-- BEGIN: Theme JS-->
     <!-- <script src="{% static 'app-assets/js/core/app-menu.js' %}"></script>
     <script src="{% static 'app-assets/js/core/app.js' %}"></script> -->

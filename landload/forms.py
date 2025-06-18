@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues
+from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,PropertyMedia,PropertyVideo
 
 class PropertyForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -14,12 +14,17 @@ class PropertyForm(ModelForm):
         self.fields['address_2'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['city'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['postcode'].widget.attrs.update({'class': 'form-control valid'})
-        self.fields['property_type'].widget.attrs.update({'class': 'form-control valid'})
-        self.fields['rooms'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['property_type'].widget.attrs.update({'class': 'form-select valid'})
+        self.fields['number_of_flat'].widget.attrs.update({'class': 'form-select valid','required':True})
         self.fields['cost'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['start_date'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['property_description'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['end_date'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['prop_thumbnail'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['rental_type'].choices = [
+    choice for choice in self.fields['rental_type'].choices if choice[0] != ''
+]
+        # self.fields['rental_type'].widget.attrs.update({'class': 'form-control valid'})
         
         
     class Meta:
@@ -33,6 +38,7 @@ class PropertyForm(ModelForm):
                 'type': 'date',
                 'class': "form-control mb-2",
                 'placeholder':"date hai"}),
+                'rental_type': forms.RadioSelect(attrs={'class': 'form-check-input'}),
                 }
             
 class PropertyReadOnlyForm(PropertyForm):
@@ -42,6 +48,33 @@ class PropertyReadOnlyForm(PropertyForm):
             field.widget.attrs['readonly'] = True
             field.widget.attrs['disabled'] = True
 
+class PropertyMediaForm(forms.ModelForm):
+    class Meta:
+        model = PropertyMedia
+        fields = ['category', 'photo', 'caption']
+
+PropertyMediaFormSet = forms.modelformset_factory(
+    PropertyMedia,
+    form=PropertyMediaForm,
+    extra=6,  
+    max_num=6,
+    can_delete=True
+)
+
+class PropertyVideoForm(forms.ModelForm):
+    class Meta:
+        model = PropertyVideo
+        fields = ['video_url']
+
+class FinancialBreakdownform(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control valid'
+
+    class Meta:
+            model = FinancialBreakdown
+            fields = "__all__"
 
 class RoomsForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -62,6 +95,8 @@ class DuesForm(ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+        self.fields['m_for'].widget.attrs.update({'class': 'form-select valid'})
+        self.fields['method'].widget.attrs.update({'class': 'form-select valid'})
 
     class Meta:
             model = Dues
@@ -148,3 +183,9 @@ class TenantInviteReadOnlyForm(TenantForm):
             if value:  
                 field.widget.attrs['readonly'] = True
                 field.widget.attrs['disabled'] = True
+
+
+
+
+class LocationForm(forms.Form):
+    location = forms.CharField(label='Your Location', max_length=255)

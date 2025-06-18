@@ -61,7 +61,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Property</label>
-                                                            <select name="property" id="property_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
+                                                            <select name="property" id="property_id" class="form-select" {% if more_fun %} readonly disable {% endif %} required>
                                                                 <option >select property</option>
                                                                 {% for u in property %}
                                                                     <option value="{{ u.id }}" {% if u.id == saved_property_id %}selected{% endif %}>
@@ -75,7 +75,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="username">Room</label>
-                                                            <select name="room" id="Room_id" class="form-control" {% if more_fun %} readonly disable {% endif %} required>
+                                                            <select name="room" id="Room_id" class="form-select" {% if more_fun %} readonly disable {% endif %} required>
                                                                 
                                                             </select>
                                                             

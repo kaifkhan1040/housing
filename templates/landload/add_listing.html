@@ -2,12 +2,18 @@
 {% load static %}
 
     {% block style %}
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/wizard/bs-stepper.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/select/select2.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/select/select2.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css' %}">
     <!-- END: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/forms/pickers/form-flat-pickr.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/forms/form-validation.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/app-user.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/core/menu/menu-types/vertical-menu.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/forms/form-validation.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/forms/form-wizard.min.css' %}">
     {% endblock style %}
 </head>
 <!-- END: Head-->
@@ -22,9 +28,275 @@
         <div class="header-navbar-shadow"></div>
         <div class="content-wrapper container-xxl p-0">
             <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                  <div class="row breadcrumbs-top">
+                      <div class="col-12">
+                          <h2 class="content-header-title float-start mb-0">Listings</h2>
+                          <div class="breadcrumb-wrapper">
+                                <ol class="breadcrumb">
+                                  <li class="breadcrumb-item">
+                                      <a href="{% url 'landload:home' %}">Home</a>
+                                  </li>
+                                  <li class="breadcrumb-item active">
+                                      <a href="{% url 'landload:listing_add' %}">Listings</a>
+                                  </li>
+                                  <li class="breadcrumb-item active">
+                                      Add Listing
+                                  </li>
+                              </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="content-body">
-                <!-- users edit start -->
+                
+                <section class="horizontal-wizard">
+  <div class="bs-stepper horizontal-wizard-example">
+    <div class="bs-stepper-header">
+      <div class="step" data-target="#account-details">
+        <button type="button" class="step-trigger">
+          <span class="bs-stepper-box">1</span>
+          <span class="bs-stepper-label">
+            <span class="bs-stepper-title">Section 1 </span>
+            <span class="bs-stepper-subtitle">Setup Basic Details</span>
+          </span>
+        </button>
+      </div>
+      <div class="line">
+        <i data-feather="chevron-right" class="font-medium-2"></i>
+      </div>
+      <div class="step" data-target="#personal-info">
+        <button type="button" class="step-trigger">
+          <span class="bs-stepper-box">2</span>
+          <span class="bs-stepper-label">
+            <span class="bs-stepper-title">Section 2</span>
+            <span class="bs-stepper-subtitle">Financials</span>
+          </span>
+        </button>
+      </div>
+      <div class="line">
+        <i data-feather="chevron-right" class="font-medium-2"></i>
+      </div>
+      <div class="step" data-target="#address-step">
+        <button type="button" class="step-trigger">
+          <span class="bs-stepper-box">3</span>
+          <span class="bs-stepper-label">
+            <span class="bs-stepper-title">Section 3 </span>
+            <span class="bs-stepper-subtitle">Asset</span>
+          </span>
+        </button>
+      </div>
+      
+      
+    </div>
+    <div class="bs-stepper-content">
+      <div id="account-details" class="content">
+        <div class="content-header">
+          <h5 class="mb-0">Section 1</h5>
+          <small class="text-muted">Enter Basic Details.</small>
+        </div>
+        <form method="POST" id="form-step-1">
+            <div class="row mb-2">
+                <div class="form-group col-md-3">
+                <label class="form-label" for="username">Rental Type</label></br>
+                {% for radio in form.rental_type %}
+                    <div class="form-check form-check-inline">
+                    {{ radio.tag }} {{ radio.choice_label }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Name</label>
+                    {{form.short_name}}                                
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Full Name</label>
+                    {{form.name}}                              
+                </div>
+                <div class="form-group col-md-3">
+                <label for="username">Address 1</label>
+                    {{form.address_1}}                               
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="form-group col-md-3">
+                <label for="username">Address 2</label>
+                    {{form.address_2}}
+                </div>
+                <div class="form-group col-md-3">
+                <label for="username">City</label>
+                    {{form.city}}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Postcode</label>
+                    {{form.postcode}}
+                </div>
+                <div class="form-group col-md-3">
+                <label for="username">Property Type</label>
+                    {{form.property_type}}
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="form-group col-md-3">
+                <label for="username">Address 2</label>
+                    {{form.address_2}}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">Start Date</label>
+                    {{form.start_date}}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="username">End Date</label>
+                    {{form.end_date}}
+                </div>
+                <div class="form-group col-md-3" id="num-flat-group" style="display: none;">
+                <label for="username">Number of Flat</label>
+                    {{form.number_of_flat}}
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="form-group col-md-12">
+                <label for="username">Property Description</label>
+                    {{form.property_description}}
+                </div>
+            </div>
+        </form>
+        <div class="d-flex justify-content-between mt-1">
+          <button class="btn btn-outline-secondary btn-prev" disabled>
+            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+          </button>
+          <button class="btn btn-primary btn-next" onclick="submitForm(1)">
+            <span class="align-middle d-sm-inline-block d-none">Next</span>
+            <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+          </button>
+        </div>
+      </div>
+      <div id="personal-info" class="content">
+        <div class="content-header">
+          <h5 class="mb-0">Section 2</h5>
+          <small>Financials</small>
+        </div>
+        <form  method="POST" id="form-step-2">
+          {% csrf_token %}
+          <input type="hidden" name="formid" value="">  
+          <div class="row mb-2">
+            <div class="form-group col-md-3">
+              <label class="form-label" for="first-name">Monthly Rental</label>
+              {{form2.monthly_rental}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="last-name">Tax</label>
+              {{form2.tax}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="last-name">Cleaning</label>
+              {{form2.cleaning}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="last-name">Electricity</label>
+              {{form2.electricity}}
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="form-group col-md-3">
+              <label class="form-label" for="country">Gas</label>
+              {{form2.gas}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="country">Internet</label>
+              {{form2.internet}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="country">Water</label>
+              {{form2.water}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="country">License</label>
+              {{form2.license}}
+            </div>
+           
+          </div>
+        </form>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-primary btn-prev">
+            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+          </button>
+          <button class="btn btn-primary btn-next" onclick="submitForm(2)">
+            <span class="align-middle d-sm-inline-block d-none">Next</span>
+            <i data-feather="arrow-right" class="align-middle ml-sm-25 ml-0"></i>
+          </button>
+        </div>
+      </div>
+      <div id="address-step" class="content">
+        <div class="content-header">
+          <h5 class="mb-0">Section 3</h5>
+          <small>Asset</small>
+        </div>
+        <form method="post" id="form-step-3" enctype="multipart/form-data">
+          {% csrf_token %}
+    
+          <input type="hidden" name="formid2" value=""> 
+
+    <!-- Photo uploads -->
+    <h4>Upload Photos</h4>
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div style="margin-bottom: 20px;">
+            {{ form.category.label_tag }} {{ form.category }}
+            {{ form.photo.label_tag }} {{ form.photo }}
+            {{ form.caption.label_tag }} {{ form.caption }}
+            {{ form.DELETE }} Delete
+        </div>
+    {% endfor %}
+
+    <!-- Video URL -->
+    <h4>Video Links</h4>
+    {{ video_form.video_url.label_tag }} {{ video_form.video_url }}
+
+          {% comment %} <div class="row">
+            <div class="form-group col-md-6">
+              <label class="form-label" for="address">Address</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                class="form-control"
+                placeholder="98  Borough bridge Road, Birmingham"
+              />
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label" for="landmark">Landmark</label>
+              <input type="text" name="landmark" id="landmark" class="form-control" placeholder="Borough bridge" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label class="form-label" for="pincode1">Pincode</label>
+              <input type="text" id="pincode1" class="form-control" placeholder="658921" />
+            </div>
+            <div class="form-group col-md-6">
+              <label class="form-label" for="city1">City</label>
+              <input type="text" id="city1" class="form-control" placeholder="Birmingham" />
+            </div>
+          </div> {% endcomment %}
+        </form >
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-primary btn-prev">
+            <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
+            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+          </button>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+</section>
+
+                {% comment %} <!-- users edit start -->
                 <section class="app-user-edit">
                     <div class="card">
                         <div class="card-body">
@@ -155,7 +427,7 @@
                                                     <div class="form-group">
                                                         <label for="username">Start Date</label>
                                                         {{form.start_date}}
-                                                        
+                                                        kaif
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -180,7 +452,7 @@
                         </div>
                     </div>
                 </section>
-                <!-- users edit ends -->
+                <!-- users edit ends --> {% endcomment %}
 
             </div>
         </div>
@@ -200,15 +472,76 @@
        <script href="{% static 'app-assets/vendors/js/forms/validation/jquery.validate.min.js' %}"></script>
        <script href="{% static 'app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
        <!-- END: Page Vendor JS-->
-   
+        <script src="{% static 'app-assets/vendors/js/forms/wizard/bs-stepper.min.js' %}"></script>
+        <script src="{% static 'app-assets/vendors/js/forms/select/select2.full.min.js' %}"></script>
+        <script src="{% static 'app-assets/vendors/js/forms/validation/jquery.validate.min.js' %}"></script>
    
        <!-- BEGIN: Page JS-->
        <script href="{% static 'app-assets/js/scripts/pages/app-user-edit.js' %}"></script>
        <script href="{% static 'app-assets/js/scripts/components/components-navs.js' %}"></script>
+       <script src="{% static 'app-assets/js/scripts/forms/form-wizard.min.js' %}"></script>
        <script>
         console.log('aaaaaa');
         
         </script>
+        <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rentalRadios = document.querySelectorAll('input[name="rental_type"]');
+        const numberOfFlatDiv = document.getElementById("num-flat-group");
+         const numberOfFlatInput = document.querySelector('[name="number_of_flat"]');
+
+        function toggleNumberOfFlat() {
+    const selectedRadio = document.querySelector('input[name="rental_type"]:checked');
+    if (selectedRadio && selectedRadio.value === "Multi Ownership") {
+        numberOfFlatDiv.style.display = "block";
+        numberOfFlatInput.setAttribute("required", "required");
+    } else {
+        numberOfFlatDiv.style.display = "none";
+        numberOfFlatInput.removeAttribute("required");
+    }
+}
+
+        // Initial check on page load
+        toggleNumberOfFlat();
+
+        // Add change event listeners to all radio buttons
+        rentalRadios.forEach(function (radio) {
+            radio.addEventListener("change", toggleNumberOfFlat);
+        });
+    });
+</script>
+<script>
+function submitForm(step) {
+  console.log('he')
+    const form = document.getElementById(`form-step-${step}`);
+    const formData = new FormData(form);
+
+    fetch(`/landload/submit-step/${step}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: formData
+    })
+    .then(res => res.json())  
+    .then(data => {
+        if (data.success) {
+            document.querySelector('#form-step-2 input[name="formid"]').value = data.formid;
+            document.querySelector('#form-step-3 input[name="formid2"]').value = data.formid;
+            // Hide current step
+            document.getElementById(`step-${step}`).style.display = 'none';
+            // Show next step
+            const nextStep = parseInt(step) + 1;
+            const nextDiv = document.getElementById(`step-${nextStep}`);
+            if (nextDiv) nextDiv.style.display = 'block';
+        } else {
+           
+        }
+    });
+}
+</script>
+
+
         <script>
              function deactivate(property_id) {
                     var id =property_id

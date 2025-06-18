@@ -35,7 +35,11 @@ def loginPage(request):
             try:
                 usercheck=CustomUser.objects.get(email=email)
             except:
-                usercheck=CustomUser.objects.get(email=email,is_active=False)
+                try:
+                    usercheck=CustomUser.objects.get(email=email,is_active=False)
+                except:
+                    messages.error(request, 'Username and password is Invalid' )
+                    return render(request, 'registration/login.html', {'user': request.user})
             if usercheck.is_verify==False:
                 if not usercheck.is_superuser==True:
                     if usercheck.role=='landload':
@@ -111,7 +115,8 @@ def forgetpassword(request):
             # print('token is',token)
             ForgetPassMailVerify(user_id=email.id, link=token).save()
             # token = 'http://127.0.0.1:8000/user/forgetpassword/' + token
-            token ='http://'+str(get_current_site(request).domain)+'/user/forgetpassword/' + token
+            temp_url=redirect('user:forgetpassword', id=token)
+            token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             # print('the whole url is ',token)
 
             email_send(token, email,email_message='Please verify your email for changing the password',email_subject='Reset Password')
