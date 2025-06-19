@@ -38,7 +38,7 @@
                                       <a href="{% url 'landload:home' %}">Home</a>
                                   </li>
                                   <li class="breadcrumb-item active">
-                                      <a href="{% url 'landload:listing_add' %}">Listings</a>
+                                      <a href="{% url 'landload:listing' %}">Listings</a>
                                   </li>
                                   <li class="breadcrumb-item active">
                                       Add Listing
@@ -50,62 +50,62 @@
                 </div>
             </div>
             <div class="content-body">
+                                    
                 
                 <section class="horizontal-wizard">
-  <div class="bs-stepper horizontal-wizard-example">
-    <div class="bs-stepper-header">
-      <div class="step" data-target="#account-details">
-        <button type="button" class="step-trigger">
-          <span class="bs-stepper-box">1</span>
-          <span class="bs-stepper-label">
-            <span class="bs-stepper-title">Section 1 </span>
-            <span class="bs-stepper-subtitle">Setup Basic Details</span>
-          </span>
-        </button>
-      </div>
-      <div class="line">
-        <i data-feather="chevron-right" class="font-medium-2"></i>
-      </div>
-      <div class="step" data-target="#personal-info">
-        <button type="button" class="step-trigger">
-          <span class="bs-stepper-box">2</span>
-          <span class="bs-stepper-label">
-            <span class="bs-stepper-title">Section 2</span>
-            <span class="bs-stepper-subtitle">Financials</span>
-          </span>
-        </button>
-      </div>
-      <div class="line">
-        <i data-feather="chevron-right" class="font-medium-2"></i>
-      </div>
-      <div class="step" data-target="#address-step">
-        <button type="button" class="step-trigger">
-          <span class="bs-stepper-box">3</span>
-          <span class="bs-stepper-label">
-            <span class="bs-stepper-title">Section 3 </span>
-            <span class="bs-stepper-subtitle">Asset</span>
-          </span>
-        </button>
-      </div>
-      
-      
-    </div>
+                  <div class="bs-stepper horizontal-wizard-example">
+                    <div class="bs-stepper-header">
+                      <div class="step" data-target="#account-details">
+                        <button type="button" class="step-trigger">
+                          <span class="bs-stepper-box">1</span>
+                          <span class="bs-stepper-label">
+                            <span class="bs-stepper-title">Section 1 </span>
+                            <span class="bs-stepper-subtitle">Setup Basic Details</span>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="line">
+                        <i data-feather="chevron-right" class="font-medium-2"></i>
+                      </div>
+                      <div class="step" data-target="#personal-info">
+                        <button type="button" class="step-trigger">
+                          <span class="bs-stepper-box">2</span>
+                          <span class="bs-stepper-label">
+                            <span class="bs-stepper-title">Section 2</span>
+                            <span class="bs-stepper-subtitle">Financials</span>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="line">
+                        <i data-feather="chevron-right" class="font-medium-2"></i>
+                      </div>
+                      <div class="step" data-target="#address-step">
+                        <button type="button" class="step-trigger">
+                          <span class="bs-stepper-box">3</span>
+                          <span class="bs-stepper-label">
+                            <span class="bs-stepper-title">Section 3 </span>
+                            <span class="bs-stepper-subtitle">Asset</span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                    
     <div class="bs-stepper-content">
       <div id="account-details" class="content">
         <div class="content-header">
-          <h5 class="mb-0">Section 1</h5>
-          <small class="text-muted">Enter Basic Details.</small>
         </div>
         <form method="POST" id="form-step-1">
             <div class="row mb-2">
-                <div class="form-group col-md-3">
-                <label class="form-label" for="username">Rental Type</label></br>
+                <div class="form-group col-md-12">
+                <label class="form-label" for="username">Rental Type</label>
                 {% for radio in form.rental_type %}
                     <div class="form-check form-check-inline">
                     {{ radio.tag }} {{ radio.choice_label }}
                     </div>
                     {% endfor %}
                 </div>
+              </div>
+              <div class="row mb-2">
                 <div class="form-group col-md-3">
                     <label for="username">Name</label>
                     {{form.short_name}}                                
@@ -118,12 +118,13 @@
                 <label for="username">Address 1</label>
                     {{form.address_1}}                               
                 </div>
-            </div>
-            <div class="row mb-2">
                 <div class="form-group col-md-3">
                 <label for="username">Address 2</label>
                     {{form.address_2}}
                 </div>
+            </div>
+            <div class="row mb-2">
+                
                 <div class="form-group col-md-3">
                 <label for="username">City</label>
                     {{form.city}}
@@ -136,16 +137,14 @@
                 <label for="username">Property Type</label>
                     {{form.property_type}}
                 </div>
-            </div>
-            <div class="row mb-2">
-                <div class="form-group col-md-3">
-                <label for="username">Address 2</label>
-                    {{form.address_2}}
-                </div>
                 <div class="form-group col-md-3">
                     <label for="username">Start Date</label>
                     {{form.start_date}}
                 </div>
+            </div>
+            <div class="row mb-2">
+                
+                
                 <div class="form-group col-md-3">
                     <label for="username">End Date</label>
                     {{form.end_date}}
@@ -174,11 +173,11 @@
         </div>
       </div>
       <div id="personal-info" class="content">
-        <div class="content-header">
+        {% comment %} <div class="content-header">
           <h5 class="mb-0">Section 2</h5>
           <small>Financials</small>
-        </div>
-        <form  method="POST" id="form-step-2">
+        </div> {% endcomment %}
+        <form method="POST" id="form-step-2" class='invoice-repeater1'>
           {% csrf_token %}
           <input type="hidden" name="formid" value="">  
           <div class="row mb-2">
@@ -216,8 +215,134 @@
               <label class="form-label" for="country">License</label>
               {{form2.license}}
             </div>
+
            
           </div>
+          <div class="row mb-2">
+            <div class="form-group col-md-3">
+              <label class="form-label" for="country">One Time Setup Cost </label>
+              {{form2.one_time_setup_cost}}
+            </div>
+            <div class="form-group col-md-9">
+              <label class="form-label d-block mb-1">Collect Rent</label>
+              {% for radio in form2.collect_rent %}
+                <div class="form-check form-check-inline">
+                  {{ radio.tag }}
+                  <label class="form-check-label" for="{{ radio.id_for_label }}">
+                    {{ radio.choice_label }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="form-group col-md-3">
+              <div class="custom-control custom-checkbox">
+                {{form2.other}}
+                {% comment %} <input type="checkbox" class="custom-control-input" id="customCheck1" /> {% endcomment %}
+                <label class="custom-control-label" for="customCheck1">Others</label>
+              </div>
+            </div>
+          </div>
+          <div id="repeater-section" style="display:{% if property_obj2.other %}block{% else %} none{% endif %};">
+            <div data-repeater-list="invoice">
+              <div data-repeater-item>
+                {% if property_obj2.other %}
+                {% for i in property_obj2.financialsother.all %}
+                <div class="row d-flex align-items-end">
+                  <div class="col-md-4 col-12">
+                    <div class="form-group">
+                      <label for="itemname">Label</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="label"
+                        id="itemname"
+                        aria-describedby="itemname"
+                        placeholder="Enter your field"
+                        value="{{i.lable}}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-2 col-12">
+                    <div class="form-group">
+                      <label for="itemcost">Amount</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name='amount'
+                        id="itemcost"
+                        aria-describedby="itemcost"
+                        placeholder="32"
+                        value='{{i.amount}}'
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-2 col-12 mb-50">
+                    <div class="form-group">
+                      <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                        <i data-feather="x" class="mr-25"></i>
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="row d-flex align-items-end">
+                  <div class="col-md-4 col-12">
+                    <div class="form-group">
+                      <label for="itemname">Label</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="label"
+                        id="itemname"
+                        aria-describedby="itemname"
+                        placeholder="Enter your field"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-2 col-12">
+                    <div class="form-group">
+                      <label for="itemcost">Amount</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name='amount'
+                        id="itemcost"
+                        aria-describedby="itemcost"
+                        placeholder="32"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-2 col-12 mb-50">
+                    <div class="form-group">
+                      <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                        <i data-feather="x" class="mr-25"></i>
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                <hr />
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12">
+                <button class="btn btn-icon btn-primary" type="button" data-repeater-create>
+                  <i data-feather="plus" class="mr-25"></i>
+                  <span>Add New</span>
+                </button>
+              </div>
+            </div>
+          </div>
+         
         </form>
         <div class="d-flex justify-content-between">
           <button class="btn btn-primary btn-prev">
@@ -475,14 +600,77 @@
         <script src="{% static 'app-assets/vendors/js/forms/wizard/bs-stepper.min.js' %}"></script>
         <script src="{% static 'app-assets/vendors/js/forms/select/select2.full.min.js' %}"></script>
         <script src="{% static 'app-assets/vendors/js/forms/validation/jquery.validate.min.js' %}"></script>
-   
+          <script src="{% static 'app-assets/vendors/js/forms/repeater/jquery.repeater.min.js' %}"></script>
+
        <!-- BEGIN: Page JS-->
        <script href="{% static 'app-assets/js/scripts/pages/app-user-edit.js' %}"></script>
        <script href="{% static 'app-assets/js/scripts/components/components-navs.js' %}"></script>
        <script src="{% static 'app-assets/js/scripts/forms/form-wizard.min.js' %}"></script>
+        <script src="{% static 'app-assets/js/scripts/forms/form-repeater.min.js' %}"></script>
        <script>
+        $(document).ready(function () {
+  // Toggle repeater section on checkbox change
+  $('#customCheck1').on('change', function () {
+    if ($(this).is(':checked')) {
+      $('#repeater-section').find('input[type="text"], input[type="number"]').attr('required', true);
+      $('#repeater-section').slideDown();
+    } else {
+      $('#repeater-section').find('input[type="text"], input[type="number"]').removeAttr('required');
+      $('#repeater-section').slideUp();
+    }
+  });
+});
+
         console.log('aaaaaa');
-        
+        $(function () {
+  'use strict';
+
+  var maxItems = 5;
+
+  // Function to check and disable/enable Add New button
+  function checkItemLimit(repeaterContainer) {
+    var currentItems = repeaterContainer.find('[data-repeater-item]').length;
+    if (currentItems >= maxItems) {
+      repeaterContainer.find('[data-repeater-create]').prop('disabled', true);
+    } else {
+      repeaterContainer.find('[data-repeater-create]').prop('disabled', false);
+    }
+  }
+
+  // Initialize repeater
+  $('.invoice-repeater1, .repeater-default').repeater({
+    show: function () {
+      $(this).slideDown();
+
+      // Update feather icons
+      if (feather) {
+        feather.replace({ width: 14, height: 14 });
+      }
+
+      // After adding item, check limit
+      var repeaterContainer = $(this).closest('.invoice-repeater1, .repeater-default');
+      checkItemLimit(repeaterContainer);
+    },
+    hide: function (deleteElement) {
+      if (confirm('Are you sure you want to delete this element?')) {
+        var repeaterContainer = $(this).closest('.invoice-repeater1, .repeater-default');
+
+        $(this).slideUp(deleteElement);
+
+        // Delay checking to allow item to be removed from DOM
+        setTimeout(function () {
+          checkItemLimit(repeaterContainer);
+        }, 400);
+      }
+    }
+  });
+
+  // Initial check on page load
+  $('.invoice-repeater1, .repeater-default').each(function () {
+    checkItemLimit($(this));
+  });
+});
+
         </script>
         <script>
     document.addEventListener("DOMContentLoaded", function () {

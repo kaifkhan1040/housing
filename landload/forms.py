@@ -18,9 +18,10 @@ class PropertyForm(ModelForm):
         self.fields['number_of_flat'].widget.attrs.update({'class': 'form-select valid','required':True})
         self.fields['cost'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['start_date'].widget.attrs.update({'class': 'form-control valid'})
-        self.fields['property_description'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['property_description'].widget.attrs.update({'class': 'form-control valid','rows': 5})
         self.fields['end_date'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['prop_thumbnail'].widget.attrs.update({'class': 'form-control valid'})
+        
         self.fields['rental_type'].choices = [
     choice for choice in self.fields['rental_type'].choices if choice[0] != ''
 ]
@@ -71,10 +72,18 @@ class FinancialBreakdownform(ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control valid'
+        self.fields['other'].widget.attrs.update({'class': 'custom-control-input',"id":'customCheck1'})
+        self.fields['collect_rent'].choices = [
+            choice for choice in self.fields['collect_rent'].choices if choice[0] != ''
+            ]
+        self.fields['collect_rent'].widget.attrs.update({'class': 'form-check-input'})
 
     class Meta:
             model = FinancialBreakdown
             fields = "__all__"
+            widgets = {
+                'collect_rent': forms.RadioSelect(attrs={'class': 'form-check-input'}),
+                }
 
 class RoomsForm(ModelForm):
     def __init__(self, *args, **kwargs):

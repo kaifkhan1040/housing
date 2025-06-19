@@ -65,16 +65,24 @@ class FinancialBreakdown(models.Model):
     internet = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     water = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     license = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-
+    one_time_setup_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    other = models.BooleanField(default=False)
+    collect_rent =models.CharField(max_length=20,choices=(('Weekly','Weekly'),('Monthly','Monthly')))
+    
     def total_cost(self):
         fields = [
             self.monthly_rental, self.tax, self.cleaning, self.electricity,
-            self.gas, self.internet, self.water, self.license,
+            self.gas, self.internet, self.water, self.license,self.one_time_setup_cost,
         ]
         return sum(f or 0 for f in fields)
 
     def __str__(self):
         return f"Financials for {self.property}"
+    
+class FinancialOtherModel(models.Model):
+    financial = models.ForeignKey(FinancialBreakdown, on_delete=models.CASCADE, related_name='financialsother')
+    lable = models.CharField(max_length=255,null=True,blank=True)
+    amount = models.CharField(max_length=255,null=True,blank=True)
     
 class PropertyMedia(models.Model):
     CATEGORY_CHOICES = [

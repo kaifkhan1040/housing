@@ -1,5 +1,6 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,PropertyMedia
+from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,PropertyMedia,\
+    FinancialOtherModel
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
     DuesReadOnlyForm,FinancialBreakdownform,PropertyMediaFormSet,PropertyVideoForm
 from django.db.models import Q
@@ -15,7 +16,7 @@ from users.forms import SetLocationForm
 
 # Create your views here.
 def index(request):
-    return render(request,'landload/index.html')
+    return render(request,'landload/index.html',{'is_dashboard':True})
 
 @login_required
 def setup_location(request):
@@ -49,7 +50,7 @@ def listing(request):
             Q(property_type__icontains=query) |
             Q(postcode__icontains=query)
         )
-    return render(request,'landload/listing.html',{'property':property,'search_field':True})
+    return render(request,'landload/listing.html',{'property':property,'search_field':True,'is_listing':True})
 
 def submit_step(request, step):
     if request.method == 'POST':
@@ -61,14 +62,40 @@ def submit_step(request, step):
           
             form = PropertyForm(post_data)
         elif step == '2':
+            post_data2 = request.POST.copy()
             formid = request.POST.get('formid')  
+            # other = request.POST.get('other')  
+            # if other:
+            #     post_data2['other']=other
             property_instance = get_object_or_404(Property, id=formid)
-            form = FinancialBreakdownform(request.POST)
+            post_data2['property']=property_instance
+            invoice_data = request.POST
+
+            other_labels = []
+            other_amounts = []
+
+            for key in invoice_data:
+                if 'label' in key:
+                    other_labels.append(invoice_data[key])
+                if 'amount' in key:
+                    other_amounts.append(invoice_data[key])
+            form = FinancialBreakdownform(post_data2)
             if form.is_valid():
-                financial_obj = form.save(commit=False)
-                financial_obj.property = property_instance  # link to saved Property
-                financial_obj.save()
+                financial_obj = form.save()
+                print('label:',other_labels,other_amounts)
+
+                for label, amount in zip(other_labels, other_amounts):
+                    if label.strip() or amount.strip():
+                        FinancialOtherModel.objects.create(
+                            financial=financial_obj,
+                            lable=label,
+                            amount=amount
+                        )
+                
                 return JsonResponse({'success': True})
+            else:
+                print('*'*100)
+                print(form.errors)
 
             return JsonResponse({'success': False, 'errors': form.errors})
 
@@ -126,15 +153,21 @@ def listing_add(request):
         #         [f"{error}" for field_errors in form.errors.values() for error in field_errors]
         #     )
         #     messages.error(request, mark_safe(error_messages))
-    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form})
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form,'is_listing':True})
 
 
 def listing_view(request,id):
+    form2=FinancialBreakdownform()
     property_obj = get_object_or_404(Property, custom_id=id)
-    property_obj2 = get_object_or_404(FinancialBreakdown, property=property_obj.id)
+    # property_obj2 = get_object_or_404(FinancialBreakdown, property=property_obj.id)
+    property_obj2 = FinancialBreakdown.objects.filter(property__custom_id=id).first()
+    print('data',property_obj2,property_obj)
+    if property_obj2:
+        form2=FinancialBreakdownform(instance=property_obj2)
     form = PropertyReadOnlyForm(instance=property_obj)
-    form2=FinancialBreakdownform(instance=property_obj2)
-    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True})
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'is_listing':True,
+                                                       'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
+                                                       'property_obj2':property_obj2})
 
 
 def listing_update(request,id):
@@ -167,7 +200,7 @@ def listing_update(request,id):
             messages.error(request, mark_safe(error_messages))
     else:
         form = PropertyForm(instance=property_obj)
-    return render(request,'landload/add_listing.html',{'form':form,'property_id':id,'property_obj':property_obj})
+    return render(request,'landload/add_listing.html',{'form':form,'property_id':id,'property_obj':property_obj,'is_listing':True})
 
 def room(request,id):
     # property_obj = get_object_or_404(Property, pk=id)
@@ -223,7 +256,8 @@ def room(request,id):
         'property_obj': property_obj,
         'rooms': existing_rooms,
         # 'extra_rooms_needed': int(property_obj.rooms) - existing_rooms.count(),
-        'room_range':range(int(property_obj.rooms))
+        'room_range':range(int(property_obj.rooms)),
+        'is_listing':True
     }
     return render(request,'landload/room.html',context)
 
@@ -245,7 +279,7 @@ def tenant(request):
             Q(custom_id__icontains=query) |
             Q(property__short_name__icontains=query) 
         )
-    return render(request,'landload/tenant_list.html',{'tenant':tenant,'search_field':True})
+    return render(request,'landload/tenant_list.html',{'tenant':tenant,'search_field':True,'is_tenant':True})
 
 def listing_list(request):
     data = []
@@ -327,7 +361,7 @@ def tenant_add(request):
                 [f"{error}" for field_errors in form.errors.values() for error in field_errors]
             )
             messages.error(request, mark_safe(error_messages))
-    return render(request,'landload/add_tenant.html',{'form':form,'property':property})
+    return render(request,'landload/add_tenant.html',{'form':form,'property':property,'is_tenant':True})
 
 
 def get_room(request):
@@ -342,7 +376,7 @@ def tenant_view(request,id):
     form = TenantReadOnlyForm(instance=tenant_obj)
     return render(request,'landload/add_tenant.html',{'form':form,'tenant_id':id,'tenant_obj':tenant_obj,'more_fun':True,
                                                       'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
-    'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property})
+    'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property,'is_tenant':True})
 
 def tenant_update(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
@@ -379,7 +413,7 @@ def tenant_update(request,id):
         form = TenantForm(instance=tenant_obj)
     return render(request,'landload/add_tenant.html',{'form':form,'tenant_id':id,'tenant_obj':tenant_obj,
                                                       'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
-    'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property})
+    'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property,'is_tenant':True})
 
 @login_required(login_url='/')
 def deactivate_tenant(request,pk):
@@ -421,7 +455,7 @@ def tenant_invite_add(request):
             )
             messages.error(request, mark_safe(error_messages))
 
-    return render(request,'landload/add_invite_tenant.html',{'form':form,'property':property})
+    return render(request,'landload/add_invite_tenant.html',{'form':form,'property':property,'is_tenant':True})
 
 
 def dues(request):
@@ -436,7 +470,7 @@ def dues(request):
             Q(property__name__icontains=query) |
             Q(property__short_name__icontains=query)
         )
-    return render(request,'landload/dues.html',{'dues':dues,'search_field':True})    
+    return render(request,'landload/dues.html',{'dues':dues,'search_field':True,'is_payment':True})    
 
 
 def dues_add(request):
@@ -461,7 +495,7 @@ def dues_add(request):
                 [f"{error}" for field_errors in form.errors.values() for error in field_errors]
             )
             messages.error(request, mark_safe(error_messages))
-    return render(request,'landload/add_dues.html',{'form':form,'property':property})
+    return render(request,'landload/add_dues.html',{'form':form,'property':property,'is_payment':True})
 
 
 def dues_view(request,id):
@@ -470,7 +504,7 @@ def dues_view(request,id):
     form = DuesReadOnlyForm(instance=property_obj)
     rooms=Rooms.objects.filter(property=property_obj.property)
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,
-                                                    'rooms':rooms})
+                                                    'rooms':rooms,'is_payment':True})
 
 
 def dues_update(request,id):
@@ -496,6 +530,6 @@ def dues_update(request,id):
     else:
         form = DuesForm(instance=property_obj)
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'property':property,
-                                                    'rooms':rooms})
+                                                    'rooms':rooms,'is_payment':True})
 
 
