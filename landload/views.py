@@ -1,8 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,PropertyMedia,\
-    FinancialOtherModel
+from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,\
+    FinancialOtherModel,PropertyImage
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
-    DuesReadOnlyForm,FinancialBreakdownform,PropertyMediaFormSet,PropertyVideoForm
+    DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm
 from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse
@@ -59,8 +59,12 @@ def submit_step(request, step):
         post_data['is_active']=True
         post_data['status']=True
         if step == '1':
-          
+            formidtemp=request.POST.get('formid1')
             form = PropertyForm(post_data)
+            if formidtemp:
+                prodata=Property.objects.filter(id=formidtemp).first()
+                if prodata:
+                    form = PropertyForm(post_data,instance=prodata)
         elif step == '2':
             post_data2 = request.POST.copy()
             formid = request.POST.get('formid')  
@@ -79,7 +83,10 @@ def submit_step(request, step):
                     other_labels.append(invoice_data[key])
                 if 'amount' in key:
                     other_amounts.append(invoice_data[key])
+            tempdatafi=FinancialBreakdown.objects.filter(property=property_instance).first()
             form = FinancialBreakdownform(post_data2)
+            if tempdatafi:
+                form = FinancialBreakdownform(post_data2,instance=tempdatafi)
             if form.is_valid():
                 financial_obj = form.save()
                 print('label:',other_labels,other_amounts)
@@ -92,7 +99,7 @@ def submit_step(request, step):
                             amount=amount
                         )
                 
-                return JsonResponse({'success': True})
+                return JsonResponse({'success': True,"formid":formid})
             else:
                 print('*'*100)
                 print(form.errors)
@@ -103,34 +110,41 @@ def submit_step(request, step):
 
         if form.is_valid():
             temp=form.save()
+            if temp.number_of_flat:
+                for i in range(int(temp.number_of_flat)):
+                    Rooms.objects.create(property=temp)
             print('temp id',temp.id)
             return JsonResponse({'success': True,"formid":temp.id})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
         
 def listing_add(request):
+    video_form=''
+    print('*'*1000,request.method)
     form = PropertyForm()
     form2 =FinancialBreakdownform()
+    form3 = MultiImageForm()
     if request.method == "POST":
-        formid = request.POST.get('formid') 
+        formid = request.POST.get('formid2') 
+        print('form id',formid)
         property_obj=get_object_or_404(Property, id=formid)
-        formset = PropertyMediaFormSet(request.POST, request.FILES, queryset=PropertyMedia.objects.none())
-        video_form = PropertyVideoForm(request.POST)
+        form = MultiImageForm(request.POST, request.FILES)
 
-        if formset.is_valid() and video_form.is_valid():
-            for form in formset:
-                media = form.save(commit=False)
-                media.property = property_obj
-                media.save()
+        
+            # property_instance = Property.objects.create(name="Sample Property")
 
-            video = video_form.save(commit=False)
-            video.property = property_obj
-            video.save()
+        for field in ['outside', 'parking', 'garage', 'garden', 'common_area', 'residence']:
+            files = request.FILES.getlist(field)
+            for file in files:
+                PropertyImage.objects.create(
+                    property=property_obj,
+                    field_type=field,
+                    image=file
+                )
+   
 
-            return redirect('success-url')  # update as needed
-    else:
-        formset = PropertyMediaFormSet(queryset=PropertyMedia.objects.none())
-        video_form = PropertyVideoForm()
+        return redirect('landload:listing')  # update as needed
+        
         # post_data = request.POST.copy()
         # # print('post')
         # # print(request.POST)
@@ -153,54 +167,70 @@ def listing_add(request):
         #         [f"{error}" for field_errors in form.errors.values() for error in field_errors]
         #     )
         #     messages.error(request, mark_safe(error_messages))
-    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form,'is_listing':True})
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form,'is_listing':True,'form3':form3})
 
 
 def listing_view(request,id):
-    form2=FinancialBreakdownform()
+    form2=FinancialBreakdownReadOnlyform()
     property_obj = get_object_or_404(Property, custom_id=id)
     # property_obj2 = get_object_or_404(FinancialBreakdown, property=property_obj.id)
     property_obj2 = FinancialBreakdown.objects.filter(property__custom_id=id).first()
+    property_obj3 = PropertyImage.objects.filter(property__custom_id=id).first()
+    form3 = MultiImageReadOnlyForm()
     print('data',property_obj2,property_obj)
     if property_obj2:
-        form2=FinancialBreakdownform(instance=property_obj2)
+        form2=FinancialBreakdownReadOnlyform(instance=property_obj2)
     form = PropertyReadOnlyForm(instance=property_obj)
     return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'is_listing':True,
                                                        'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
-                                                       'property_obj2':property_obj2})
+                                                       'property_obj2':property_obj2,'form3':form3})
 
 
 def listing_update(request,id):
     property_obj = get_object_or_404(Property, pk=id)
-    old_number_of_room=property_obj.rooms
+    property_obj2 = FinancialBreakdown.objects.filter(property=id).first()
+    form = PropertyForm(instance=property_obj)
+    form2=FinancialBreakdownform()
+    if property_obj2:
+        form2=FinancialBreakdownform(instance=property_obj2)
+    form3 = MultiImageForm()
     if request.method == 'POST':
         post_data = request.POST.copy()
         post_data['landload']=request.user
         post_data['is_active']=True
         post_data['status']=True
         form = PropertyForm(post_data, request.FILES, instance=property_obj)
-        if form.is_valid():
-            obj=form.save()
-            if obj.rooms>old_number_of_room:
-                num=int(obj.rooms)-int(old_number_of_room)
-                for i in range(num):
-                    Rooms.objects.create(property=property_obj)
-            else:
-                rooms_data = Rooms.objects.filter(property=property_obj).order_by('id')
-                extra_rooms = rooms_data[int(obj.rooms):]  
-                for room in extra_rooms:
-                    room.delete()
+        
+        formid = request.POST.get('formid2') 
+        print('form id',formid)
+        # property_obj=get_object_or_404(Property, id=formid)
+        form3 = MultiImageForm(request.POST, request.FILES)
+
+        
+            # property_instance = Property.objects.create(name="Sample Property")
+
+        for field in ['outside', 'parking', 'garage', 'garden', 'common_area', 'residence']:
+            files = request.FILES.getlist(field)
+            for file in files:
+                PropertyImage.objects.create(
+                    property=property_obj,
+                    field_type=field,
+                    image=file
+                )
+   
+            
 
             messages.success(request, f'Property has been updated successfully!')
-            return redirect('landload:listing_view', id=id)
+            return redirect('landload:listing_view', id=property_obj.custom_id)
         else:
             error_messages = '<br>'.join(
                 [f"{error}" for field_errors in form.errors.values() for error in field_errors]
             )
             messages.error(request, mark_safe(error_messages))
-    else:
-        form = PropertyForm(instance=property_obj)
-    return render(request,'landload/add_listing.html',{'form':form,'property_id':id,'property_obj':property_obj,'is_listing':True})
+  
+        
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'form3':form3
+                                                       ,'property_id':id,'property_obj':property_obj,'is_listing':True,'property_obj2':property_obj2})
 
 def room(request,id):
     # property_obj = get_object_or_404(Property, pk=id)
@@ -236,7 +266,8 @@ def room(request,id):
         ensuites = request.POST.getlist('ensuite')
         capacities = request.POST.getlist('total_capacity')
         rents = request.POST.getlist('rent')
-        for  room_ids,type_, ensuite, capacity, rent in zip(room_ids, types, ensuites, capacities, rents):
+        print(rents)
+        for  room_ids,type_, ensuite, capacity in zip(room_ids, types, ensuites, capacities):
             if room_ids:  
                 try:
                     room = Rooms.objects.get(id=room_ids, property=property_obj)
@@ -247,16 +278,19 @@ def room(request,id):
             room.type_of_room = type_
             room.ensuite = ensuite
             room.total_capacity = capacity
-            room.rent = float(rent)
+            rent_value = request.POST.get(f'rent_{room_ids}') or request.POST.get(f'collect_rent_{room_ids}')
+            if rent_value:
+                room.rent = float(rent_value) if rent_value.isdigit() else rent_value 
+            # room.rent = float(rent)
             room.save()
         messages.success(request, f'Rooms has been updated successfully!')
-        return redirect('landload:listing_view', id=id)
+        return redirect('landload:listing_view', id=property_obj.custom_id)
 
     context = {
         'property_obj': property_obj,
         'rooms': existing_rooms,
         # 'extra_rooms_needed': int(property_obj.rooms) - existing_rooms.count(),
-        'room_range':range(int(property_obj.rooms)),
+        'room_range':range(int(property_obj.number_of_flat)),
         'is_listing':True
     }
     return render(request,'landload/room.html',context)

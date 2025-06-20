@@ -83,9 +83,12 @@ class FinancialOtherModel(models.Model):
     financial = models.ForeignKey(FinancialBreakdown, on_delete=models.CASCADE, related_name='financialsother')
     lable = models.CharField(max_length=255,null=True,blank=True)
     amount = models.CharField(max_length=255,null=True,blank=True)
-    
-class PropertyMedia(models.Model):
-    CATEGORY_CHOICES = [
+
+class PropertyImage(models.Model):
+    def upload_to(instance, filename):
+        return f'property_images/{instance.field_type}/{filename}'
+
+    FIELD_CHOICES = [
         ('outside', 'Outside'),
         ('parking', 'Parking'),
         ('garage', 'Garage'),
@@ -93,22 +96,17 @@ class PropertyMedia(models.Model):
         ('common_area', 'Common Area'),
         ('residence', 'Residence'),
     ]
-
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='media')
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    photo = models.ImageField(upload_to='property_photos/')
-    caption = models.CharField(max_length=255, blank=True)
-
-class PropertyVideo(models.Model):
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='videos')
-    video_url = models.URLField()
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='images')
+    field_type = models.CharField(max_length=20, choices=FIELD_CHOICES)
+    image = models.ImageField(upload_to=upload_to)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
 class Rooms(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='room_set')    
     type_of_room = models.CharField(choices=[('Single','Single'),('Double','Double')])
     ensuite = models.CharField(choices=[('Yes','Yes'),('No','No')])
     total_capacity = models.CharField(choices=[('1','1'),('2','2'),('3','3'),('4','4'),('5','5')])
-    rent = models.FloatField(default=0.0)
+    rent =models.CharField(max_length=20,choices=(('Weekly','Weekly'),('Monthly','Monthly')))
     room_code = models.CharField(max_length=10, unique=True, blank=True)
 
     def save(self, *args, **kwargs):

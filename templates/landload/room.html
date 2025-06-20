@@ -53,16 +53,18 @@
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         {% comment %} <label for="username"></label> {% endcomment %}
-                                                        <h4 class="mt-2">Room: {{forloop.counter}}</h4>
+                                                        <h4 class="mt-2">Room {{forloop.counter}}</h4>
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="username">Room Type</label>
-                                                        <select name="type_of_room" class="form-control">
+                                                        <select name="type_of_room" class="form-select">
                                                             <option value="Single" {% if room.type_of_room == "Single" %}selected{% endif %}>Single</option>
                                                             <option value="Double" {% if room.type_of_room == "Double" %}selected{% endif %}>Double</option>
+                                                            <option value="Triple" {% if room.type_of_room == "Triple" %}selected{% endif %}>Triple</option>
+                                                            <option value="Studio" {% if room.type_of_room == "Studio" %}selected{% endif %}>Studio</option>
                                                         </select>
                                                         
                                                     </div>
@@ -70,7 +72,7 @@
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="username">Ensuite</label>
-                                                       <select name="ensuite" class="form-control">
+                                                       <select name="ensuite" class="form-select">
                                                             <option value="1" {% if room.ensuite %}selected{% endif %}>Yes</option>
                                                             <option value="0" {% if not room.ensuite %}selected{% endif %}>No</option>
                                                         </select>
@@ -80,7 +82,7 @@
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="username">Total Capacity</label>
-                                                        <select name="total_capacity" class="form-control">
+                                                        <select name="total_capacity" class="form-select">
                                                             {% for n in "12345" %}
                                                             <option value="{{ n }}" {% if room.total_capacity == n %}selected{% endif %}>{{ n }}</option>
                                                             {% endfor %}
@@ -91,11 +93,30 @@
                                                 
                                            
                                            
-                                                <div class="col-md-2">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="username">Rent</label>
-                                                        <input type="number" name="rent" value="{{ room.rent }}" step="0.01" class="form-control">
-
+                                                        <label class="form-label d-block mb-1" for="username">Rent</label>
+                                                        {% comment %} <input type="number" name="rent" value="{{ room.rent }}" step="0.01" class="form-control"> {% endcomment %}
+                                                        
+                                                            <div>
+                                                            <div class="form-check form-check-inline">
+                                                            <input type="radio" name="rent{{room.id}}" value="Weekly" class="form-check-input"  id="id_collect_rent_{{room.id}}" >
+                                                            <label class="form-check-label" for="id_collect_rent_0">
+                                                                Weekly
+                                                            </label>
+                                                            </div>
+                                                        
+                                                            <div class="form-check form-check-inline">
+                                                            <input type="radio" name="rent{{room.id}}" value="Monthly" class="form-check-input"  id="id_collect_rent_{{room.id}}"  >
+                                                            <label class="form-check-label" for="id_collect_rent_1">
+                                                                Monthly
+                                                            </label>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                       
+                                                            
+                                                        
                                                         
                                                     </div>
                                                 </div>

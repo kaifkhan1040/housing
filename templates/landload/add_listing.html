@@ -54,40 +54,57 @@
                 
                 <section class="horizontal-wizard">
                   <div class="bs-stepper horizontal-wizard-example">
-                    <div class="bs-stepper-header">
-                      <div class="step" data-target="#account-details">
-                        <button type="button" class="step-trigger">
-                          <span class="bs-stepper-box">1</span>
-                          <span class="bs-stepper-label">
-                            <span class="bs-stepper-title">Section 1 </span>
-                            <span class="bs-stepper-subtitle">Setup Basic Details</span>
-                          </span>
-                        </button>
+                    <div class="bs-stepper-header d-flex justify-content-between align-items-center w-100">
+                      <div class="d-flex align-items-center">
+                        <!-- Step 1 -->
+                        <div class="step" data-target="#account-details">
+                          <button type="button" class="step-trigger">
+                            <span class="bs-stepper-box">1</span>
+                            <span class="bs-stepper-label">
+                              <span class="bs-stepper-title">Section 1</span>
+                              <span class="bs-stepper-subtitle">Setup Basic Details</span>
+                            </span>
+                          </button>
+                        </div>
+                        <div class="line">
+                          <i data-feather="chevron-right" class="font-medium-2"></i>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="step" data-target="#personal-info">
+                          <button type="button" class="step-trigger">
+                            <span class="bs-stepper-box">2</span>
+                            <span class="bs-stepper-label">
+                              <span class="bs-stepper-title">Section 2</span>
+                              <span class="bs-stepper-subtitle">Financials</span>
+                            </span>
+                          </button>
+                        </div>
+                        <div class="line">
+                          <i data-feather="chevron-right" class="font-medium-2"></i>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="step" data-target="#address-step">
+                          <button type="button" class="step-trigger">
+                            <span class="bs-stepper-box">3</span>
+                            <span class="bs-stepper-label">
+                              <span class="bs-stepper-title">Section 3</span>
+                              <span class="bs-stepper-subtitle">Asset</span>
+                            </span>
+                          </button>
+                        </div>
                       </div>
-                      <div class="line">
-                        <i data-feather="chevron-right" class="font-medium-2"></i>
+
+                      <!-- Save Button on Right -->
+                       {% if more_fun %}
+                      <div>
+                        <a href="{% url 'landload:listing_update' id=property_id %}"><button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Edit</button></a>
+                        {% if property_obj.number_of_flat %}
+                        <a href="{% url 'landload:room' id=property_id %}"><button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Room</button></a>
+                        {% endif %}
                       </div>
-                      <div class="step" data-target="#personal-info">
-                        <button type="button" class="step-trigger">
-                          <span class="bs-stepper-box">2</span>
-                          <span class="bs-stepper-label">
-                            <span class="bs-stepper-title">Section 2</span>
-                            <span class="bs-stepper-subtitle">Financials</span>
-                          </span>
-                        </button>
-                      </div>
-                      <div class="line">
-                        <i data-feather="chevron-right" class="font-medium-2"></i>
-                      </div>
-                      <div class="step" data-target="#address-step">
-                        <button type="button" class="step-trigger">
-                          <span class="bs-stepper-box">3</span>
-                          <span class="bs-stepper-label">
-                            <span class="bs-stepper-title">Section 3 </span>
-                            <span class="bs-stepper-subtitle">Asset</span>
-                          </span>
-                        </button>
-                      </div>
+                      {% endif %}
                     </div>
                     
     <div class="bs-stepper-content">
@@ -108,7 +125,8 @@
               <div class="row mb-2">
                 <div class="form-group col-md-3">
                     <label for="username">Name</label>
-                    {{form.short_name}}                                
+                    {{form.short_name}}      
+                    <input type="hidden" name="formid1" value="{{property_obj.id}}">                      
                 </div>
                 <div class="form-group col-md-3">
                     <label for="username">Full Name</label>
@@ -179,7 +197,7 @@
         </div> {% endcomment %}
         <form method="POST" id="form-step-2" class='invoice-repeater1'>
           {% csrf_token %}
-          <input type="hidden" name="formid" value="">  
+          <input type="hidden" name="formid" {% if property_obj %}value="{{property_obj.id}}"{% endif %}value="">  
           <div class="row mb-2">
             <div class="form-group col-md-3">
               <label class="form-label" for="first-name">Monthly Rental</label>
@@ -246,9 +264,9 @@
           </div>
           <div id="repeater-section" style="display:{% if property_obj2.other %}block{% else %} none{% endif %};">
             <div data-repeater-list="invoice">
+              {% if property_obj2.other %}
+              {% for i in property_obj2.financialsother.all %}
               <div data-repeater-item>
-                {% if property_obj2.other %}
-                {% for i in property_obj2.financialsother.all %}
                 <div class="row d-flex align-items-end">
                   <div class="col-md-4 col-12">
                     <div class="form-group">
@@ -261,6 +279,7 @@
                         aria-describedby="itemname"
                         placeholder="Enter your field"
                         value="{{i.lable}}"
+                        {% if more_fun %} readonly {% endif %}
                       />
                     </div>
                   </div>
@@ -276,21 +295,24 @@
                         aria-describedby="itemcost"
                         placeholder="32"
                         value='{{i.amount}}'
+                        {% if more_fun %} readonly {% endif %}
                       />
                     </div>
                   </div>
 
                   <div class="col-md-2 col-12 mb-50">
                     <div class="form-group">
-                      <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                      <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button"{% if more_fun %} disabled {% endif %}>
                         <i data-feather="x" class="mr-25"></i>
                         <span>Delete</span>
                       </button>
                     </div>
                   </div>
                 </div>
+              </div>
                 {% endfor %}
                 {% else %}
+                <div data-repeater-item>
                 <div class="row d-flex align-items-end">
                   <div class="col-md-4 col-12">
                     <div class="form-group">
@@ -302,6 +324,7 @@
                         id="itemname"
                         aria-describedby="itemname"
                         placeholder="Enter your field"
+                        {% if more_fun %} readonly {% endif %}
                       />
                     </div>
                   </div>
@@ -316,26 +339,27 @@
                         id="itemcost"
                         aria-describedby="itemcost"
                         placeholder="32"
+                        {% if more_fun %} readonly {% endif %}
                       />
                     </div>
                   </div>
 
                   <div class="col-md-2 col-12 mb-50">
                     <div class="form-group">
-                      <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                      <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button" {% if more_fun %} disabled {% endif %}>
                         <i data-feather="x" class="mr-25"></i>
                         <span>Delete</span>
                       </button>
                     </div>
                   </div>
                 </div>
-                {% endif %}
                 <hr />
               </div>
+              {% endif %}
             </div>
-            <div class="row mb-2">
+            <div class="row mb-2 mt-2">
               <div class="col-12">
-                <button class="btn btn-icon btn-primary" type="button" data-repeater-create>
+                <button class="btn btn-icon btn-primary" type="button" data-repeater-create {% if more_fun %} disabled {% endif %}>
                   <i data-feather="plus" class="mr-25"></i>
                   <span>Add New</span>
                 </button>
@@ -363,63 +387,91 @@
         <form method="post" id="form-step-3" enctype="multipart/form-data">
           {% csrf_token %}
     
-          <input type="hidden" name="formid2" value=""> 
+          <input type="hidden" name="formid2" {% if property_obj %}value="{{property_obj.id}}"{% endif %} value=""> 
 
-    <!-- Photo uploads -->
-    <h4>Upload Photos</h4>
-    {{ formset.management_form }}
-    {% for form in formset %}
-        <div style="margin-bottom: 20px;">
-            {{ form.category.label_tag }} {{ form.category }}
-            {{ form.photo.label_tag }} {{ form.photo }}
-            {{ form.caption.label_tag }} {{ form.caption }}
-            {{ form.DELETE }} Delete
-        </div>
-    {% endfor %}
-
-    <!-- Video URL -->
-    <h4>Video Links</h4>
-    {{ video_form.video_url.label_tag }} {{ video_form.video_url }}
-
-          {% comment %} <div class="row">
-            <div class="form-group col-md-6">
-              <label class="form-label" for="address">Address</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                class="form-control"
-                placeholder="98  Borough bridge Road, Birmingham"
-              />
+          <!-- Photo uploads -->
+          <h4>Upload Photos</h4>
+          <div class="row mb-2">
+            <div class="form-group col-md-3">
+              <label class="form-label" for="first-name">Outside</label>
+              {{form3.outside}}
             </div>
-            <div class="form-group col-md-6">
-              <label class="form-label" for="landmark">Landmark</label>
-              <input type="text" name="landmark" id="landmark" class="form-control" placeholder="Borough bridge" />
+            <div class="form-group col-md-3">
+              <label class="form-label" for="last-name">Parking</label>
+              {{form3.parking}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="last-name">Garage</label>
+              {{form3.garage}}
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label" for="last-name">Garden</label>
+              {{form3.garden}}
             </div>
           </div>
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label class="form-label" for="pincode1">Pincode</label>
-              <input type="text" id="pincode1" class="form-control" placeholder="658921" />
+          <div class="row mb-2">
+            <div class="form-group col-md-3">
+              <label class="form-label" for="first-name">Common Area</label>
+              {{form3.common_area}}
             </div>
-            <div class="form-group col-md-6">
-              <label class="form-label" for="city1">City</label>
-              <input type="text" id="city1" class="form-control" placeholder="Birmingham" />
+            <div class="form-group col-md-3">
+              <label class="form-label" for="first-name">residence</label>
+              {{form3.residence}}
             </div>
-          </div> {% endcomment %}
+          </div>
+          
+    
+    
+
+          <!-- Video URL -->
+          {% comment %} <h4>Video Links</h4>
+          {{ video_form.video_url.label_tag }} {{ video_form.video_url }} {% endcomment %}
+
+                {% comment %} <div class="row">
+                  <div class="form-group col-md-6">
+                    <label class="form-label" for="address">Address</label>
+                    <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      class="form-control"
+                      placeholder="98  Borough bridge Road, Birmingham"
+                    />
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label class="form-label" for="landmark">Landmark</label>
+                    <input type="text" name="landmark" id="landmark" class="form-control" placeholder="Borough bridge" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label class="form-label" for="pincode1">Pincode</label>
+                    <input type="text" id="pincode1" class="form-control" placeholder="658921" />
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label class="form-label" for="city1">City</label>
+                    <input type="text" id="city1" class="form-control" placeholder="Birmingham" />
+                  </div>
+                </div> {% endcomment %}
         </form >
         <div class="d-flex justify-content-between">
           <button class="btn btn-primary btn-prev">
             <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
             <span class="align-middle d-sm-inline-block d-none">Previous</span>
           </button>
-          <button type="submit" class="btn btn-success">Submit</button>
+          <button type="button" onclick='funsubmit()' class="btn btn-success">Submit</button>
         </div>
       </div>
   
     </div>
   </div>
 </section>
+<script>
+  function funsubmit(){
+    form=document.getElementById('form-step-3')
+    form.submit()
+  }
+</script>
 
                 {% comment %} <!-- users edit start -->
                 <section class="app-user-edit">
@@ -634,6 +686,9 @@
       repeaterContainer.find('[data-repeater-create]').prop('disabled', true);
     } else {
       repeaterContainer.find('[data-repeater-create]').prop('disabled', false);
+      {% if more_fun %}
+      repeaterContainer.find('[data-repeater-create]').prop('disabled', true);
+      {% endif %}
     }
   }
 
@@ -677,7 +732,13 @@
         const rentalRadios = document.querySelectorAll('input[name="rental_type"]');
         const numberOfFlatDiv = document.getElementById("num-flat-group");
          const numberOfFlatInput = document.querySelector('[name="number_of_flat"]');
-
+        {% if property_obj.rental_type %}
+        rentalRadios.forEach(radio => {
+  radio.disabled = true;
+  
+});
+numberOfFlatInput.setAttribute("disabled", "disabled");
+        {% endif %}
         function toggleNumberOfFlat() {
     const selectedRadio = document.querySelector('input[name="rental_type"]:checked');
     if (selectedRadio && selectedRadio.value === "Multi Ownership") {

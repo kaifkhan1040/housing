@@ -3,7 +3,8 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,PropertyMedia,PropertyVideo
+from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown
+from django.forms.widgets import FileInput
 
 class PropertyForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -49,23 +50,7 @@ class PropertyReadOnlyForm(PropertyForm):
             field.widget.attrs['readonly'] = True
             field.widget.attrs['disabled'] = True
 
-class PropertyMediaForm(forms.ModelForm):
-    class Meta:
-        model = PropertyMedia
-        fields = ['category', 'photo', 'caption']
 
-PropertyMediaFormSet = forms.modelformset_factory(
-    PropertyMedia,
-    form=PropertyMediaForm,
-    extra=6,  
-    max_num=6,
-    can_delete=True
-)
-
-class PropertyVideoForm(forms.ModelForm):
-    class Meta:
-        model = PropertyVideo
-        fields = ['video_url']
 
 class FinancialBreakdownform(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -84,6 +69,31 @@ class FinancialBreakdownform(ModelForm):
             widgets = {
                 'collect_rent': forms.RadioSelect(attrs={'class': 'form-check-input'}),
                 }
+            
+class FinancialBreakdownReadOnlyform(FinancialBreakdownform):
+     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+            field.widget.attrs['disabled'] = True
+
+class MultiImageInput(FileInput):
+    allow_multiple_selected = True
+
+class MultiImageForm(forms.Form):
+    outside = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+    parking = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+    garage = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+    garden = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+    common_area = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+    residence = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+
+class MultiImageReadOnlyForm(MultiImageForm):
+     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+            field.widget.attrs['disabled'] = True
 
 class RoomsForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -92,12 +102,18 @@ class RoomsForm(ModelForm):
         self.fields['type_of_room'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['ensuite'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['total_capacity'].widget.attrs.update({'class': 'form-control valid'})
-        self.fields['rent'].widget.attrs.update({'class': 'form-control valid'})
+        # self.fields['rent'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['rent'].choices = [
+            choice for choice in self.fields['rental_type'].choices if choice[0] != ''
+        ]
        
         
     class Meta:
             model = Rooms
             fields = "__all__"
+            widgets = {
+                 'rent': forms.RadioSelect(attrs={'class': 'form-check-input'}),
+            }
 
 class DuesForm(ModelForm):
     def __init__(self, *args, **kwargs):
