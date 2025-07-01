@@ -48,6 +48,33 @@
                 </div>
             </div>
             <div class="content-body">
+              <section id="basic-datatable">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <table class="datatables-basic table ">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Sr</th>
+                            <th>id</th>
+                            <th>Full Name</th>
+                            <th>Property</th>
+                            <th>Rent</th>
+                            <th>Total Dues</th>
+                            <th>Last Payment</th>
+                            <th>Payment Settled till</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+
                 <!-- users list start -->
                 <section class="app-user-list">
                 
@@ -81,7 +108,7 @@
                             </div>
                         </div>
                         
-                        <div class="card-datatable table-responsive pt-0">
+                        {% comment %} <div class="card-datatable table-responsive pt-0">
                             <table id="table_id" class=" table table-hover">
                                 <thead class="table-light">
                                    
@@ -137,7 +164,7 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                        </div>
+                        </div> {% endcomment %}
                        
                     </div>
                     <!-- list and filter end -->
@@ -158,6 +185,7 @@
     <script src="{% static 'app-assets/vendors/js/tables/datatable/dataTables.bootstrap5.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/tables/datatable/responsive.bootstrap5.js' %}"></script>
+    <script src="{% static 'app-assets/vendors/js/tables/datatable/datatables.checkboxes.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/tables/datatable/datatables.buttons.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/tables/datatable/jszip.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/tables/datatable/pdfmake.min.js' %}"></script>
@@ -168,14 +196,11 @@
     <script src="{% static 'app-assets/vendors/js/forms/validation/jquery.validate.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/forms/cleave/cleave.min.js' %}"></script>
     <script src="{% static 'app-assets/vendors/js/forms/cleave/addons/cleave-phone.us.js' %}"></script>
-    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+    <script src="{% static 'app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js' %}"></script>
+    <script src="{% static 'app-assets/js/scripts/tables/payment-datatables.js' %}"></script>
     <!-- END: Page Vendor JS-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-     $(document).ready(function() {
-  $('#table_id').DataTable();
-});
-        </script>
+    
     <!-- BEGIN: Theme JS-->
     <!-- <script src="{% static 'app-assets/js/core/app-menu.js' %}"></script>
     <script src="{% static 'app-assets/js/core/app.js' %}"></script> -->

@@ -376,6 +376,24 @@ def listing_list(request):
 
     return JsonResponse({'data': data}) 
 
+def payment_list(request):
+    data = []
+    print('*'*1000)
+    tenant_qs  = Dues.objects.filter(landload=request.user,is_active=True)
+    for i, obj in enumerate(tenant_qs, start=1):
+        data.append({
+            'responsive_id':"",
+            'sr':i,
+            'id':obj.custom_id,
+            'Full_name':obj.tenant_name,
+            'Property': str(obj.property.short_name),
+            'Rent': "---",
+            'Total Dues': "---",
+            'Last Payment': "---",
+            'Payment Settled till': "---",
+        })
+
+    return JsonResponse({'data': data}) 
 
 
 def tenant_list(request):
@@ -578,7 +596,7 @@ def dues_add(request):
 
 def dues_view(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
-    property_obj = get_object_or_404(Dues, pk=id)
+    property_obj = get_object_or_404(Dues, custom_id=id)
     form = DuesReadOnlyForm(instance=property_obj)
     rooms=Rooms.objects.filter(property=property_obj.property)
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,

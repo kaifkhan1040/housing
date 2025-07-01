@@ -4,6 +4,7 @@ urlpatterns = [
     path('',views.index,name='home'),
     path('listing',views.listing,name='listing'),
     path('listing_list',views.listing_list,name='listing_list'),
+    path('payment_list',views.payment_list,name='payment_list'),
     path('listing-add',views.listing_add,name='listing_add'),
     path('listing-view/<str:id>/',views.listing_view,name='listing_view'),
     path('listing-update/<int:id>/',views.listing_update,name='listing_update'),
@@ -20,7 +21,7 @@ urlpatterns = [
     
     path('dues',views.dues,name='dues'),
     path('dues-add',views.dues_add,name='dues_add'),
-    path('dues-view/<int:id>/',views.dues_view,name='dues_view'),
+    path('dues-view/<str:id>/',views.dues_view,name='dues_view'),
     path('dues-update/<int:id>/',views.dues_update,name='dues_update'),
 
     path('get_room',views.get_room,name='get_room'),
