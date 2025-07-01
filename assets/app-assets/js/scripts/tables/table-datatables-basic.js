@@ -169,12 +169,12 @@ $(function() {
                     }
                 },
                 {
-                    text: feather.icons['plus'].toSvg({ class: 'me-50 font-small-4' }) + 'Add New Record',
+                    text: feather.icons['plus'].toSvg({ class: 'me-50 font-small-4' }) + 'Add New Tenant',
                     className: 'create-new btn btn-primary',
-                    attr: {
-                        'data-bs-toggle': 'modal',
-                        'data-bs-target': '#modals-slide-in'
-                    },
+                    action: function (e, dt, node, config) {
+            // Redirect to your desired creation page
+            window.location.href = "/landload/tenant-add"; // change this URL as needed
+          },
                     init: function(api, node, config) {
                         $(node).removeClass('btn-secondary');
                     }

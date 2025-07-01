@@ -26,4 +26,6 @@ urlpatterns = [
     path('get_room',views.get_room,name='get_room'),
     path('setup-location/', views.setup_location, name='setup_location'),
     path('submit-step/<str:step>/', views.submit_step, name='submit_step'),
+    path('delete-image/<int:image_id>/', views.delete_property_image, name='delete_property_image'),
+
 ]

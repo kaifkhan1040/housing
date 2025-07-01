@@ -21,8 +21,28 @@
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
         <div class="content-wrapper container-xxl p-0">
-            <div class="content-header row">
+             <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                  <div class="row breadcrumbs-top">
+                      <div class="col-12">
+                           <a href="{% url 'landload:home' %}"><h2 class="content-header-title float-start mb-0">Home</h2></a>
+                          <div class="breadcrumb-wrapper">
+                                <ol class="breadcrumb">
+                                  <li class="breadcrumb-item">
+                                     
+                                    <a href="{% url 'landload:listing' %}">Listing</a>
+                                  </li>
+                                  <li class="breadcrumb-item active">
+                                    Room
+                                  </li>
+                                 
+                              </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
             <div class="content-body">
                 <!-- users edit start -->
                 <section class="app-user-edit">
@@ -43,23 +63,23 @@
                                         <!-- upload and reset button -->
                                     <form class="form-validate" method="POST" enctype="multipart/form-data">
                                   
-                                        <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
+                                        <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel" class="mb-2">
                                             {% csrf_token %}
                                             
                                             {% for room in rooms %}
                                            <input type="hidden" name="room_id" value="{{ room.id }}">
                                             
                                             <div class="row mb-2">
-                                                <div class="col-md-2">
+                                                <div class="col-auto">
                                                     <div class="form-group">
                                                         {% comment %} <label for="username"></label> {% endcomment %}
                                                         <h4 class="mt-2">Room {{forloop.counter}}</h4>
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-auto">
                                                     <div class="form-group">
-                                                        <label for="username">Room Type</label>
+                                                        <label class="form-label d-block " for="username">Room Type</label>
                                                         <select name="type_of_room" class="form-select">
                                                             <option value="Single" {% if room.type_of_room == "Single" %}selected{% endif %}>Single</option>
                                                             <option value="Double" {% if room.type_of_room == "Double" %}selected{% endif %}>Double</option>
@@ -69,9 +89,9 @@
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-auto">
                                                     <div class="form-group">
-                                                        <label for="username">Ensuite</label>
+                                                        <label class="form-label d-block " for="username">Ensuite</label>
                                                        <select name="ensuite" class="form-select">
                                                             <option value="1" {% if room.ensuite %}selected{% endif %}>Yes</option>
                                                             <option value="0" {% if not room.ensuite %}selected{% endif %}>No</option>
@@ -79,9 +99,9 @@
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-auto">
                                                     <div class="form-group">
-                                                        <label for="username">Total Capacity</label>
+                                                        <label class="form-label d-block " for="username">Total Capacity</label>
                                                         <select name="total_capacity" class="form-select">
                                                             {% for n in "12345" %}
                                                             <option value="{{ n }}" {% if room.total_capacity == n %}selected{% endif %}>{{ n }}</option>
@@ -93,12 +113,17 @@
                                                 
                                            
                                            
-                                                <div class="col-md-4">
+                                                <div class="col-auto">
                                                     <div class="form-group">
-                                                        <label class="form-label d-block mb-1" for="username">Rent</label>
+                                                        <label class="form-label d-block " for="username">Rent</label>
+                                                        <select name="rent" class="form-select">
+                                                            <option value="Per night" {% if room.rent == "Per night" %}selected{% endif %}>Per night</option>
+                                                            <option value="Weekly" {% if room.rent == "Weekly" %}selected{% endif %}>Weekly</option>
+                                                            <option value="Monthly" {% if room.rent == "Monthly" %}selected{% endif %}>Monthly</option>
+                                                        </select>
                                                         {% comment %} <input type="number" name="rent" value="{{ room.rent }}" step="0.01" class="form-control"> {% endcomment %}
                                                         
-                                                            <div>
+                                                            {% comment %} <div>
                                                             <div class="form-check form-check-inline">
                                                             <input type="radio" name="rent{{room.id}}" value="Weekly" class="form-check-input"  id="id_collect_rent_{{room.id}}" >
                                                             <label class="form-check-label" for="id_collect_rent_0">
@@ -111,13 +136,20 @@
                                                             <label class="form-check-label" for="id_collect_rent_1">
                                                                 Monthly
                                                             </label>
-                                                            </div>
+                                                            </div> {% endcomment %}
                                                         </div>
                                                         
                                                        
                                                             
                                                         
                                                         
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <div class="form-group">
+                                                            <label class="form-label d-block" for="username">Rent Amount</label>
+                                                           <input type='number' class="form-control" {% if room.rent_ammount %}value={{room.rent_ammount}} {% endif %} name='rent_ammount'>
+                                                            
+                                                        </div>
                                                     </div>
                                                 </div>
                                                

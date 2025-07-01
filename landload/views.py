@@ -5,6 +5,8 @@ from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,Tenant
     DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm
 from django.db.models import Q
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from users.models import CustomUser
@@ -13,7 +15,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.crypto import get_random_string
 from django.utils.safestring import mark_safe
 from users.forms import SetLocationForm
-
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 # Create your views here.
 def index(request):
     return render(request,'landload/index.html',{'is_dashboard':True})
@@ -188,6 +191,19 @@ def listing_view(request,id):
 
 def listing_update(request,id):
     property_obj = get_object_or_404(Property, pk=id)
+    outside_images = PropertyImage.objects.filter(property=property_obj, field_type='outside')
+    parking_images = PropertyImage.objects.filter(property=property_obj, field_type='parking')
+    garage_images = PropertyImage.objects.filter(property=property_obj, field_type='garage')
+    garden_images = PropertyImage.objects.filter(property=property_obj, field_type='garden')
+    common_area_images = PropertyImage.objects.filter(property=property_obj, field_type='common_area')
+    residence_images = PropertyImage.objects.filter(property=property_obj, field_type='residence')
+    outside_image_urls = list(outside_images.values('id','image'))
+    parking_image_urls = list(parking_images.values('id','image'))
+    garage_image_urls = list(garage_images.values('id','image'))
+    garden_image_urls = list(garden_images.values('id','image'))
+    common_area_image_urls = list(common_area_images.values('id','image'))
+    residence_image_urls = list(residence_images.values('id','image'))
+
     property_obj2 = FinancialBreakdown.objects.filter(property=id).first()
     form = PropertyForm(instance=property_obj)
     form2=FinancialBreakdownform()
@@ -205,12 +221,13 @@ def listing_update(request,id):
         print('form id',formid)
         # property_obj=get_object_or_404(Property, id=formid)
         form3 = MultiImageForm(request.POST, request.FILES)
-
+        print('update form =========?')
         
             # property_instance = Property.objects.create(name="Sample Property")
 
         for field in ['outside', 'parking', 'garage', 'garden', 'common_area', 'residence']:
             files = request.FILES.getlist(field)
+            print('files',files)
             for file in files:
                 PropertyImage.objects.create(
                     property=property_obj,
@@ -220,17 +237,42 @@ def listing_update(request,id):
    
             
 
-            messages.success(request, f'Property has been updated successfully!')
-            return redirect('landload:listing_view', id=property_obj.custom_id)
-        else:
-            error_messages = '<br>'.join(
-                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
-            )
-            messages.error(request, mark_safe(error_messages))
+        messages.success(request, f'Property has been updated successfully!')
+        return redirect('landload:listing_view', id=property_obj.custom_id)
+        # else:
+        #     error_messages = '<br>'.join(
+        #         [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+        #     )
+        #     messages.error(request, mark_safe(error_messages))
   
         
     return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'form3':form3
-                                                       ,'property_id':id,'property_obj':property_obj,'is_listing':True,'property_obj2':property_obj2})
+                                                       ,'property_id':id,'property_obj':property_obj,'is_listing':True,
+                                                       'property_obj2':property_obj2,'outside_images': outside_images,
+                                                        'parking_images': parking_images,
+                                                        'garage_images': garage_images,
+                                                        'garden_images': garden_images,
+                                                        'common_area_images': common_area_images,
+                                                        'residence_images': residence_images,
+                                                        'outside_images_json': outside_image_urls,
+                                                        'parking_images_json': parking_image_urls,
+                                                        'garage_images_json': garage_image_urls,
+                                                        'garden_images_json': garden_image_urls,
+                                                        'common_area_images_json': common_area_image_urls,
+                                                        'residence_images_json': residence_image_urls,
+                                                        })
+
+
+@csrf_exempt  # but ideally use csrf_protect with valid CSRF!
+def delete_property_image(request, image_id):
+    if request.method == 'POST':
+        try:
+            image = PropertyImage.objects.get(id=image_id)
+            image.delete()
+            return JsonResponse({'success': True})
+        except PropertyImage.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Image not found'}, status=404)
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 def room(request,id):
     # property_obj = get_object_or_404(Property, pk=id)
@@ -266,8 +308,9 @@ def room(request,id):
         ensuites = request.POST.getlist('ensuite')
         capacities = request.POST.getlist('total_capacity')
         rents = request.POST.getlist('rent')
+        amounts = request.POST.getlist('rent_ammount')
         print(rents)
-        for  room_ids,type_, ensuite, capacity in zip(room_ids, types, ensuites, capacities):
+        for  room_ids,type_, ensuite, capacity,amount in zip(room_ids, types, ensuites, capacities,amounts):
             if room_ids:  
                 try:
                     room = Rooms.objects.get(id=room_ids, property=property_obj)
@@ -278,9 +321,10 @@ def room(request,id):
             room.type_of_room = type_
             room.ensuite = ensuite
             room.total_capacity = capacity
+            room.rent_ammount = amount
             rent_value = request.POST.get(f'rent_{room_ids}') or request.POST.get(f'collect_rent_{room_ids}')
-            if rent_value:
-                room.rent = float(rent_value) if rent_value.isdigit() else rent_value 
+            # if rent_value:
+            #     room.rent = float(rent_value) if rent_value.isdigit() else rent_value 
             # room.rent = float(rent)
             room.save()
         messages.success(request, f'Rooms has been updated successfully!')

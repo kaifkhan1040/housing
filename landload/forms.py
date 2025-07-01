@@ -81,12 +81,12 @@ class MultiImageInput(FileInput):
     allow_multiple_selected = True
 
 class MultiImageForm(forms.Form):
-    outside = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
-    parking = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
-    garage = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
-    garden = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
-    common_area = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
-    residence = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control'}), required=False)
+    outside = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
+    parking = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
+    garage = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
+    garden = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
+    common_area = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
+    residence = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
 
 class MultiImageReadOnlyForm(MultiImageForm):
      def __init__(self, *args, **kwargs):
@@ -102,18 +102,19 @@ class RoomsForm(ModelForm):
         self.fields['type_of_room'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['ensuite'].widget.attrs.update({'class': 'form-control valid'})
         self.fields['total_capacity'].widget.attrs.update({'class': 'form-control valid'})
-        # self.fields['rent'].widget.attrs.update({'class': 'form-control valid'})
-        self.fields['rent'].choices = [
-            choice for choice in self.fields['rental_type'].choices if choice[0] != ''
-        ]
+        self.fields['rent'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['rent_ammount'].widget.attrs.update({'class': 'form-control valid'})
+        # self.fields['rent'].choices = [
+        #     choice for choice in self.fields['rental_type'].choices if choice[0] != ''
+        # ]
        
         
     class Meta:
             model = Rooms
             fields = "__all__"
-            widgets = {
-                 'rent': forms.RadioSelect(attrs={'class': 'form-check-input'}),
-            }
+            # widgets = {
+            #      'rent': forms.RadioSelect(attrs={'class': 'form-check-input'}),
+            # }
 
 class DuesForm(ModelForm):
     def __init__(self, *args, **kwargs):

@@ -99,6 +99,7 @@ class PropertyImage(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='images')
     field_type = models.CharField(max_length=20, choices=FIELD_CHOICES)
     image = models.ImageField(upload_to=upload_to)
+    caption = models.CharField(max_length=255, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 class Rooms(models.Model):
@@ -106,8 +107,9 @@ class Rooms(models.Model):
     type_of_room = models.CharField(choices=[('Single','Single'),('Double','Double')])
     ensuite = models.CharField(choices=[('Yes','Yes'),('No','No')])
     total_capacity = models.CharField(choices=[('1','1'),('2','2'),('3','3'),('4','4'),('5','5')])
-    rent =models.CharField(max_length=20,choices=(('Weekly','Weekly'),('Monthly','Monthly')))
+    rent =models.CharField(max_length=20,choices=(('Per night','Per night'),('Weekly','Weekly'),('Monthly','Monthly')))
     room_code = models.CharField(max_length=10, unique=True, blank=True)
+    rent_ammount = models.FloatField(default=0.0)
 
     def save(self, *args, **kwargs):
         if not self.room_code:

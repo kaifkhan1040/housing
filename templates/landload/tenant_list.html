@@ -26,6 +26,23 @@
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
         <div class="content-wrapper container-xxl p-0">
+          <div class="content-header row">
+              <div class="content-header-left col-md-9 col-12 mb-2">
+                  <div class="row breadcrumbs-top">
+                      <div class="col-12">
+                          <a href="{% url 'landload:home' %}"><h2 class="content-header-title float-start mb-0">Home</h2></a>
+                          <div class="breadcrumb-wrapper">
+                              <ol class="breadcrumb">
+                                  <li class="breadcrumb-item">
+                                      Tenant
+                                  </li>
+                                  
+                              </ol>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
             <div class="content-header row">
             </div>
             <div class="content-body">
@@ -35,23 +52,19 @@
                     <!-- list and filter start -->
                     <div class="card">
                         
-                        <div class="card-body border-bottom">
+                        {% comment %} <div class="card-body border-bottom">
                             <div class="row">
                                 <div class="col-md-5 user_role">
-                                    <a href="{% url 'landload:tenant_add' %}">
-                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Tenant</button>
-                                      </a>
+                                    
                                 </div>
                                 <div class="col-md-4 user_plan">
                                 </div>
                                 <div class="col-md-3 user_status">
                                     
-                                    {% comment %} <a href="{% url 'landload:tenant_invite_add' %}">
-                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Invite Tenant</button>
-                                      </a> {% endcomment %}
+                                 
                                 </div>
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                        
                         <div class="card-datatable table-responsive pt-0">
                             <table class="user-list-table table table-hover datatables-basic">
