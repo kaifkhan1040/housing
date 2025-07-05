@@ -42,6 +42,7 @@
 
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+
    {% block style %}{% endblock style %}
     <!-- END: Custom CSS-->
 
@@ -74,9 +75,7 @@
                     </li>
                 </ul> {% endcomment %}
             </div>
-            {% if search_field %}
-             <input class="form-control input" type="text" placeholder="Search" id="searchInput" data-search="search" />
-             {% endif %}
+          
             <ul class="nav navbar-nav align-items-center ms-auto">
                 {% comment %} <li class="nav-item dropdown dropdown-language"><a class="nav-link dropdown-toggle" id="dropdown-flag" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="flag-icon flag-icon-us"></i><span class="selected-language">English</span></a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-flag"><a class="dropdown-item" href="#" data-language="en"><i class="flag-icon flag-icon-us"></i> English</a><a class="dropdown-item" href="#" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a><a class="dropdown-item" href="#" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a><a class="dropdown-item" href="#" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a></div>
@@ -846,7 +845,7 @@
     <!-- BEGIN: Theme JS-->
     <script src="{% static 'app-assets/js/core/app-menu.js' %}"></script>
     <script src="{% static 'app-assets/js/core/app.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> {% endcomment %}
 
     <!-- END: Theme JS-->
 

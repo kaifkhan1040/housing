@@ -17,7 +17,12 @@
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
     <!-- END: Custom CSS-->
-
+    <style>
+  div.dataTables_wrapper div.dataTables_filter select, div.dataTables_wrapper div.dataTables_length select{
+    background-position:calc(100% - 8px) 5px, calc(100% - -19px) -10px, 100% 0;
+  }
+  
+</style>
 {% endblock style %}
 {% block content %}
 

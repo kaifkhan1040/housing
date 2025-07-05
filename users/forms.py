@@ -23,7 +23,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'hidden': False,"id":'account-upload-form'})
-        self.fields['role'].widget.attrs.update({'class': 'form-control'})
+        self.fields['role'].widget.attrs.update({'class': 'form-select'})
     class Meta:
         model = CustomUser
         fields = ('first_name', 'last_name','email','phone_number','image','dob','doj','role')

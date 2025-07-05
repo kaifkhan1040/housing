@@ -19,7 +19,12 @@
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
     <!-- END: Custom CSS-->
-
+    <style>
+  div.dataTables_wrapper div.dataTables_filter select, div.dataTables_wrapper div.dataTables_length select{
+    background-position:calc(100% - 8px) 5px, calc(100% - -19px) -10px, 100% 0;
+  }
+  
+</style>
 {% endblock style %}
 {% block content %}
 
@@ -73,104 +78,6 @@
                   </div>
                 </div>
               </section>
-
-
-                <!-- users list start -->
-                <section class="app-user-list">
-                
-                    <!-- list and filter start -->
-                    <div class="card">
-                        
-                        <div class="card-body border-bottom">
-                            <div class="row">
-                                <div class="col-md-2 user_role">
-                                    
-                                </div>
-                                
-                                    <div class="col-md-6 user_plan">
-                                        {% comment %} <form method="get" action="">
-    <input type="text" name="q" placeholder="Search by ID, Name, Property" value="{{ query }}" class="form-control" style="width: 300px; display: inline-block; margin-bottom: 10px;">
-    <button type="submit" class="btn btn-primary">Search</button>
-</form> {% endcomment %}
-                                        {% comment %} <input type="text" id="0001search" class="form-control" placeholder="search"> {% endcomment %}
-                                    </div>
-                                    <div class="col-md-2 user_plan">
-                                        {% comment %} <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Search</button>  {% endcomment %}
-                                    </div>
-                               
-                                <div class="col-md-2 user_status">
-                                    <a href="{% url 'landload:dues_add' %}">
-                                        <button class="btn btn-primary w-80 waves-effect waves-float waves-light" >
-                                            Record New
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {% comment %} <div class="card-datatable table-responsive pt-0">
-                            <table id="table_id" class=" table table-hover">
-                                <thead class="table-light">
-                                   
-                                    <tr>
-                                        <th>Sn.</th>
-                                        <th>Id</th>
-                                        <th>Full Name</th>
-                                        <th>Property</th>
-                                        <th>Rent</th>
-                                        <th>Total Dues</th>
-                                        <th>Last Payment</th>
-                                        <th>Payment Settled till</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dues-body">
-                                    {% for i in dues %}
-                                    <tr>
-                                        <td>{{forloop.counter}}</td>
-                                        <td><a href="{% url 'landload:dues_view' id=i.id %}">{{i.custom_id}}</a></td>
-                                        <td>{{i.tenant_name}}</td>
-                                        <td>{{ i.property.short_name }}</td>
-                                        <td>{{ i.room.rent}}</td>
-                                        <td>-----</td>
-                                        <td>-----</td>
-                                        <td>-----</td>
-                                        <td>
-                                          <div class="dropdown">
-                                            <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i data-feather="more-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:void(0);">
-                                                        <i data-feather="edit-2" class="me-2"></i> Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item" href="javascript:void(0);">
-                                                        <i data-feather="trash" class="me-2"></i> Delete
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                          </div>
-
-                                        </td>
-                                        
-
-                                        
-                                    </tr>
-                                    {% empty %}
-                                      <tr><td colspan="5">No results found.</td></tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div> {% endcomment %}
-                       
-                    </div>
-                    <!-- list and filter end -->
-                </section>
-                <!-- users list ends -->
-
             </div>
         </div>
 {% endblock content %}
