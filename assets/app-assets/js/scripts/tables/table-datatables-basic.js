@@ -53,7 +53,7 @@ $(function() {
     {
         data: 'custom_id',
         render: function(data, type, full, meta) {
-            return '<a href="/landload/tenant-view/' + full.id + '">' + data + '</a>';
+            return '<a href="/landload/tenant-dashboard/' + full.id + '">' + data + '</a>';
         }
     },
     { data: 'full_name' },

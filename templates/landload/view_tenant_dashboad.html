@@ -41,7 +41,7 @@
                           <div class="breadcrumb-wrapper">
                               <ol class="breadcrumb">
                                   <li class="breadcrumb-item">
-                                      Listings
+                                      Tenant
                                   </li>
                                   
                               </ol>
@@ -84,7 +84,7 @@
                         <div class="card-body border-bottom">
                             <div class="row">
                                 <div class="col-md-4 ">
-                                    Listing id - {{property_obj.custom_id}}
+                                    Tenant id - {{tenant_obj.custom_id}}
                                     {% comment %} <a href="{% url 'landload:listing_add' %}"><button class="btn btn-primary w-80 waves-effect waves-float waves-light" >Add Listing</button></a> {% endcomment %}
                                 </div>
                                 <div class="col-md-6">
@@ -98,11 +98,9 @@
                                             </button>
                                             <ul class="dropdown-menu">
                                             
-                                            <li><a class="dropdown-item" href="{% url 'landload:listing_view' id=property_id %}">Details</a></li>
-                                            <li><a class="dropdown-item" href="javascript:void(0);">Tenants</a></li>
-                                            {% if property_obj.number_of_flat %}
-                                            <li><a class="dropdown-item" href="{% url 'landload:room' id=property_id %}">Rooms</a></li>
-                                            {% endif %}
+                                            <li><a class="dropdown-item" href="{% url 'landload:tenant_view' id=tenant_id %}">Details</a></li>
+                                            <li><a class="dropdown-item" href="javascript:void(0);">Payments</a></li>
+                                           
                                             <li><a class="dropdown-item" href="javascript:void(0);">Tickets</a></li>
                                             <li><a class="dropdown-item" href="javascript:void(0);">Tasks</a></li>
                                             <li><a class="dropdown-item" href="javascript:void(0);">Logs</a></li>

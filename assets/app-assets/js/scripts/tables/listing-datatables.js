@@ -68,7 +68,7 @@ $(function () {
         {
     targets: 3,  // ID column
     render: function (data, type, full, meta) {
-      return `<a href="/landload/listing-view/${data}/" class="text-primary">${data}</a>`;
+      return `<a href="/landload/listing-dashboard/${data}/" class="text-primary">${data}</a>`;
     }
   },
 

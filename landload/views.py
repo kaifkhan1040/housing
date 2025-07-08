@@ -189,6 +189,21 @@ def listing_view(request,id):
                                                        'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
                                                        'property_obj2':property_obj2,'form3':form3})
 
+def listing_dashboard(request,id):
+    form2=FinancialBreakdownReadOnlyform()
+    property_obj = get_object_or_404(Property, custom_id=id)
+    # property_obj2 = get_object_or_404(FinancialBreakdown, property=property_obj.id)
+    property_obj2 = FinancialBreakdown.objects.filter(property__custom_id=id).first()
+    property_obj3 = PropertyImage.objects.filter(property__custom_id=id).first()
+    form3 = MultiImageReadOnlyForm()
+    print('data',property_obj2,property_obj)
+    if property_obj2:
+        form2=FinancialBreakdownReadOnlyform(instance=property_obj2)
+    form = PropertyReadOnlyForm(instance=property_obj)
+    return render(request,'landload/view_listing_dashboad.html',{'form':form,'form2':form2,'is_listing':True,
+                                                       'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
+                                                       'property_obj2':property_obj2,'form3':form3})
+
 
 def listing_update(request,id):
     property_obj = get_object_or_404(Property, pk=id)
@@ -472,6 +487,14 @@ def tenant_view(request,id):
     tenant_obj = get_object_or_404(Tenant, pk=id)
     form = TenantReadOnlyForm(instance=tenant_obj)
     return render(request,'landload/add_tenant.html',{'form':form,'tenant_id':id,'tenant_obj':tenant_obj,'more_fun':True,
+                                                      'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
+    'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property,'is_tenant':True})
+
+def tenant_dashboard(request,id):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    tenant_obj = get_object_or_404(Tenant, pk=id)
+    form = TenantReadOnlyForm(instance=tenant_obj)
+    return render(request,'landload/view_tenant_dashboad.html',{'form':form,'tenant_id':id,'tenant_obj':tenant_obj,'more_fun':True,
                                                       'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
     'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property,'is_tenant':True})
 
