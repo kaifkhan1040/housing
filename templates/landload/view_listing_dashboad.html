@@ -98,7 +98,7 @@
                                             </button>
                                             <ul class="dropdown-menu">
                                             
-                                            <li><a class="dropdown-item" href="{% url 'landload:listing_view' id=property_id %}">Details</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'landload:listing_view' id=property_obj.custom_id %}">Details</a></li>
                                             <li><a class="dropdown-item" href="javascript:void(0);">Tenants</a></li>
                                             {% if property_obj.number_of_flat %}
                                             <li><a class="dropdown-item" href="{% url 'landload:room' id=property_id %}">Rooms</a></li>
