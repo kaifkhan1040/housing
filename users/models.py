@@ -34,7 +34,7 @@ class CustomUser(AbstractUser):
     country = models.ForeignKey('landload.Country', null=True, blank=True, on_delete=models.SET_NULL)
     description = models.TextField()
     is_verify = models.BooleanField(default=0)
-    role = models.CharField(choices=[('landload','landlord'),('agent','agent'),('tenant','tenant'),('maintenance','maintenance')],null=True,blank=True)
+    role = models.CharField(max_length=50,choices=[('landload','landlord'),('agent','agent'),('tenant','tenant'),('maintenance','maintenance')],null=True,blank=True)
     dob = models.DateField(null=True,blank=True)
     doj = models.DateField(null=True,blank=True)
     address = models.CharField(max_length=500,null=True,blank=True)
