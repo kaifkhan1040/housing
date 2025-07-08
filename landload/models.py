@@ -16,7 +16,7 @@ class Property(models.Model):
     postcode = models.CharField(max_length=8)
 
     property_type = models.CharField(max_length=100,choices=(('Detached House','Detached House'),('Private Apartment','Private Apartment')),blank=True,null=True)
-    number_of_flat = models.CharField(choices=ROOM_CHOICES,blank=True,null=True)
+    number_of_flat = models.CharField(max_length=100,choices=ROOM_CHOICES,blank=True,null=True)
     cost = models.DecimalField(max_digits=10, decimal_places=2,blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
