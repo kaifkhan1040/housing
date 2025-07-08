@@ -1,8 +1,9 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,\
-    FinancialOtherModel,PropertyImage
+    FinancialOtherModel,PropertyImage,Expenses
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
-    DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm
+    DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
+    ExpensesReadOnlyForm
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -628,4 +629,114 @@ def dues_update(request,id):
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'property':property,
                                                     'rooms':rooms,'is_payment':True})
 
+
+@login_required(login_url='/')
+def deactivate_dues(request,id):
+    obj=Dues.objects.get(custom_id=id)
+    obj.is_active=False
+    obj.save()
+    return JsonResponse(True,safe=False)
+
+
+def expense(request):
+    query = request.GET.get('q', '')
+    # print('*'*1000)
+    # print(query)
+    dues = Expenses.objects.filter(landload=request.user,is_active=True)
+    if query:
+        dues = dues.filter(
+            Q(tenant_name__icontains=query) |
+            Q(custom_id__icontains=query) |
+            Q(property__name__icontains=query) |
+            Q(property__short_name__icontains=query)
+        )
+    return render(request,'landload/expense.html',{'dues':dues,'search_field':True,'is_expence':True})    
+
+
+def expense_add(request):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    form = ExpensesForm()
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        # print('post')
+        # print(request.POST)
+        post_data['landload']=request.user
+        post_data['is_active']=True
+        form = ExpensesForm(post_data,request.FILES)
+        if form.is_valid():
+            # form['landload']=request.user
+       
+            property_obj=form.save()
+            messages.success(request, f'Expense has been Created successfully!')
+            return redirect('landload:expense')
+        else:
+            # print('errr',form.errors)
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
+    return render(request,'landload/add_expense.html',{'form':form,'property':property,'is_expence':True})
+
+
+def expense_view(request,id):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    property_obj = get_object_or_404(Expenses, custom_id=id)
+    form = ExpensesReadOnlyForm(instance=property_obj)
+    rooms=Rooms.objects.filter(property=property_obj.property)
+    return render(request,'landload/add_expense.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,
+                                                    'rooms':rooms,'is_expence':True})
+
+
+def expense_update(request,id):
+    property = Property.objects.filter(landload=request.user,is_active=True)
+    property_obj = get_object_or_404(Expenses, pk=id)
+    # rooms=Rooms.objects.filter(property=property_obj.property)
+    if request.method == 'POST':
+        post_data = request.POST.copy()
+        post_data['landload']=request.user
+        post_data['is_active']=True
+        form = ExpensesForm(post_data, request.FILES, instance=property_obj)
+        if form.is_valid():
+            obj=form.save()
+            
+
+            messages.success(request, f'Expenses has been updated successfully!')
+            return redirect('landload:dues')
+        else:
+            error_messages = '<br>'.join(
+                [f"{error}" for field_errors in form.errors.values() for error in field_errors]
+            )
+            messages.error(request, mark_safe(error_messages))
+    else:
+        form = ExpensesForm(instance=property_obj)
+    return render(request,'landload/add_expense.html',{'form':form,'property_id':id,'property_obj':property_obj,'property':property,
+                                                    'is_expence':True})
+
+
+@login_required(login_url='/')
+def deactivate_expense(request,id):
+    obj=Expenses.objects.get(custom_id=id)
+    obj.is_active=False
+    obj.save()
+    return JsonResponse(True,safe=False)
+
+
+def expenses_list(request):
+    data = []
+    print('*'*1000)
+    tenant_qs  = Expenses.objects.filter(landload=request.user,is_active=True)
+    for i, obj in enumerate(tenant_qs, start=1):
+        data.append({
+            'responsive_id':"",
+            'sr':i,
+            'id':obj.custom_id,
+            'Full_name':obj.tenant_name,
+            'Property': str(obj.property.short_name),
+            'Rent': "---",
+            'Total Dues': "---",
+            'Last Payment': "---",
+            'Payment Settled till': "---",
+        })
+
+    return JsonResponse({'data': data}) 
 

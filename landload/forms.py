@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown
+from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses
 from django.forms.widgets import FileInput
 
 class PropertyForm(ModelForm):
@@ -129,6 +129,25 @@ class DuesForm(ModelForm):
             fields = "__all__"
 
 class DuesReadOnlyForm(DuesForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['readonly'] = True
+            field.widget.attrs['disabled'] = True
+
+class ExpensesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['m_for'].widget.attrs.update({'class': 'form-select valid'})
+        self.fields['method'].widget.attrs.update({'class': 'form-select valid'})
+
+    class Meta:
+            model = Expenses
+            fields = "__all__"
+
+class ExpensesReadOnlyForm(DuesForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():

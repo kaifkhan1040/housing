@@ -463,7 +463,7 @@
                     <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="message-square"></i><span class="menu-title text-truncate" data-i18n="User">Messages</span></a>
                     <li class=" nav-item {% if is_tenant %}active{% endif %} "><a class="d-flex align-items-center" href="{% url 'landload:tenant' %}"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Tenants</span></a>
                 <li class=" nav-item {% if is_payment %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:dues' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Payments</span></a>
-                <li class=" nav-item {% if is_expence %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:dues' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Expenses</span></a>
+                <li class=" nav-item {% if is_expence %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:expense' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Expenses</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="activity"></i><span class="menu-title text-truncate" data-i18n="User">Action</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="tool"></i><span class="menu-title text-truncate" data-i18n="User">Maintenance</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">Agents</span></a>
@@ -877,8 +877,10 @@
 
             Swal.fire({
                 title: title,
-                text: "{{ message|striptags }}",  // Remove unwanted HTML
-                icon: icon
+                text: "{{ message|striptags }}",  
+                icon: icon,
+                background: '#1e1e1e',   
+                color: '#ffffff'
             });
         {% endfor %}
     </script>

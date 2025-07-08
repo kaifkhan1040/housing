@@ -217,7 +217,7 @@ class Dues(models.Model):
             with transaction.atomic():
                 # Lock the table during ID generation
                 last_obj = Dues.objects.select_for_update().order_by('-id').first()
-                if last_obj and last_obj.custom_id.startswith('RE'):
+                if last_obj and last_obj.custom_id.startswith('Pay'):
                     try:
                         last_number = int(last_obj.custom_id[2:])
                     except ValueError:
@@ -228,7 +228,45 @@ class Dues(models.Model):
 
                 # Loop to ensure uniqueness
                 while True:
-                    candidate_id = f'RE{next_number}'
+                    candidate_id = f'Pay{next_number}'
+                    if not Dues.objects.filter(custom_id=candidate_id).exists():
+                        self.custom_id = candidate_id
+                        break
+                    next_number += 1
+
+        super().save(*args, **kwargs)
+
+class Expenses(models.Model):
+    custom_id = models.CharField(max_length=10, unique=True, blank=True)
+    property = models.ForeignKey(Property,on_delete=models.CASCADE)
+    room = models.ForeignKey(Rooms,on_delete=models.CASCADE)
+    tenant_name = models.CharField(max_length=255)
+    m_for = models.CharField(choices=[('Rent WS','Rent WS'),('Deposit','Deposit'),('Penalty','Penalty'),('Custom','Custom')], max_length=50)
+    amount = models.FloatField()
+    method = models.CharField(choices=[("Cash",'cash'),('Account Transfer','Account Transfer')])
+    paid_date = models.DateField(auto_now_add=True)
+    proof = models.ImageField(upload_to='Dues/proof/',null=True,blank=True)
+    is_active = models.BooleanField(default=True)
+    landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+
+
+    def save(self, *args, **kwargs):
+        if not self.custom_id:
+            with transaction.atomic():
+                # Lock the table during ID generation
+                last_obj = Dues.objects.select_for_update().order_by('-id').first()
+                if last_obj and last_obj.custom_id.startswith('EXP'):
+                    try:
+                        last_number = int(last_obj.custom_id[2:])
+                    except ValueError:
+                        last_number = 100
+                    next_number = last_number + 1
+                else:
+                    next_number = 101
+
+                # Loop to ensure uniqueness
+                while True:
+                    candidate_id = f'EXP{next_number}'
                     if not Dues.objects.filter(custom_id=candidate_id).exists():
                         self.custom_id = candidate_id
                         break

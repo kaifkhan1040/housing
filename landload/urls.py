@@ -23,6 +23,15 @@ urlpatterns = [
     path('dues-add',views.dues_add,name='dues_add'),
     path('dues-view/<str:id>/',views.dues_view,name='dues_view'),
     path('dues-update/<int:id>/',views.dues_update,name='dues_update'),
+    path('dues-delete/<str:id>/',views.deactivate_dues,name='deactivate_dues'),
+
+    path('expense',views.expense,name='expense'),
+    path('expense-add',views.expense_add,name='expense_add'),
+    path('expense-view/<str:id>/',views.expense_view,name='expense_view'),
+    path('expense-update/<int:id>/',views.expense_update,name='expense_update'),
+    path('expense-delete/<str:id>/',views.deactivate_expense,name='deactivate_expense'),
+    path('expenses_list',views.expenses_list,name='expenses_list'),
+
 
     path('get_room',views.get_room,name='get_room'),
     path('setup-location/', views.setup_location, name='setup_location'),
