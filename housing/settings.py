@@ -15,6 +15,11 @@ import os
 from decouple import config, Csv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except:
+    pass
 
 
 # Quick-start development settings - unsuitable for production
