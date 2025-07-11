@@ -391,7 +391,7 @@ $(function () {
   }
 });
 </script>
-<script>
+{% comment %} <script>
 document.getElementById('searchInput').addEventListener('input', function () {
   const query = this.value.trim();
 
@@ -411,7 +411,7 @@ document.getElementById('searchInput').addEventListener('input', function () {
     }
   });
 });
-</script>
+</script> {% endcomment %}
 
 {% endblock scriptjs %}
 </html>
