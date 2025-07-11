@@ -40,4 +40,6 @@ urlpatterns = [
     path('submit-step/<str:step>/', views.submit_step, name='submit_step'),
     path('delete-image/<int:image_id>/', views.delete_property_image, name='delete_property_image'),
 
+    
+
 ]

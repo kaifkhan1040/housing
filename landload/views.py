@@ -3,7 +3,7 @@ from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBrea
     FinancialOtherModel,PropertyImage,Expenses
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
     DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
-    ExpensesReadOnlyForm
+    ExpensesReadOnlyForm,TenantStep1Form
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -42,7 +42,7 @@ def setup_location(request):
         form = SetLocationForm()
     
     return render(request, 'landload/location_setup.html', {'form': form})
-
+@login_required(login_url='/')
 def listing(request):
     query = request.GET.get('q', '')
     property = Property.objects.filter(landload=request.user,is_active=True)
@@ -55,7 +55,7 @@ def listing(request):
             Q(postcode__icontains=query)
         )
     return render(request,'landload/listing.html',{'property':property,'search_field':True,'is_listing':True})
-
+@login_required(login_url='/')
 def submit_step(request, step):
     if request.method == 'POST':
         post_data = request.POST.copy()
@@ -122,6 +122,7 @@ def submit_step(request, step):
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
         
+@login_required(login_url='/')      
 def listing_add(request):
     video_form=''
     print('*'*1000,request.method)
@@ -173,7 +174,7 @@ def listing_add(request):
         #     messages.error(request, mark_safe(error_messages))
     return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form,'is_listing':True,'form3':form3})
 
-
+@login_required(login_url='/')
 def listing_view(request,id):
     form2=FinancialBreakdownReadOnlyform()
     property_obj = get_object_or_404(Property, custom_id=id)
@@ -189,6 +190,7 @@ def listing_view(request,id):
                                                        'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
                                                        'property_obj2':property_obj2,'form3':form3})
 
+@login_required(login_url='/')
 def listing_dashboard(request,id):
     form2=FinancialBreakdownReadOnlyform()
     property_obj = get_object_or_404(Property, custom_id=id)
@@ -204,7 +206,7 @@ def listing_dashboard(request,id):
                                                        'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
                                                        'property_obj2':property_obj2,'form3':form3})
 
-
+@login_required(login_url='/')
 def listing_update(request,id):
     property_obj = get_object_or_404(Property, pk=id)
     outside_images = PropertyImage.objects.filter(property=property_obj, field_type='outside')
@@ -290,6 +292,7 @@ def delete_property_image(request, image_id):
             return JsonResponse({'success': False, 'error': 'Image not found'}, status=404)
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
+@login_required(login_url='/')
 def room(request,id):
     # property_obj = get_object_or_404(Property, pk=id)
     # existing_rooms = Rooms.objects.filter(property=property_obj).order_by('id')
@@ -362,7 +365,7 @@ def deactivate_property(request,pk):
     obj.save()
     return JsonResponse(True,safe=False)
 
-
+@login_required(login_url='/')
 def tenant(request):
     query = request.GET.get('q', '')
     tenant = Tenant.objects.filter(landload=request.user,is_active=True)
@@ -375,6 +378,7 @@ def tenant(request):
         )
     return render(request,'landload/tenant_list.html',{'tenant':tenant,'search_field':True,'is_tenant':True})
 
+@login_required(login_url='/')
 def listing_list(request):
     data = []
     print('*'*1000)
@@ -392,6 +396,7 @@ def listing_list(request):
 
     return JsonResponse({'data': data}) 
 
+@login_required(login_url='/')
 def payment_list(request):
     data = []
     print('*'*1000)
@@ -411,7 +416,7 @@ def payment_list(request):
 
     return JsonResponse({'data': data}) 
 
-
+@login_required(login_url='/')
 def tenant_list(request):
     data = []
     print('*'*1000)
@@ -431,9 +436,11 @@ def tenant_list(request):
 
     return JsonResponse({'data': data}) 
 
+@login_required(login_url='/')
 def tenant_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)
     form = TenantForm()
+    print('run')
     if request.method == "POST":
         post_data = request.POST.copy()
         # print('post')
@@ -447,14 +454,23 @@ def tenant_add(request):
         email=request.POST.get('email')
         form = TenantForm(post_data,request.FILES)
         if form.is_valid():
+            print('pass 1')
             
-            if CustomUser.objects.filter(email=email).exists():
-               messages.error(request, f'Email already exixts')
-               return redirect('landload:tenant')
-            user_data=CustomUser.objects.create(first_name=first_name,last_name=last_name,
-                                      middle_name=middle_name,email=email,password='Tenant@123',
-                                      phone_number=phone_number,role='tenant')
+            # if CustomUser.objects.filter(email=email).exists():
+            #    messages.error(request, f'Email already exixts')
+            #    return redirect('landload:tenant')
+            user_data, created = CustomUser.objects.get_or_create(first_name=first_name,last_name=last_name,
+                                      middle_name=middle_name,email=email,is_verify=True,
+                                      phone_number=phone_number,defaults={
+                                                                'password': 'Tenant@123',  # this sets plain text! must set hash below
+                                                                'role': 'tenant'
+                                                            })
+            if created:
+                # set hashed password securely
+                user_data.set_password('Tenant@123')
+                user_data.save()
             # form['landload']=request.user
+            print('pass 2')
        
             property_obj = form.save(commit=False)
             property_obj.user = user_data  
@@ -476,12 +492,14 @@ def tenant_add(request):
     return render(request,'landload/add_tenant.html',{'form':form,'property':property,'is_tenant':True})
 
 
+@login_required(login_url='/')
 def get_room(request):
     category_id = request.GET.get('category_id')
     existing_rooms = Rooms.objects.filter(property_id=category_id).values('id', 'room_code')
     # symbole = Country.objects.get(code=category_id)
     return JsonResponse({'existing_rooms': list(existing_rooms)})
 
+@login_required(login_url='/')
 def tenant_view(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     tenant_obj = get_object_or_404(Tenant, pk=id)
@@ -490,6 +508,7 @@ def tenant_view(request,id):
                                                       'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
     'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property,'is_tenant':True})
 
+@login_required(login_url='/')
 def tenant_dashboard(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     tenant_obj = get_object_or_404(Tenant, pk=id)
@@ -498,6 +517,7 @@ def tenant_dashboard(request,id):
                                                       'saved_model_id': tenant_obj.room.id if tenant_obj.room else None,
     'saved_property_id': tenant_obj.property.id if tenant_obj.property else None,'property':property,'is_tenant':True})
 
+@login_required(login_url='/')
 def tenant_update(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     tenant_obj = get_object_or_404(Tenant, pk=id)
@@ -542,7 +562,7 @@ def deactivate_tenant(request,pk):
     obj.save()
     return JsonResponse(True,safe=False)
 
-
+@login_required(login_url='/')
 def tenant_invite_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)
     form=TenantInviteForm()
@@ -552,10 +572,18 @@ def tenant_invite_add(request):
         form = TenantInviteForm(post_data,request.FILES)
         if form.is_valid():
             email = form.cleaned_data['email']
-            if CustomUser.objects.filter(email=email).exists():
-               messages.error(request, f'Email already exixts')
-               return redirect('landload:tenant')
-            user = CustomUser.objects.create_user(email=email, password='Root@123',role='tenant')
+            # if CustomUser.objects.filter(email=email).exists():
+            #    messages.error(request, f'Email already exixts')
+            #    return redirect('landload:tenant')
+            user , created = CustomUser.objects.get_or_create(email=email,defaults={
+                                    'password': 'Root@123', 
+                                    'role': 'tenant'
+                                })
+            if created:
+                
+                user.set_password('Root@123')
+                user.is_verify=True
+                user.save()
             tenant = form.save(commit=False)
             tenant.user = user
             tenant.landload = request.user
@@ -565,7 +593,7 @@ def tenant_invite_add(request):
             temp_url=redirect('tenant:tenantverify', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             tenant_invitation_email(user.first_name if user.first_name else ''+' '+user.last_name if user.last_name else "",
-            user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token)
+            user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token,tenant)
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:
@@ -577,7 +605,7 @@ def tenant_invite_add(request):
 
     return render(request,'landload/add_invite_tenant.html',{'form':form,'property':property,'is_tenant':True})
 
-
+@login_required(login_url='/')
 def dues(request):
     query = request.GET.get('q', '')
     # print('*'*1000)
@@ -592,7 +620,7 @@ def dues(request):
         )
     return render(request,'landload/dues.html',{'dues':dues,'search_field':True,'is_payment':True})    
 
-
+@login_required(login_url='/')
 def dues_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)
     form = DuesForm()
@@ -617,7 +645,7 @@ def dues_add(request):
             messages.error(request, mark_safe(error_messages))
     return render(request,'landload/add_dues.html',{'form':form,'property':property,'is_payment':True})
 
-
+@login_required(login_url='/')
 def dues_view(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     property_obj = get_object_or_404(Dues, custom_id=id)
@@ -626,7 +654,7 @@ def dues_view(request,id):
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,
                                                     'rooms':rooms,'is_payment':True})
 
-
+@login_required(login_url='/')
 def dues_update(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     property_obj = get_object_or_404(Dues, pk=id)
@@ -660,7 +688,7 @@ def deactivate_dues(request,id):
     obj.save()
     return JsonResponse(True,safe=False)
 
-
+@login_required(login_url='/')
 def expense(request):
     query = request.GET.get('q', '')
     # print('*'*1000)
@@ -675,7 +703,7 @@ def expense(request):
         )
     return render(request,'landload/expense.html',{'dues':dues,'search_field':True,'is_expence':True})    
 
-
+@login_required(login_url='/')
 def expense_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)
     form = ExpensesForm()
@@ -700,7 +728,7 @@ def expense_add(request):
             messages.error(request, mark_safe(error_messages))
     return render(request,'landload/add_expense.html',{'form':form,'property':property,'is_expence':True})
 
-
+@login_required(login_url='/')
 def expense_view(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     property_obj = get_object_or_404(Expenses, custom_id=id)
@@ -709,7 +737,7 @@ def expense_view(request,id):
     return render(request,'landload/add_expense.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,
                                                     'rooms':rooms,'is_expence':True})
 
-
+@login_required(login_url='/')
 def expense_update(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
     property_obj = get_object_or_404(Expenses, pk=id)
@@ -743,7 +771,7 @@ def deactivate_expense(request,id):
     obj.save()
     return JsonResponse(True,safe=False)
 
-
+@login_required(login_url='/')
 def expenses_list(request):
     data = []
     print('*'*1000)
@@ -762,4 +790,7 @@ def expenses_list(request):
         })
 
     return JsonResponse({'data': data}) 
+
+
+
 

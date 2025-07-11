@@ -117,7 +117,7 @@ def forgetpassword(request):
             # print('token is',token)
             ForgetPassMailVerify(user_id=email.id, link=token).save()
             # token = 'http://127.0.0.1:8000/user/forgetpassword/' + token
-            temp_url=redirect('user:forgetpassword', id=token)
+            temp_url=redirect('user:create_password', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             # print('the whole url is ',token)
 

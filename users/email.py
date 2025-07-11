@@ -74,7 +74,7 @@ def send_from_template(to, subject, template, context, **kwargs):
     # print template
     html_body = render_to_string(template, context)
     print("html body: " + html_body)
-    send(to, subject, html_body, **kwargs)
+    send(to, subject, html_body,from_email='MISU HOUSING', **kwargs)
     return print('send') 
 
 def account_activation_mail(name,email):
@@ -93,16 +93,17 @@ def account_activation_mail(name,email):
         args=(mail_list, email_subject, email_template, context),
     ).start()
 
-def tenant_invitation_email(name,email,landload,token):
+def tenant_invitation_email(name,email,landload,token,tenant):
     '''just for customized the email via admin'''
-    mail_list, email_subject = email, 'You have been invited to create Tenant profile for the Property'
+    mail_list, email_subject = email, 'Invitation to Complete Your Tenant Profile'
     email_template = "email/tenant_invitation.html"
     # objectdata=Email.object.get(id=2)
     context = {
         "name": name,
         "email":email,
         'landload':landload,
-        'token':token
+        'token':token,
+        'tenant':tenant
         # "object":objectdata
         
         # "base_url": settings.DOMAIN + settings.MEDIA_URL,

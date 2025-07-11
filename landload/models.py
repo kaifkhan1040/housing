@@ -151,6 +151,12 @@ class Country(models.Model):
 
 
 class Tenant(models.Model):
+    RESIDENCE_STATUS = [
+        ('Citizen', 'Citizen'),
+        ('EU Settled', 'EU Settled'),
+        ('Indefinite Leave to Remain', 'Indefinite Leave to Remain'),
+        ('Visa', 'Visa'),
+    ]
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,blank=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='landload_properties')
     property=models.ForeignKey(Property,on_delete=models.CASCADE)
@@ -164,6 +170,13 @@ class Tenant(models.Model):
     bank_statement=models.ImageField(upload_to='tenant/bank_statement',blank=True,null=True)
     custom_id = models.CharField(max_length=10, unique=True, blank=True)
     is_active = models.BooleanField(default=True)
+    residence_status = models.CharField(max_length=50, choices=RESIDENCE_STATUS)
+    visa_type = models.CharField(max_length=100, blank=True, null=True)
+    visa_from = models.DateField(blank=True, null=True)
+    visa_to = models.DateField(blank=True, null=True)
+    evisa_code = models.CharField(max_length=100, blank=True, null=True)
+    right_to_rent_code = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.custom_id:
@@ -188,6 +201,24 @@ class Tenant(models.Model):
                     next_number += 1
 
         super().save(*args, **kwargs)
+
+
+class AddressHistory(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='addresses')
+    
+    landlord_name = models.CharField(max_length=100)
+    landlord_contact = models.CharField(max_length=20, blank=True, null=True)
+    landlord_email = models.EmailField(blank=True, null=True)
+
+    from_date = models.DateField()
+    to_date = models.DateField()
+
+    line1 = models.CharField(max_length=255)
+    line2 = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    postcode = models.CharField(max_length=10)
+    
 
 class TenentProfileVerify(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)

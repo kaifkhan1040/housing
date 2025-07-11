@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses
+from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses,AddressHistory
 from django.forms.widgets import FileInput
 
 class PropertyForm(ModelForm):
@@ -234,3 +234,36 @@ class TenantInviteReadOnlyForm(TenantForm):
 
 class LocationForm(forms.Form):
     location = forms.CharField(label='Your Location', max_length=255)
+
+
+class TenantStep1Form(forms.ModelForm):
+    class Meta:
+        model = Tenant
+        fields = ['residence_status', 'visa_type', 'visa_from', 'visa_to', 'evisa_code', 'right_to_rent_code']
+        widgets = {
+            'visa_from': forms.DateInput(attrs={'type': 'date'}),
+            'visa_to': forms.DateInput(attrs={'type': 'date'}),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['residence_status'].widget.attrs.update({'class': 'form-select valid'})
+
+
+class AddressHistoryForm(forms.ModelForm):
+    class Meta:
+        model = AddressHistory
+        exclude = ['user']
+        widgets = {
+            'from_date': forms.DateInput(attrs={'type': 'date'}),
+            'to_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['landlord_name'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['landlord_name'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['landlord_name'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['landlord_name'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['landlord_name'].widget.attrs.update({'class': 'form-control valid'})
+        self.fields['landlord_name'].widget.attrs.update({'class': 'form-control valid'})

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Rooms,Property,Tenant,TenentProfileVerify,Dues,Country,\
-    FinancialBreakdown,FinancialOtherModel,PropertyImage
+    FinancialBreakdown,FinancialOtherModel,PropertyImage,AddressHistory
 # Register your models here.
 admin.site.register(Rooms)
 admin.site.register(Property)
@@ -11,3 +11,4 @@ admin.site.register(Country)
 admin.site.register(FinancialBreakdown)
 admin.site.register(FinancialOtherModel)
 admin.site.register(PropertyImage)
+admin.site.register(AddressHistory)

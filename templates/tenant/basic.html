@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="loading" lang="en" data-textdirection="ltr">
+
+<html class="loading dark-layout" lang="en" data-layout="dark-layout" data-textdirection="ltr">
 <!-- BEGIN: Head-->
 
 <head>
@@ -360,7 +361,7 @@
     <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
         <div class="navbar-header">
             <ul class="nav navbar-nav flex-row">
-                <img src="{% static 'app-assets/images/kiatech_logo/logo.png' %}" width="100px" height="40px">
+                <img src="{% static 'app-assets/images/misu_logo/logo2.png' %}" width="100px" height="60px">
                 {% comment %} <li class="nav-item me-auto"><a class="navbar-brand" href="{% url 'customadmin:home' %}"><span class="brand-logo"> {% endcomment %}
                     <li class="nav-item me-auto"><a class="navbar-brand" href="#"><span class="brand-logo">
                             {% comment %} <svg viewbox="0 0 139 95" version="1.1" xmlns="http://127.0.0.1:8000/static/app-assets/images/ticketing_logo/LOGO.png" xmlns:xlink="http://127.0.0.1:8000/static/app-assets/images/ticketing_logo/LOGO.png" height="24">
@@ -397,7 +398,7 @@
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
                 {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'landload:home' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a> {% endcomment %}
-                    <li class=" nav-item"><a class="d-flex align-items-center" href="{% url "tenant:home" %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a>
+                    {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url "tenant:home" %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboards">Dashboards</span><span class="badge badge-light-warning rounded-pill ms-auto me-1"></span></a> {% endcomment %}
                     {% comment %} <ul class="menu-content">
                         <li><a class="d-flex align-items-center" href="dashboard-analytics.html"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Analytics">Analytics</span></a>
                         </li>
@@ -405,8 +406,8 @@
                         </li>
                     </ul> {% endcomment %}
                 </li>
-                <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Apps &amp; Pages</span><i data-feather="more-horizontal"></i>
-                </li>
+                {% comment %} <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Apps &amp; Pages</span><i data-feather="more-horizontal"></i>
+                </li> {% endcomment %}
                  {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="app-email.html"><i data-feather="mail"></i><span class="menu-title text-truncate" data-i18n="Email">Email</span></a>
                 </li>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="app-chat.html"><i data-feather="message-square"></i><span class="menu-title text-truncate" data-i18n="Chat">Chat</span></a>
@@ -451,11 +452,17 @@
                         </li>
                     </ul>
                 </li>  {% endcomment %}
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">landloads</span></a>
-                <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:home' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="User">Properties</span></a> -->
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="user-check"></i><span class="menu-title text-truncate" data-i18n="User">Agents</span></a>
-                <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:home' %}"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Tenants</span></a> -->
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="headphones"></i><span class="menu-title text-truncate" data-i18n="User">Support</span></a>
+                {% if  is_locked %}
+                <li class=" nav-item {% if is_onbonding %}active{% endif %}" ><a class="d-flex align-items-center" href="#"><i data-feather="user-plus"></i><span class="menu-title text-truncate" data-i18n="User">Onboarding</span></a>
+                    {% else %}
+                <li class=" nav-item dis "{% if is_locked %}disabled{% endif %} ><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"grid"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Global Menu</span></a>
+                    {% endif %}
+                <li class=" nav-item {% if is_dashboard %}active {% endif %} " {% if is_locked %}disabled readonly{% endif %}><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"bar-chart-2"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Dashboard</span></a>
+                <li class=" nav-item {% if is_dashboard %}active {% endif %}" {% if is_locked %}disabled readonly{% endif %}><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"message-square"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Messages</span></a>
+                <li class=" nav-item {% if is_dashboard %}active {% endif %}" {% if is_locked %}disabled readonly{% endif %}><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"credit-card"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Payments</span></a>
+                <li class=" nav-item {% if is_dashboard %}active {% endif %}" {% if is_locked %}disabled readonly{% endif %}><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"file-minus"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Expenses</span></a>
+                <li class=" nav-item {% if is_dashboard %}active {% endif %}" {% if is_locked %}disabled readonly{% endif %}><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"tool"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Maintenance</span></a>
+                <li class=" nav-item {% if is_dashboard %}active {% endif %}" {% if is_locked %}disabled readonly{% endif %}><a class="d-flex align-items-center" href="#"><i data-feather={% if is_locked %}"lock"{% else %}"settings"{% endif %}></i><span class="menu-title text-truncate" data-i18n="User">Account</span></a>
                             {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:leave' %}"><i data-feather="calendar"></i><span class="menu-title text-truncate" data-i18n="User">User Attendance</span></a> {% endcomment %}
                                 
                                 {% comment %} <ul class="menu-content">
