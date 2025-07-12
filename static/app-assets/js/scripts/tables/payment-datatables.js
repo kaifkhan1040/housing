@@ -20,7 +20,7 @@ $(function () {
   if (dt_basic_table.length) {
     var dt_basic = dt_basic_table.DataTable({
       ajax: {
-                    url: '/landload/listing_list',
+                    url: '/landload/payment_list',
                     dataSrc: 'data'
                 },
       columns: [
@@ -28,10 +28,12 @@ $(function () {
           { data: null, defaultContent: '', orderable: false }, // 2 checkbox
           { data: 'sr' },        // ✅ sr should match the backend key
           { data: 'id' },
-          { data: 'name' },
-          { data: 'profit' },
-          { data: 'dues' },
-          { data: 'loss' },
+          { data: 'Full_name' },
+          { data: 'Property' },
+          { data: 'Rent' },
+          { data: 'Total Dues' },
+          { data: 'Last Payment' },
+          { data: 'Payment Settled till' },
           { data: null }
       ],
       columnDefs: [
@@ -68,7 +70,7 @@ $(function () {
         {
     targets: 3,  // ID column
     render: function (data, type, full, meta) {
-      return `<a href="/landload/listing-dashboard/${data}/" class="text-primary">${data}</a>`;
+      return `<a href="/landload/dues-view/${data}/" class="text-primary">${data}</a>`;
     }
   },
 
@@ -175,12 +177,12 @@ $(function () {
           }
         },
         {
-           text: feather.icons['plus'].toSvg({ class: 'mr-50 font-small-4' }) + 'Add Listing',
+           text: feather.icons['plus'].toSvg({ class: 'mr-50 font-small-4' }) + 'Add Records',
           className: 'create-new btn btn-primary',
           id: "createlisting001",
           action: function (e, dt, node, config) {
             // Redirect to your desired creation page
-            window.location.href = "/landload/listing-add"; // change this URL as needed
+            window.location.href = "/landload/dues-add"; // change this URL as needed
           },
           init: function (api, node, config) {
             $(node).removeClass('btn-secondary');
@@ -227,7 +229,7 @@ $(function () {
         }
       }
     });
-    $('div.head-label').html('<h6 class="mb-0">All Listings</h6>');
+    $('div.head-label').html('<h6 class="mb-0">All Payments</h6>');
   }
 
   // Flat Date picker

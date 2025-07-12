@@ -26,6 +26,7 @@ class Property(models.Model):
     rental_type= models.CharField(max_length=25,choices=(('Single Ownership','Single Ownership'),('Multi Ownership','Multi Ownership' )),blank=False)
     is_active =models.BooleanField(default=True)
     property_description = models.TextField(blank=True,null=True)
+  
 
     def __str__(self):
         return f"{self.short_name} - {self.name}"
@@ -177,6 +178,22 @@ class Tenant(models.Model):
     evisa_code = models.CharField(max_length=100, blank=True, null=True)
     right_to_rent_code = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    employer_name = models.CharField(max_length=100, blank=True, null=True)
+    employer_address =models.CharField(max_length=700, blank=True, null=True)
+    employment_From=  models.DateField(blank=True, null=True)
+    employment_to=  models.DateField(blank=True, null=True)
+    salary = models.FloatField(null=True,blank=True)
+    bank_name = models.CharField(max_length=500)
+    account_type = models.CharField(max_length=50,choices=[('Personal','Personal'),('Business','Business')])
+    sort_code = models.CharField(max_length=50)
+    account_number =models.CharField(max_length=50) 
+    address_proof = models.CharField(max_length=50,choices=[('Passport','Passport'),('Driving License','Driving License')])
+    self_photo = models.ImageField(upload_to='tenant/self/')
+    visa_letter  = models.ImageField(upload_to='tenant/visa/')
+    bank_statement = models.ImageField(upload_to='tenant/bank/')
+    pay_slips = models.ImageField(upload_to='tenant/payslip/')
+    other = models.BooleanField(default=False)
+    is_agree = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.custom_id:
@@ -202,6 +219,11 @@ class Tenant(models.Model):
 
         super().save(*args, **kwargs)
 
+class DocumentOthers(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='bankother')
+    
+    document_type = models.CharField(max_length=100)
+    upload_document = models.ImageField(upload_to='tenant/document')
 
 class AddressHistory(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='addresses')
@@ -218,6 +240,9 @@ class AddressHistory(models.Model):
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
     postcode = models.CharField(max_length=10)
+
+class EmploymentHistory(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='profession')
     
 
 class TenentProfileVerify(models.Model):

@@ -70,14 +70,15 @@
                                            <input type="hidden" name="room_id" value="{{ room.id }}">
                                             
                                             <div class="row mb-2">
-                                                <div class="col-auto">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         {% comment %} <label for="username"></label> {% endcomment %}
-                                                        <h4 class="mt-2">Room {{forloop.counter}}</h4>
-                                                        
+                                                        {% comment %} <h4 class="mt-2">Room {{forloop.counter}}</h4> {% endcomment %}
+                                                        <label class="form-label d-block ">Room {{ forloop.counter }}</label>
+                                                        <input type="text" class="form-control"  value="{{ room.room_code }}" readonly >
                                                     </div>
                                                 </div>
-                                                <div class="col-auto">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label class="form-label d-block " for="username">Room Type</label>
                                                         <select name="type_of_room" class="form-select">
@@ -89,7 +90,7 @@
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-auto">
+                                                <div class="col-md-1">
                                                     <div class="form-group">
                                                         <label class="form-label d-block " for="username">Ensuite</label>
                                                        <select name="ensuite" class="form-select">
@@ -99,9 +100,9 @@
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-auto">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
-                                                        <label class="form-label d-block " for="username">Total Capacity</label>
+                                                        <label class="form-label d-block " for="username">Max Capacity</label>
                                                         <select name="total_capacity" class="form-select">
                                                             {% for n in "12345" %}
                                                             <option value="{{ n }}" {% if room.total_capacity == n %}selected{% endif %}>{{ n }}</option>
@@ -113,7 +114,7 @@
                                                 
                                            
                                            
-                                                <div class="col-auto">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label class="form-label d-block " for="username">Rent</label>
                                                         <select name="rent" class="form-select">
@@ -121,49 +122,28 @@
                                                             <option value="Weekly" {% if room.rent == "Weekly" %}selected{% endif %}>Weekly</option>
                                                             <option value="Monthly" {% if room.rent == "Monthly" %}selected{% endif %}>Monthly</option>
                                                         </select>
-                                                        {% comment %} <input type="number" name="rent" value="{{ room.rent }}" step="0.01" class="form-control"> {% endcomment %}
+                                                    </div>      
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="form-label d-block" for="username">Rent Amount</label>
+                                                        <input type='number' class="form-control" {% if room.rent_ammount %}value={{room.rent_ammount}} {% endif %} name='rent_ammount'>
                                                         
-                                                            {% comment %} <div>
-                                                            <div class="form-check form-check-inline">
-                                                            <input type="radio" name="rent{{room.id}}" value="Weekly" class="form-check-input"  id="id_collect_rent_{{room.id}}" >
-                                                            <label class="form-check-label" for="id_collect_rent_0">
-                                                                Weekly
-                                                            </label>
-                                                            </div>
-                                                        
-                                                            <div class="form-check form-check-inline">
-                                                            <input type="radio" name="rent{{room.id}}" value="Monthly" class="form-check-input"  id="id_collect_rent_{{room.id}}"  >
-                                                            <label class="form-check-label" for="id_collect_rent_1">
-                                                                Monthly
-                                                            </label>
-                                                            </div> {% endcomment %}
-                                                        </div>
-                                                        
-                                                       
-                                                            
-                                                        
-                                                        
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <div class="form-group">
-                                                            <label class="form-label d-block" for="username">Rent Amount</label>
-                                                           <input type='number' class="form-control" {% if room.rent_ammount %}value={{room.rent_ammount}} {% endif %} name='rent_ammount'>
-                                                            
-                                                        </div>
                                                     </div>
                                                 </div>
+                                            </div>
                                                
                                                 
                                 
-                                            </div>
+                                            
                                              {% endfor %}
                                                 
-                                            </div>
-                                            <div class="col-12 d-flex flex-sm-row flex-column mt-2">
-                                                <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1">Save Changes</button>
-                                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
-                                            </div>
                                         </div>
+                                        <div class="col-12 d-flex flex-sm-row flex-column mt-2">
+                                            <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1">Save Changes</button>
+                                            <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                                        </div>
+                                        
                                     </form>
                                     
                                 </div>

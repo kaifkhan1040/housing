@@ -331,21 +331,19 @@ def room(request,id):
         print(rents)
         for  room_ids,type_, ensuite, capacity,amount in zip(room_ids, types, ensuites, capacities,amounts):
             if room_ids:  
-                try:
-                    room = Rooms.objects.get(id=room_ids, property=property_obj)
-                except Rooms.DoesNotExist:
-                    room = Rooms(property=property_obj)
-            else:
-                room = Rooms(property=property_obj)
-            room.type_of_room = type_
-            room.ensuite = ensuite
-            room.total_capacity = capacity
-            room.rent_ammount = amount
-            rent_value = request.POST.get(f'rent_{room_ids}') or request.POST.get(f'collect_rent_{room_ids}')
-            # if rent_value:
-            #     room.rent = float(rent_value) if rent_value.isdigit() else rent_value 
-            # room.rent = float(rent)
-            room.save()
+                room = Rooms.objects.filter(id=room_ids).first()
+                print('rooom',room)
+                if room:
+                    room.type_of_room = type_
+                    room.ensuite = ensuite
+                    room.total_capacity = capacity
+                    room.rent_ammount = amount
+                    room.save()
+                # rent_value = request.POST.get(f'rent_{room_ids}') or request.POST.get(f'collect_rent_{room_ids}')
+                # if rent_value:
+                #     room.rent = float(rent_value) if rent_value.isdigit() else rent_value 
+                # room.rent = float(rent)
+                
         messages.success(request, f'Rooms has been updated successfully!')
         return redirect('landload:listing_view', id=property_obj.custom_id)
 

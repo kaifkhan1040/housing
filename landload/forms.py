@@ -251,6 +251,48 @@ class TenantStep1Form(forms.ModelForm):
         self.fields['residence_status'].widget.attrs.update({'class': 'form-select valid'})
 
 
+class TenantProfessionForm(forms.ModelForm):
+    class Meta:
+        model = Tenant
+        fields = ['employer_name', 'employer_address', 'employment_From', 'employment_to', 'salary']
+        widgets = {
+            'employment_From': forms.DateInput(attrs={'type': 'date'}),
+            'employment_to': forms.DateInput(attrs={'type': 'date'}),
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+class TenantDocumentsForm(forms.ModelForm):
+    class Meta:
+        model = Tenant
+        fields = ['address_proof', 'self_photo', 'visa_letter', 'bank_statement', 'pay_slips','other']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['address_proof'].widget.attrs.update({'class': 'form-select'})
+        self.fields['other'].widget.attrs.update({'class': 'form-check-input',"id":'customCheck001'})
+
+class TenantBankForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['account_type'].choices = [
+                choice for choice in self.fields['account_type'].choices if choice[0] != ''
+            ]
+        self.fields['account_type'].widget.attrs.update({'class': 'form-check-input'})
+    class Meta:
+        model = Tenant
+        fields = ['bank_name', 'account_type', 'sort_code', 'account_number']
+        widgets = {
+            'account_type': forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        }
+
+
 class AddressHistoryForm(forms.ModelForm):
     class Meta:
         model = AddressHistory

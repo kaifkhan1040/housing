@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
-from landload.models import TenentProfileVerify,Property,Rooms,Tenant,AddressHistory
-from landload.forms import TenantInviteReadOnlyForm,TenantStep1Form,AddressHistoryForm
+from landload.models import TenentProfileVerify,Property,Rooms,Tenant,AddressHistory,DocumentOthers
+from landload.forms import TenantInviteReadOnlyForm,TenantStep1Form,AddressHistoryForm,TenantProfessionForm,\
+        TenantBankForm,TenantDocumentsForm
 from users.models import CustomUser
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -98,23 +99,37 @@ def tenantverify(request, id):
 @login_required
 def tenant_step1(request):
     tenant = Tenant.objects.filter(user=request.user, is_active=True).first()
+    form = TenantStep1Form(instance=tenant)
     if not tenant:
         tenant = Tenant(user=request.user)
 
     if request.method == 'POST':
-        form = TenantStep1Form(request.POST, instance=tenant)
-        if form.is_valid():
-            tenant = form.save(commit=False)
-            tenant.user = request.user
-            tenant.landload = tenant.property.landload
+        print('*'*1000)
+        agree_data=request.POST.get('agree')
+        print(agree_data)
+        if agree_data:
+            tenant.is_agree=True if agree_data else False
             tenant.save()
-            request.session['tenant_id'] = tenant.id
-            return redirect('tenant_step2')
-    else:
-        form = TenantStep1Form(instance=tenant)
-        formaddress=AddressHistoryForm()
+            messages.success(request,'Please wait while we complete the referencing checklist')
+            return redirect('tenant:home')
+        # form = TenantStep1Form(request.POST, instance=tenant)
+        # if form.is_valid():
+        #     tenant = form.save(commit=False)
+        #     tenant.user = request.user
+        #     tenant.landload = tenant.property.landload
+        #     tenant.save()
+        #     request.session['tenant_id'] = tenant.id
+    
+    form = TenantStep1Form(instance=tenant)
+    formaddress=AddressHistoryForm()
+    form2=TenantProfessionForm(instance=tenant)
+    addhistory=AddressHistory.objects.filter(tenant=tenant)
+    form3=TenantBankForm(instance=tenant)
+    form4=TenantDocumentsForm(instance=tenant)
 
-    return render(request, 'tenant/step1.html', {'tenant_obj':tenant,'form': form, 'step': 1,"is_locked":True,'is_onbonding':True,'formaddress':formaddress})
+    return render(request, 'tenant/step1.html', {'tenant_obj':tenant,'form': form,'form2':form2,'form3':form3,\
+                                                  'step': 1,"is_locked":True,'is_onbonding':True,'formaddress':formaddress,\
+                                                    'form4':form4,'addhistory':addhistory,'tenant':tenant})
 
 def submit_step(request, step):
     if request.method == 'POST':
@@ -135,6 +150,7 @@ def submit_step(request, step):
             user.email=email if email else request.user.email
             user.phone_number=phone_number if phone_number else request.user.phone_number
             user_data=user.save()
+            AddressHistory.objects.filter(tenant=tenant).delete()
             if form.is_valid():
                 tenant = form.save()
                 other_landlord_name = []
@@ -176,7 +192,7 @@ def submit_step(request, step):
                                                                          other_line1,other_line2,other_city,other_country,other_postcode):
                     if landlord_name.strip() or landlord_contact.strip() or history_email or history_from_date or \
                         history_to_date or line1 or line2 or city or country or postcode:
-                        AddressHistory.objects.create(
+                        AddressHistory.objects.update_or_create(
                             tenant=tenant,
                             landlord_name=landlord_name,landlord_contact=landlord_contact,
                             landlord_email=history_email,from_date=history_from_date,
@@ -188,3 +204,46 @@ def submit_step(request, step):
             else:
                 print('error',form.errors)
                 return JsonResponse({'success': False,"formid":form.errors})
+            
+        elif step == '2':
+            form = TenantProfessionForm(request.POST, instance=tenant)
+            if form.is_valid():
+                tenant = form.save()
+                return JsonResponse({'success': True,"formid":'formid'})
+            else:
+                print('error',form.errors)
+                return JsonResponse({'success': False,"formid":form.errors})
+            
+        elif step == '3':
+            form = TenantBankForm(request.POST, instance=tenant)
+            if form.is_valid():
+                tenant = form.save()
+                return JsonResponse({'success': True,"formid":'formid'})
+            else:
+                print('error',form.errors)
+                return JsonResponse({'success': False,"formid":form.errors})
+        elif step == '4':
+            form = TenantDocumentsForm(request.POST,request.FILES, instance=tenant)
+            if form.is_valid():
+                other_document_type = []
+                other_upload_document = []
+                tenant = form.save()
+                DocumentOthers.objects.filter(tenant=tenant).delete()
+                for key in post_data:
+                    if 'document_type' in key:
+                        other_document_type.append(post_data[key])
+                for key in request.FILES:
+                    if 'upload_document' in key:
+                        other_upload_document.append(request.FILES[key]) 
+                for _type, _doc in zip(other_document_type, other_upload_document):
+                    if _type.strip() or _doc.strip():
+                        DocumentOthers.objects.create(
+                            tenant=tenant,
+                            document_type=_type,
+                            upload_document=_doc    
+                        )
+                return JsonResponse({'success': True,"formid":'formid'})
+            else:
+                print('error',form.errors)
+                return JsonResponse({'success': False,"formid":form.errors})
+
