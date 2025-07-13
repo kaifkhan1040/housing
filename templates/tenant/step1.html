@@ -1126,7 +1126,7 @@
             <i data-feather="arrow-left" class="align-middle mr-sm-25 mr-0"></i>
             <span class="align-middle d-sm-inline-block d-none">Previous</span>
           </button>
-          <button type="button" onclick='funsubmit()' class="btn btn-success">Submit</button>
+          <button type="button" onclick='funsubmit()' id="sub001" class="btn btn-success" {% if not tenant.is_agree %}disabled{% endif %} >Submit</button>
         </div>
       </div>
   
@@ -1169,6 +1169,21 @@
       $('#repeater-section').slideUp();
     }
   });
+});
+$(document).ready(function () {
+  const checkbox = $('#inlineCheckbox1');
+  const button = $('#sub001');
+
+  function toggleButton() {
+    if (checkbox.is(':checked')) {
+      button.removeAttr('disabled');
+    } else {
+      button.attr('disabled', true);
+    }
+  }
+
+  checkbox.on('change', toggleButton);
+  toggleButton(); // Run on page load
 });
 
   function funsubmit(){
