@@ -132,6 +132,7 @@
     <script src="{% static 'app-assets/js/scripts/pages/auth-login.js' %}"></script>
     <!-- END: Page JS-->
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% if messages %}
     <script>
         {% for message in messages %}
@@ -156,12 +157,14 @@
 
             Swal.fire({
                 title: title,
-                text: "{{ message|striptags }}",  // Remove unwanted HTML
-                icon: icon
+                text: "{{ message|striptags }}",  
+                icon: icon,
+                background: '#1e1e1e',   
+                color: '#ffffff'
             });
         {% endfor %}
     </script>
-    {% endif %}
+{% endif %}
     <script>
         $(window).on('load', function() {
             if (feather) {

@@ -63,7 +63,7 @@
                               <span class="bs-stepper-box">2</span>
                               <span class="bs-stepper-label">
                                 <span class="bs-stepper-title">Step 2</span>
-                                <span class="bs-stepper-subtitle">Profession </span>
+                                <span class="bs-stepper-subtitle">Add Profession </span>
                               </span>
                             </button>
                           </div>
@@ -213,201 +213,200 @@
               <h6 class='mb-2'>Address History</h6>
               <div data-repeater-list="invoice">
                 {% if addhistory %}
-                {% for i in addhistory %}
-                                            <div data-repeater-item>
-                                                <div class="row d-flex align-items-end">
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="itemname">Landlord/Agent Name</label>
-                                                            <input type="text" required class="form-control" id="landlord_name" name='landlord_name' value='{{i.landlord_name}}' aria-describedby="itemname"  />
-                                                        </div>
-                                                    </div>
+                  {% for i in addhistory %}
+                    <div data-repeater-item>
+                        <div class="row d-flex align-items-end">
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemname">Landlord/Agent Name</label>
+                                    <input type="text" required class="form-control" id="landlord_name" name='landlord_name' value='{{i.landlord_name}}' aria-describedby="itemname"  />
+                                </div>
+                            </div>
 
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="itemcost">Landlord Contact Number</label>
-                                                            <input type="number" required class="form-control" id="landlord_contact" name='landlord_contact' value='{{i.landlord_contact}}' aria-describedby="itemcost"  />
-                                                        </div>
-                                                    </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemcost">Landlord Contact Number</label>
+                                    <input type="number" required class="form-control" id="landlord_contact" name='landlord_contact' value='{{i.landlord_contact}}' aria-describedby="itemcost"  />
+                                </div>
+                            </div>
 
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="itemquantity">Landlord Email</label>
-                                                            <input type="email" required class="form-control" id="landlord_email" name="history_email" value='{{i.landlord_email}}' aria-describedby="itemquantity"  />
-                                                        </div>
-                                                    </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemquantity">Landlord Email</label>
+                                    <input type="email" required class="form-control" id="landlord_email" name="history_email" value='{{i.landlord_email}}' aria-describedby="itemquantity"  />
+                                </div>
+                            </div>
 
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">From </label>
-                                                            <input type="date" required class="form-control" id="from_date" value='{{ i.from_date|date:'Y-m-d' }}' name="history_from_date"  />
-                                                        </div>
-                                                    </div>
-                                                  </div>
-                                                  <div class="row d-flex align-items-end">
-                                                    <div class="col-md-3 col-12">
-                                                    <div class="form-group">
-                                                            <label for="staticprice">To </label>
-                                                            <input type="date" required class="form-control" id="to_date" value='{{ i.to_date|date:'Y-m-d' }}' name="history_to_date"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">Address Line 1  </label>
-                                                            <input type="text" required class="form-control" id="line1" value='{{i.line1}}' name="line1"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">Address Line 2 </label>
-                                                            <input type="text" class="form-control" id="line2" value='{{i.line2}}' name="line2"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">City </label>
-                                                            <input type="text" required class="form-control" id="city" value='{{i.city}}' name="city"  />
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    <div class="row d-flex align-items-end">
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                              <label for="staticprice">Country  </label>
-                                                              <input type="text" required class="form-control" id="country" value='{{i.country}}' name="country"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                              <label for="staticprice">Post Code </label>
-                                                              <input type="text" required class="form-control" id="postcode" value='{{i.postcode}}' name="postcode"  />
-                                                        </div>
-                                                      </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="staticprice">From </label>
+                                    <input type="date" required class="form-control" id="from_date" value='{{ i.from_date|date:'Y-m-d' }}' name="history_from_date"  />
+                                </div>
+                            </div>
+                        </div>
+                          <div class="row d-flex align-items-end">
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                <label for="staticprice">To </label>
+                                <input type="date" required class="form-control" id="to_date" value='{{ i.to_date|date:'Y-m-d' }}' name="history_to_date"  />
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="staticprice">Address Line 1  </label>
+                                  <input type="text" required class="form-control" id="line1" value='{{i.line1}}' name="line1"  />
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="staticprice">Address Line 2 </label>
+                                  <input type="text" class="form-control" id="line2" value='{{i.line2}}' name="line2"  />
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="staticprice">City </label>
+                                  <input type="text" required class="form-control" id="city" value='{{i.city}}' name="city"  />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row d-flex align-items-end">
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                    <label for="staticprice">Country  </label>
+                                    <input type="text" required class="form-control" id="country" value='{{i.country}}' name="country"  />
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                    <label for="staticprice">Post Code </label>
+                                    <input type="text" required class="form-control" id="postcode" value='{{i.postcode}}' name="postcode"  />
+                              </div>
+                            </div>
 
-                                                    <div class="col-md-2 col-12 mb-50">
-                                                        <div class="form-group">
-                                                            <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
-                                                                <i data-feather="x" class="mr-25"></i>
-                                                                <span>Delete</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <hr />
-                                            </div>
-                                            {% endfor %}
-                                            {% else %}
-                                             <div data-repeater-item>
-                                                <div class="row d-flex align-items-end">
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="itemname">Landlord/Agent Name</label>
-                                                            <input type="text" required class="form-control" id="landlord_name" name='landlord_name' aria-describedby="itemname"  />
-                                                        </div>
-                                                    </div>
+                            <div class="col-md-2 col-12 mb-50">
+                                <div class="form-group">
+                                    <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                                        <i data-feather="x" class="mr-25"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                          </div>
+                        <hr />
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div data-repeater-item>
+                      <div class="row d-flex align-items-end">
+                          <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="itemname">Landlord/Agent Name</label>
+                                  <input type="text" required class="form-control" id="landlord_name" name='landlord_name' aria-describedby="itemname"  />
+                              </div>
+                          </div>
 
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="itemcost">Landlord Contact Number</label>
-                                                            <input type="number" required class="form-control" id="landlord_contact" name='landlord_contact' aria-describedby="itemcost"  />
-                                                        </div>
-                                                    </div>
+                          <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="itemcost">Landlord Contact Number</label>
+                                  <input type="number" required class="form-control" id="landlord_contact" name='landlord_contact' aria-describedby="itemcost"  />
+                              </div>
+                          </div>
 
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="itemquantity">Landlord Email</label>
-                                                            <input type="email" required class="form-control" id="landlord_email" name="history_email" aria-describedby="itemquantity"  />
-                                                        </div>
-                                                    </div>
+                          <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="itemquantity">Landlord Email</label>
+                                  <input type="email" required class="form-control" id="landlord_email" name="history_email" aria-describedby="itemquantity"  />
+                              </div>
+                          </div>
 
-                                                    <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">From </label>
-                                                            <input type="date" required class="form-control" id="from_date" name="history_from_date"  />
-                                                        </div>
-                                                    </div>
-                                                  </div>
-                                                  <div class="row d-flex align-items-end">
-                                                    <div class="col-md-3 col-12">
-                                                    <div class="form-group">
-                                                            <label for="staticprice">To </label>
-                                                            <input type="date" required class="form-control" id="to_date" name="history_to_date"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">Address Line 1  </label>
-                                                            <input type="text" required class="form-control" id="line1" name="line1"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">Address Line 2 </label>
-                                                            <input type="text" class="form-control" id="line2" name="line2"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                            <label for="staticprice">City </label>
-                                                            <input type="text" required class="form-control" id="city" name="city"  />
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                    <div class="row d-flex align-items-end">
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                              <label for="staticprice">Country  </label>
-                                                              <input type="text" required class="form-control" id="country" name="country"  />
-                                                        </div>
-                                                      </div>
-                                                      <div class="col-md-3 col-12">
-                                                        <div class="form-group">
-                                                              <label for="staticprice">Post Code </label>
-                                                              <input type="text" required class="form-control" id="postcode" name="postcode"  />
-                                                        </div>
-                                                      </div>
+                          <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="staticprice">From </label>
+                                  <input type="date" required class="form-control" id="from_date" name="history_from_date"  />
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row d-flex align-items-end">
+                        <div class="col-md-3 col-12">
+                          <div class="form-group">
+                                <label for="staticprice">To </label>
+                                <input type="date" required class="form-control" id="to_date" name="history_to_date"  />
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-12">
+                          <div class="form-group">
+                              <label for="staticprice">Address Line 1  </label>
+                              <input type="text" required class="form-control" id="line1" name="line1"  />
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-12">
+                          <div class="form-group">
+                              <label for="staticprice">Address Line 2 </label>
+                              <input type="text" class="form-control" id="line2" name="line2"  />
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-12">
+                          <div class="form-group">
+                              <label for="staticprice">City </label>
+                              <input type="text" required class="form-control" id="city" name="city"  />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row d-flex align-items-end">
+                          <div class="col-md-3 col-12">
+                            <div class="form-group">
+                                  <label for="staticprice">Country  </label>
+                                  <input type="text" required class="form-control" id="country" name="country"  />
+                            </div>
+                          </div>
+                          <div class="col-md-3 col-12">
+                            <div class="form-group">
+                                  <label for="staticprice">Post Code </label>
+                                  <input type="text" required class="form-control" id="postcode" name="postcode"  />
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-12 mb-50">
+                              <div class="form-group">
+                                  <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                                      <i data-feather="x" class="mr-25"></i>
+                                      <span>Delete</span>
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                      <hr />
+                  </div>
+                {% endif %}
+              </div>
+              <div class="row">
+                  <div class="col-12">
+                      <button class="btn btn-icon btn-primary" type="button" data-repeater-create>
+                          <i data-feather="plus" class="mr-25"></i>
+                          <span>Add New</span>
+                      </button>
+                  </div>
+              </div>
 
-                                                    <div class="col-md-2 col-12 mb-50">
-                                                        <div class="form-group">
-                                                            <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
-                                                                <i data-feather="x" class="mr-25"></i>
-                                                                <span>Delete</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <hr />
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <button class="btn btn-icon btn-primary" type="button" data-repeater-create>
-                                                    <i data-feather="plus" class="mr-25"></i>
-                                                    <span>Add New</span>
-                                                </button>
-                                            </div>
-                                        </div>
+              <script>
+                function toggleVisaFields() {
+                    const residenceSelect = document.getElementById('id_residence_status');
+                    const visaFields = document.querySelectorAll('.visa-details');
 
-          <script>
-                              function toggleVisaFields() {
-                                  const residenceSelect = document.getElementById('id_residence_status');
-                                  const visaFields = document.querySelectorAll('.visa-details');
+                    if (residenceSelect.value === 'Visa') {
+                      visaFields.forEach(field => {
+                          field.style.display =  'block' 
+                        });
+                    } else {
+                        visaFields.forEach(field => {
+                          field.style.display =  'none' 
+                        });
+                    }
+                }
 
-                                  if (residenceSelect.value === 'Visa') {
-                                    visaFields.forEach(field => {
-                                        field.style.display =  'block' 
-                                      });
-                                  } else {
-                                      visaFields.forEach(field => {
-                                        field.style.display =  'none' 
-                                      });
-                                  }
-                              }
-
-                              document.getElementById('id_residence_status').addEventListener('change', toggleVisaFields);
-                              window.addEventListener('load', toggleVisaFields);
-            </script>
+                document.getElementById('id_residence_status').addEventListener('change', toggleVisaFields);
+                window.addEventListener('load', toggleVisaFields);
+              </script>
            
         </form>
         <div class="d-flex justify-content-between mt-1">
@@ -423,7 +422,7 @@
       </div>
       <div id="personal-info" class="content">
         
-        <form method="POST" id="form-step-2" class='invoice-repeater1'>
+        <form method="POST" id="form-step-2" class='invoice-repeater'>
           {% csrf_token %}
           <input type="hidden" name="formid" {% if property_obj %}value="{{property_obj.id}}"{% endif %}value="">  
           <div class="row mb-2">
@@ -449,10 +448,122 @@
               <label class="form-label" for="country"> Salary Monthly</label>
               {{form2.salary}}
             </div>
-            
-
-           
           </div>
+          <h6 class='mb-2'>Profession History</h6>
+              <div data-repeater-list="invoice">
+                {% if professhistory %}
+                  {% for i in professhistory %}
+                    <div data-repeater-item>
+                        <div class="row d-flex align-items-end">
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemname">Employer Name</label>
+                                    <input type="text" required class="form-control" id="history_employer_name" name='history_employer_name' value='{{i.history_employer_name}}' aria-describedby="itemname"  />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemcost">Employer Address</label>
+                                    <input type="text" required class="form-control" id="history_employer_address" name='history_employer_address' value='{{i.history_employer_address}}' aria-describedby="itemcost"  />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="staticprice">Duration - From </label>
+                                    <input type="date" required class="form-control" id="history_employment_From" value='{{ i.history_employment_From|date:'Y-m-d' }}' name="history_employment_From"  />
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                <label for="staticprice">To </label>
+                                <input type="date" required class="form-control" id="history_employment_to" value='{{ i.history_employment_to|date:'Y-m-d' }}' name="history_employment_to"  />
+                              </div>
+                            </div>
+                        </div>
+                          <div class="row d-flex align-items-end">
+                            
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="staticprice">Salary Monthly  </label>
+                                  <input type="text" required class="form-control" id="history_salary" value='{{i.history_salary}}' name="history_salary"  />
+                              </div>
+                            </div>
+                          
+
+                            <div class="col-md-2 col-12 mb-50">
+                                <div class="form-group">
+                                    <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                                        <i data-feather="x" class="mr-25"></i>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                          </div>
+                        <hr />
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div data-repeater-item>
+                      <div class="row d-flex align-items-end">
+                          <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemname">Employer Name</label>
+                                    <input type="text" required class="form-control" id="history_employer_name" name='history_employer_name'  aria-describedby="itemname"  />
+                                </div>
+                          </div>
+
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="itemcost">Employer Address</label>
+                                    <input type="text" required class="form-control" id="history_employer_address" name='history_employer_address'  aria-describedby="itemcost"  />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label for="from">Duration - From </label>
+                                    <input type="date" required class="form-control" id="history_employment_From" name="history_employment_From"  />
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                <label for="to">To </label>
+                                <input type="date" required class="form-control" id="history_employment_to" name="history_employment_to"  />
+                              </div>
+                            </div>
+                        </div>
+                          <div class="row d-flex align-items-end">
+                            
+                            <div class="col-md-3 col-12">
+                              <div class="form-group">
+                                  <label for="Address">Salary Monthly  </label>
+                                  <input type="text" required class="form-control" id="history_salary"  name="history_salary"  />
+                              </div>
+                            </div>
+                         
+                          <div class="col-md-2 col-12 mb-50">
+                              <div class="form-group">
+                                  <button class="btn btn-outline-danger text-nowrap px-1" data-repeater-delete type="button">
+                                      <i data-feather="x" class="mr-25"></i>
+                                      <span>Delete</span>
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                      <hr />
+                  </div>
+                {% endif %}
+              </div>
+              <div class="row mb-2">
+                  <div class="col-12">
+                      <button class="btn btn-icon btn-primary" type="button" data-repeater-create>
+                          <i data-feather="plus" class="mr-25"></i>
+                          <span>Add New</span>
+                      </button>
+                  </div>
+              </div>
           {% comment %} <div id="repeater-section" style="display:{% if property_obj2.other %}block{% else %} none{% endif %};">
             <div data-repeater-list="invoice">
               {% if property_obj2.other %}
@@ -635,7 +746,7 @@
                                                 <div>
                                                    
                                                     <label for="self_photo-upload" class="btn btn-sm btn-primary mb-75 me-75">Photo</label>
-                                                    <input type="file" name="self_photo" {% if more_fun %} disabled {% endif %} id="self_photo-upload" hidden accept="image/*" />
+                                                    <input type="file" required name="self_photo" {% if more_fun %} disabled {% endif %} id="self_photo-upload" hidden accept="image/*" />
                                                     <p class="mb-0">Allowed file types: png, jpg, jpeg.</p>
                                                    
                                                 </div>
@@ -752,10 +863,10 @@
                                             }
                                             });
                                         </script>
-            <div class="form-group col-md-3">
+            {% comment %} <div class="form-group col-md-3">
               <label class="form-label" for="pay_slips">Pay Slips </label>
               {{form4.pay_slips}}
-            </div>
+            </div> {% endcomment %}
           </div>
            <div class="row mb-2">
             <div class="form-group col-md-3">
@@ -790,13 +901,13 @@
                                         <div class="d-flex mb-2">
                                             <a href="#" class="me-25">
                                                 <img src="{% if i.upload_document %}{{ i.upload_document.url }}{% else %}{% static 'image/logo/payment_proff.jpg' %}{% endif %}"
-                                                    id="upload_document-upload-img" class="uploadedAvatar rounded me-50" 
+                                                    id="upload_document-upload-img" class="uploadedAvatar rounded  mt-2 me-50" 
                                                     alt="profile image" height="100" width="100" />
                                             </a>
                                             <div class="d-flex align-items-end mt-75 ms-1">
                                                 <div>
                                                    
-                                                    <label for="upload_document-upload" class="btn btn-sm btn-primary mb-75 me-75">Pay Slips</label>
+                                                    <label for="upload_document-upload" class="btn btn-sm btn-primary mb-75 me-75">Upload Document</label>
                                                     <input type="file" name="upload_document" {% if more_fun %} disabled {% endif %} id="upload_document-upload" hidden accept="image/*" />
                                                     <p class="mb-0">Allowed file types: png, jpg, jpeg.</p>
                                                    
@@ -847,7 +958,7 @@
                 {% else %}
                 <div data-repeater-item>
                 <div class="row d-flex align-items-end">
-                  <div class="col-md-4 col-12">
+                  <div class="col-md-3 col-12 mb-2">
                     <div class="form-group">
                       <label for="itemname">Document Type</label>
                       <input
@@ -863,8 +974,8 @@
                   </div>
 
 
-
-                  <div class="d-flex mb-2">
+                  <div class="col-md-7 col-12">
+                    <div class="d-flex mb-2">
                                             <a href="#" class="me-25">
                                                 <img src="{% static 'image/logo/payment_proff.jpg' %}"
                                                     id="upload_document-upload-img" class="uploadedAvatar rounded me-50" 
@@ -892,6 +1003,7 @@
                                             }
                                             });
                                         </script>
+                                      </div>
                   {% comment %} <div class="col-md-2 col-12">
                     <div class="form-group">
                       <label for="itemcost">Amount</label>

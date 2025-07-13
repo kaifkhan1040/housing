@@ -869,8 +869,10 @@
 
             Swal.fire({
                 title: title,
-                text: "{{ message|striptags }}",  // Remove unwanted HTML
-                icon: icon
+                text: "{{ message|striptags }}",  
+                icon: icon,
+                background: '#1e1e1e',   
+                color: '#ffffff'
             });
         {% endfor %}
     </script>

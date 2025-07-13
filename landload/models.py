@@ -186,12 +186,12 @@ class Tenant(models.Model):
     bank_name = models.CharField(max_length=500)
     account_type = models.CharField(max_length=50,choices=[('Personal','Personal'),('Business','Business')])
     sort_code = models.CharField(max_length=50)
-    account_number =models.CharField(max_length=50) 
+    account_number =models.CharField(max_length=50,null=True,blank=True) 
     address_proof = models.CharField(max_length=50,choices=[('Passport','Passport'),('Driving License','Driving License')])
-    self_photo = models.ImageField(upload_to='tenant/self/')
-    visa_letter  = models.ImageField(upload_to='tenant/visa/')
-    bank_statement = models.ImageField(upload_to='tenant/bank/')
-    pay_slips = models.ImageField(upload_to='tenant/payslip/')
+    self_photo = models.ImageField(upload_to='tenant/self/',null=True,blank=True)
+    visa_letter  = models.ImageField(upload_to='tenant/visa/',null=True,blank=True)
+    bank_statement = models.ImageField(upload_to='tenant/bank/',null=True,blank=True)
+    pay_slips = models.ImageField(upload_to='tenant/payslip/',null=True,blank=True)
     other = models.BooleanField(default=False)
     is_agree = models.BooleanField(default=False)
 
@@ -224,6 +224,15 @@ class DocumentOthers(models.Model):
     
     document_type = models.CharField(max_length=100)
     upload_document = models.ImageField(upload_to='tenant/document')
+
+
+class professionHistory(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='professionhhistory')
+    history_employer_name = models.CharField(max_length=100, blank=True, null=True)
+    history_employer_address =models.CharField(max_length=700, blank=True, null=True)
+    history_employment_From=  models.DateField(blank=True, null=True)
+    history_employment_to=  models.DateField(blank=True, null=True)
+    history_salary = models.FloatField(null=True,blank=True)
 
 class AddressHistory(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='addresses')

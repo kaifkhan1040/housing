@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
-from landload.models import TenentProfileVerify,Property,Rooms,Tenant,AddressHistory,DocumentOthers
+from landload.models import TenentProfileVerify,Property,Rooms,Tenant,AddressHistory,DocumentOthers,\
+    professionHistory
 from landload.forms import TenantInviteReadOnlyForm,TenantStep1Form,AddressHistoryForm,TenantProfessionForm,\
         TenantBankForm,TenantDocumentsForm
 from users.models import CustomUser
@@ -17,8 +18,8 @@ def index(request):
 
 @login_required(login_url='/')
 def tenantverify(request, id):
-    if (TenentProfileVerify.objects.filter(link=id).exists()):
-        obj = TenentProfileVerify.objects.get(link=id)
+    if (TenentProfileVerify.objects.filter(link=id,verify=False).exists()):
+        obj = TenentProfileVerify.objects.get(link=id,verify=False)
         logout(request)
         if request.method == "POST":
             try:
@@ -29,7 +30,8 @@ def tenantverify(request, id):
                     change_pass = CustomUser.objects.get(email=obj.user)
                     change_pass.set_password(password)
                     change_pass.save()
-                    print("Saved hashed password:", change_pass.password)
+                    obj.verify=True
+                    obj.save()
                     try:
                         newuser = authenticate(request, email=obj.user, password=password)
                     except Exception as e :
@@ -46,7 +48,7 @@ def tenantverify(request, id):
             
         return render(request,'registration/tenant_set_pass.html')
     else:
-        messages.error(request, f'Invalid token')
+        messages.error(request, f'Invalid Token')
         return redirect('tenant:home')
 
 
@@ -124,12 +126,13 @@ def tenant_step1(request):
     formaddress=AddressHistoryForm()
     form2=TenantProfessionForm(instance=tenant)
     addhistory=AddressHistory.objects.filter(tenant=tenant)
+    professhistory=professionHistory.objects.filter(tenant=tenant)
     form3=TenantBankForm(instance=tenant)
     form4=TenantDocumentsForm(instance=tenant)
 
     return render(request, 'tenant/step1.html', {'tenant_obj':tenant,'form': form,'form2':form2,'form3':form3,\
                                                   'step': 1,"is_locked":True,'is_onbonding':True,'formaddress':formaddress,\
-                                                    'form4':form4,'addhistory':addhistory,'tenant':tenant})
+                                                    'form4':form4,'addhistory':addhistory,'professhistory':professhistory,'tenant':tenant})
 
 def submit_step(request, step):
     if request.method == 'POST':
@@ -207,8 +210,39 @@ def submit_step(request, step):
             
         elif step == '2':
             form = TenantProfessionForm(request.POST, instance=tenant)
+
             if form.is_valid():
+                professionHistory.objects.filter(tenant=tenant).delete()
                 tenant = form.save()
+                other_employer_name = []
+                other_employer_address = []
+                other_employment_From = []
+                other_employment_to = []
+                other_salary = []
+                for key in post_data:
+                    if 'history_employer_name' in key:
+                        other_employer_name.append(post_data[key])
+                    if 'history_employer_address' in key:
+                        other_employer_address.append(post_data[key])
+                    if 'history_employment_From' in key:
+                        other_employment_From.append(post_data[key])
+                    if 'history_employment_to' in key:
+                        other_employment_to.append(post_data[key])
+                    if 'history_salary' in key:
+                        other_salary.append(post_data[key])
+
+                for employer_name, employer_address,employment_From,employment_to,salary \
+                    in zip(other_employer_name, other_employer_address,other_employment_From,
+                        other_employment_to,other_salary):
+                    
+                    if employer_name.strip() or employer_address.strip() or employment_From or employment_to or \
+                        salary:
+                        professionHistory.objects.update_or_create(
+                            tenant=tenant,
+                            history_employer_name=employer_name,history_employer_address=employer_address,
+                            history_employment_From=employment_From,history_employment_to=employment_to,
+                            history_salary=salary
+                        )
                 return JsonResponse({'success': True,"formid":'formid'})
             else:
                 print('error',form.errors)
