@@ -266,6 +266,7 @@ class Dues(models.Model):
     proof = models.ImageField(upload_to='Dues/proof/',null=True,blank=True)
     is_active = models.BooleanField(default=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    # is_active =models.BooleanField(default=True)
 
 
     def save(self, *args, **kwargs):
@@ -304,6 +305,7 @@ class Expenses(models.Model):
     proof = models.ImageField(upload_to='Dues/proof/',null=True,blank=True)
     is_active = models.BooleanField(default=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    # is_active =models.BooleanField(default=True)
 
 
     def save(self, *args, **kwargs):
