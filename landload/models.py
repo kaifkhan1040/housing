@@ -193,7 +193,7 @@ class Tenant(models.Model):
     bank_statement = models.ImageField(upload_to='tenant/bank/',null=True,blank=True)
     pay_slips = models.ImageField(upload_to='tenant/payslip/',null=True,blank=True)
     other = models.BooleanField(default=False)
-    is_agree = models.BooleanField(default=False)
+    is_agree = models.BooleanField(default=False,null=True,blank=True)
 
     def save(self, *args, **kwargs):
         if not self.custom_id:
