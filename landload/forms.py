@@ -281,6 +281,7 @@ class TenantBankForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['required'] = True
         self.fields['account_type'].choices = [
                 choice for choice in self.fields['account_type'].choices if choice[0] != ''
             ]

@@ -183,7 +183,7 @@ class Tenant(models.Model):
     employment_From=  models.DateField(blank=True, null=True)
     employment_to=  models.DateField(blank=True, null=True)
     salary = models.FloatField(null=True,blank=True)
-    bank_name = models.CharField(max_length=500)
+    bank_name = models.CharField(max_length=500,null=True,blank=True)
     account_type = models.CharField(max_length=50,choices=[('Personal','Personal'),('Business','Business')],null=True,blank=True)
     sort_code = models.CharField(max_length=50,null=True,blank=True)
     account_number =models.CharField(max_length=50,null=True,blank=True) 
