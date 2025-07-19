@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Rooms,Property,Tenant,TenentProfileVerify,Dues,Country,\
-    FinancialBreakdown,FinancialOtherModel,PropertyImage,AddressHistory,DocumentOthers,professionHistory
+    FinancialBreakdown,FinancialOtherModel,PropertyImage,AddressHistory,DocumentOthers,professionHistory,\
+    EmailSettings
 # Register your models here.
 admin.site.register(Rooms)
 admin.site.register(Property)
@@ -14,3 +15,5 @@ admin.site.register(PropertyImage)
 admin.site.register(AddressHistory)
 admin.site.register(DocumentOthers)
 admin.site.register(professionHistory)
+admin.site.register(EmailSettings)
+# admin.site.register(professionHistory)

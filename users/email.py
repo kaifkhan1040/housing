@@ -4,9 +4,10 @@ import os.path
 # Sending Email
 from threading import Thread
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives,get_connection
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from landload.models import EmailSettings
 # from landload.models import EmailTemplate
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,7 @@ def send(
     from_email=None,
     cc=None,
     bcc=None,
+    smtp_config=None,
 ):
     if not (isinstance(to, list) or isinstance(to, tuple)):
         to = [to]
@@ -43,7 +45,19 @@ def send(
         bcc = []
 
     try:
-        msg = EmailMultiAlternatives(subject, text_body, to=to)
+        connection = None
+        if smtp_config['email_host_password']:
+            if smtp_config:
+            
+                connection = get_connection(
+                    host=smtp_config['email_host'],
+                    port=smtp_config['email_port'],
+                    username=smtp_config['email_host_user'],
+                    password=smtp_config['email_host_password'],
+                    use_tls=smtp_config.get('use_tls', True),
+                    fail_silently=False,
+                )
+        msg = EmailMultiAlternatives(subject, text_body, to=to,connection=connection)
         if cc:
             msg.cc = cc
 
@@ -70,11 +84,21 @@ def send(
         return False
 
 
-def send_from_template(to, subject, template, context, **kwargs):
+def send_from_template(to, subject, template, context,mail_setting, **kwargs):
     # print template
     html_body = render_to_string(template, context)
     print("html body: " + html_body)
-    send(to, subject, html_body,from_email='MISU HOUSING', **kwargs)
+    print(mail_setting)
+    smtp_config=None
+    if mail_setting:
+        smtp_config = {
+            'email_host': mail_setting.email_host,
+            'email_port': mail_setting.email_port,
+            'email_host_user': mail_setting.email_host_user,
+            'email_host_password': mail_setting.email_host_password,
+            'use_tls': mail_setting.use_tls
+        }
+    send(to, subject, html_body,from_email='MISU HOUSING',smtp_config=smtp_config, **kwargs)
     return print('send') 
 
 def account_activation_mail(name,email):
@@ -93,10 +117,16 @@ def account_activation_mail(name,email):
         args=(mail_list, email_subject, email_template, context),
     ).start()
 
-def tenant_invitation_email(name,email,landload,token,tenant):
+def tenant_invitation_email(name,email,landload,token,tenant,landload_id=None):
+    print('&'*1000,landload_id)
     '''just for customized the email via admin'''
-    mail_list, email_subject = email, 'Invitation to Complete Your Tenant Profile'
+    mail_list, email_subject,mail_setting = email, 'Invitation to Complete Your Tenant Profile',None
     email_template = "email/tenant_invitation.html"
+    if landload_id:
+        landload_mail=EmailSettings.objects.filter(landlord=landload_id).first()
+        print('landload mail=================>',landload_mail)
+        if landload_mail:
+            mail_setting=landload_mail
     # objectdata=Email.object.get(id=2)
     context = {
         "name": name,
@@ -110,7 +140,7 @@ def tenant_invitation_email(name,email,landload,token,tenant):
     }
     Thread(
         target=send_from_template,
-        args=(mail_list, email_subject, email_template, context),
+        args=(mail_list, email_subject, email_template, context,mail_setting),
     ).start()
 
 def verification_mail(token,email):

@@ -18,6 +18,7 @@ import urllib.request
 import urllib.parse
 from .email import verification_mail
 from django.utils.safestring import mark_safe
+from datetime import timedelta
 
 def logout_view(request):
     logout(request)
@@ -74,6 +75,24 @@ def loginPage(request):
 
             messages.error(request, msg)
     return render(request, 'registration/login.html', {'user': request.user})
+
+def adminlogin(request):
+    if request.method == 'POST':
+        email = request.POST.get('email', None)
+        print(email)
+        password = request.POST.get('password', None)
+
+        print(password)
+        if email is not None and password is not None:
+            user = authenticate(request, email=email, password=password)
+            print('user:',user)
+            if user.is_superuser:
+                login(request, user)
+                print('for checking')
+                return HttpResponseRedirect(reverse_lazy('customadmin:home'))
+            else:
+                messages.error('You Are not registered as admin')
+    return render(request, 'registration_old/login.html', {'user': request.user})
 
 def signup(request):
     form=CustomUserCreationForm()
@@ -159,6 +178,10 @@ def email_send(token, email,email_message,email_subject):
 def create_password(request, id):
     if (ForgetPassMailVerify.objects.filter(link=id).exists()):
         obj = ForgetPassMailVerify.objects.get(link=id)
+        if timezone.now() - obj.created_at > timedelta(hours=24):
+            messages.error(request, 'This link has expired.')
+            return redirect('user:forgetpassword')
+
         if obj.verify == False:
             if request.method == 'POST':
                 password = request.POST.get('reset-password-new')

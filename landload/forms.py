@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses,AddressHistory
+from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses,AddressHistory,EmailSettings
 from django.forms.widgets import FileInput
 
 class PropertyForm(ModelForm):
@@ -293,6 +293,19 @@ class TenantBankForm(forms.ModelForm):
             'account_type': forms.RadioSelect(attrs={'class': 'form-check-input'}),
         }
 
+class EmailSettingsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['use_tls'].widget.attrs.update({'class': 'form-check-input'})
+
+    class Meta:
+        model = EmailSettings
+        fields = ['email_host', 'email_port', 'email_host_user', 'email_host_password', 'use_tls']
+        widgets = {
+            'email_host_password': forms.PasswordInput(),
+        }
 
 class AddressHistoryForm(forms.ModelForm):
     class Meta:

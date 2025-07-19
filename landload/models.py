@@ -135,6 +135,18 @@ class Rooms(models.Model):
 
         super().save(*args, **kwargs)
 
+
+class EmailSettings(models.Model):
+    landlord = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='email_settings')
+    email_host = models.CharField(max_length=255, default='smtp.gmail.com')
+    email_port = models.PositiveIntegerField(default=587)
+    email_host_user = models.EmailField()
+    email_host_password = models.CharField(max_length=255)  
+    use_tls = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.landlord.first_name}'s Email Settings"
+
 class Country(models.Model):
     name = models.CharField(max_length=60, unique=True)
     iso = models.CharField(max_length=2)
@@ -258,6 +270,7 @@ class TenentProfileVerify(models.Model):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     link = models.CharField(max_length=500)
     verify = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.tenant)

@@ -28,6 +28,7 @@ urlpatterns = [
     path('dues-delete/<str:id>/',views.deactivate_dues,name='deactivate_dues'),
 
     path('expense',views.expense,name='expense'),
+    path('email_setting',views.email_settings_view,name='email_setting'),
     path('expense-add',views.expense_add,name='expense_add'),
     path('expense-view/<str:id>/',views.expense_view,name='expense_view'),
     path('expense-update/<int:id>/',views.expense_update,name='expense_update'),
@@ -39,6 +40,7 @@ urlpatterns = [
     path('setup-location/', views.setup_location, name='setup_location'),
     path('submit-step/<str:step>/', views.submit_step, name='submit_step'),
     path('delete-image/<int:image_id>/', views.delete_property_image, name='delete_property_image'),
+   
 
     
 

@@ -1,9 +1,9 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,\
-    FinancialOtherModel,PropertyImage,Expenses
+    FinancialOtherModel,PropertyImage,Expenses,EmailSettings
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
     DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
-    ExpensesReadOnlyForm,TenantStep1Form
+    ExpensesReadOnlyForm,TenantStep1Form,EmailSettingsForm
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -478,7 +478,7 @@ def tenant_add(request):
             temp_url=redirect('tenant:tenantverify', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             tenant_invitation_email(property_obj.user.first_name if property_obj.user.first_name else ''+' '+property_obj.user.last_name if property_obj.user.last_name else "",
-            property_obj.user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token)
+            property_obj.user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token,landload_id=request.user.id)
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:
@@ -591,7 +591,7 @@ def tenant_invite_add(request):
             temp_url=redirect('tenant:tenantverify', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             tenant_invitation_email(user.first_name if user.first_name else ''+' '+user.last_name if user.last_name else "",
-            user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token,tenant)
+            user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token,tenant,landload_id=request.user.id)
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:
@@ -789,6 +789,17 @@ def expenses_list(request):
 
     return JsonResponse({'data': data}) 
 
+def email_settings_view(request):
+    email_settings, created = EmailSettings.objects.get_or_create(landlord=request.user)
 
+    if request.method == 'POST':
+        form = EmailSettingsForm(request.POST, instance=email_settings)
+        if form.is_valid():
+            form.save()
+            return redirect('landload:email_setting') 
+    else:
+        form = EmailSettingsForm(instance=email_settings)
+
+    return render(request, 'landload/email_settings.html', {'form': form})
 
 
