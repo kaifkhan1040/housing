@@ -276,7 +276,7 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="page-account-settings-account.html"><i class="me-50" data-feather="settings"></i> Settings</a>
                         <a class="dropdown-item" href="page-pricing.html"><i class="me-50" data-feather="credit-card"></i> Pricing</a> {% endcomment %}
-                        <a class="dropdown-item" href="{% url 'landload:email_setting' %}"><i class="me-50" data-feather="mail"></i>Email Settings</a>
+                        {% comment %} <a class="dropdown-item" href="{% url 'landload:email_setting' %}"><i class="me-50" data-feather="mail"></i>Email Settings</a> {% endcomment %}
                         <a class="dropdown-item" href="{% url 'user:logout' %}"><i class="me-50" data-feather="power"></i> Logout</a>
                     </div>
                 </li>
@@ -469,6 +469,15 @@
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">Agents</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="bar-chart-2"></i><span class="menu-title text-truncate" data-i18n="User">Reports</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Account</span></a>
+                <ul class="menu-content">
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Profile</span></a>
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Users</span></a>
+                    <li><a class="d-flex align-items-center" href="{% url 'landload:email_setting' %}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Email Setting </span></a>
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">WhatsApp</span></a>
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Billing</span></a>
+                        </li>
+                    </ul>
+                </li>
                             {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="{% url 'customadmin:leave' %}"><i data-feather="calendar"></i><span class="menu-title text-truncate" data-i18n="User">User Attendance</span></a> {% endcomment %}
 
                                 {% comment %} <ul class="menu-content">
@@ -489,7 +498,7 @@
                             </ul>
                         </li>
                     </ul> {% endcomment %}
-                </li>
+                {% comment %} </li> {% endcomment %}
                 {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="file-text"></i><span class="menu-title text-truncate" data-i18n="Pages">Pages</span></a>
                     <ul class="menu-content">
                         <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="Account Settings">Account Settings</span></a>

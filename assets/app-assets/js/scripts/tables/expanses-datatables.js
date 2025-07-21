@@ -20,7 +20,7 @@ $(function () {
   if (dt_basic_table.length) {
     var dt_basic = dt_basic_table.DataTable({
       ajax: {
-                    url: '/landload/expenses_list',
+                    url: '/landlord/expenses_list',
                     dataSrc: 'data'
                 },
       columns: [
@@ -70,7 +70,7 @@ $(function () {
         {
     targets: 3,  // ID column
     render: function (data, type, full, meta) {
-      return `<a href="/landload/expense-view/${data}/" class="text-primary">${data}</a>`;
+      return `<a href="/landlord/expense-view/${data}/" class="text-primary">${data}</a>`;
     }
   },
 
@@ -182,7 +182,7 @@ $(function () {
           id: "createlisting001",
           action: function (e, dt, node, config) {
             // Redirect to your desired creation page
-            window.location.href = "/landload/expense-add"; // change this URL as needed
+            window.location.href = "/landlord/expense-add"; // change this URL as needed
           },
           init: function (api, node, config) {
             $(node).removeClass('btn-secondary');

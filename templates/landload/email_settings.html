@@ -68,14 +68,14 @@
                                         <div class="tab-pane active" id="account" aria-labelledby="account-tab" role="tabpanel">
                                             {% csrf_token %}
                                             <div class="row mb-2">
-                                                <div class="col-md-3">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="username">Email Host</label>
                                                         {{form.email_host}}
                                                         
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="username">Email Port</label>
                                                         {{form.email_port}}
@@ -90,7 +90,14 @@
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="col-md-3">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label for="username">From Email</label>
+                                                        {{form.from_email}}
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="username">Email Host Password</label>
                                                         {{form.email_host_password}}

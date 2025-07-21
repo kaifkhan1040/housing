@@ -22,7 +22,7 @@ $(function() {
     if (dt_basic_table.length) {
         var dt_basic = dt_basic_table.DataTable({
            ajax: {
-                    url: '/landload/tenant_list',
+                    url: '/landlord/tenant_list',
                     dataSrc: 'data'
                 },
             columns: [
@@ -53,7 +53,7 @@ $(function() {
     {
         data: 'custom_id',
         render: function(data, type, full, meta) {
-            return '<a href="/landload/tenant-dashboard/' + full.id + '">' + data + '</a>';
+            return '<a href="/landlord/tenant-dashboard/' + full.id + '">' + data + '</a>';
         }
     },
     { data: 'full_name' },
@@ -173,7 +173,7 @@ $(function() {
                     className: 'create-new btn btn-primary',
                     action: function (e, dt, node, config) {
             // Redirect to your desired creation page
-            window.location.href = "/landload/tenant-add"; // change this URL as needed
+            window.location.href = "/landlord/tenant-add"; // change this URL as needed
           },
                     init: function(api, node, config) {
                         $(node).removeClass('btn-secondary');

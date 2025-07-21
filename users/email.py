@@ -63,7 +63,8 @@ def send(
 
         if bcc:
             msg.bcc = bcc
-
+        if smtp_config['from_email']:
+            from_email=smtp_config['from_email']
         if from_email:
             msg.from_email = from_email
 
@@ -96,6 +97,7 @@ def send_from_template(to, subject, template, context,mail_setting, **kwargs):
             'email_port': mail_setting.email_port,
             'email_host_user': mail_setting.email_host_user,
             'email_host_password': mail_setting.email_host_password,
+            'from_email':mail_setting.from_email,
             'use_tls': mail_setting.use_tls
         }
     send(to, subject, html_body,from_email='MISU HOUSING',smtp_config=smtp_config, **kwargs)

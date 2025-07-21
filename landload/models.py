@@ -143,6 +143,7 @@ class EmailSettings(models.Model):
     email_host_user = models.EmailField()
     email_host_password = models.CharField(max_length=255)  
     use_tls = models.BooleanField(default=True)
+    from_email =models.CharField(max_length=500)
 
     def __str__(self):
         return f"{self.landlord.first_name}'s Email Settings"

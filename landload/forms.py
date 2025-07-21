@@ -302,7 +302,7 @@ class EmailSettingsForm(forms.ModelForm):
 
     class Meta:
         model = EmailSettings
-        fields = ['email_host', 'email_port', 'email_host_user', 'email_host_password', 'use_tls']
+        fields = ['email_host', 'email_port', 'email_host_user', 'email_host_password', 'use_tls','from_email']
         widgets = {
             'email_host_password': forms.PasswordInput(),
         }

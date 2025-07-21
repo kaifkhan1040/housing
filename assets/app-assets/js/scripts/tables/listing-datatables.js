@@ -20,7 +20,7 @@ $(function () {
   if (dt_basic_table.length) {
     var dt_basic = dt_basic_table.DataTable({
       ajax: {
-                    url: '/landload/listing_list',
+                    url: '/landlord/listing_list',
                     dataSrc: 'data'
                 },
       columns: [
@@ -68,7 +68,7 @@ $(function () {
         {
     targets: 3,  // ID column
     render: function (data, type, full, meta) {
-      return `<a href="/landload/listing-dashboard/${data}/" class="text-primary">${data}</a>`;
+      return `<a href="/landlord/listing-dashboard/${data}/" class="text-primary">${data}</a>`;
     }
   },
 
@@ -180,7 +180,7 @@ $(function () {
           id: "createlisting001",
           action: function (e, dt, node, config) {
             // Redirect to your desired creation page
-            window.location.href = "/landload/listing-add"; // change this URL as needed
+            window.location.href = "/landlord/listing-add"; // change this URL as needed
           },
           init: function (api, node, config) {
             $(node).removeClass('btn-secondary');
