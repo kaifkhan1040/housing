@@ -111,6 +111,7 @@ class Rooms(models.Model):
     rent =models.CharField(max_length=20,choices=(('Per night','Per night'),('Weekly','Weekly'),('Monthly','Monthly')))
     room_code = models.CharField(max_length=10, unique=True, blank=True)
     rent_ammount = models.FloatField(default=0.0)
+    room_count = models.CharField(max_length=3)
 
     def save(self, *args, **kwargs):
         if not self.room_code:

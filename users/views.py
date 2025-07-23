@@ -19,6 +19,13 @@ import urllib.parse
 from .email import verification_mail
 from django.utils.safestring import mark_safe
 from datetime import timedelta
+import re
+import random
+from django.urls import reverse
+from django.utils.http import urlencode
+
+def generate_otp():
+    return str(random.randint(100000, 999999))
 
 def logout_view(request):
     logout(request)
@@ -39,16 +46,13 @@ def loginPage(request):
                 try:
                     usercheck=CustomUser.objects.get(email=email,is_active=False)
                 except:
-                    messages.error(request, 'Username and password is Invalid' )
+                    messages.error(request, 'No account found' )
 
                     return render(request, 'registration/login.html', {'user': request.user})
 
             if usercheck.is_verify==False:
                 if not usercheck.is_superuser==True:
-                    if usercheck.role=='landload':
-                        msg='Once your profile is approved, we will notify you, and you will be able to log in.'
-                    else:
-                        msg="Please Verify your email."
+                    msg="Please Verify your email."
                     messages.error(request, msg)
                     return render(request, 'registration/login.html', {'user': request.user})
 
@@ -71,7 +75,10 @@ def loginPage(request):
                 else:
                     msg=f'You are not registered as {login_as}'
             else:
-                msg='Username and password is Invalid'
+                msg='Invalid Password'
+                messages.error(request, msg)
+                return render(request, 'registration/login.html', {'user': request.user,'email': email,
+                'role': login_as})
 
             messages.error(request, msg)
     return render(request, 'registration/login.html', {'user': request.user})
@@ -99,28 +106,89 @@ def signup(request):
     if request.method=="POST":
         form=CustomUserCreationForm(request.POST)
         email=request.POST.get('email')
+        existing_user = CustomUser.objects.filter(email=email).first()
+        
+        if existing_user:
+            email_verify = UserEmailVerify.objects.filter(user=existing_user, verify=False).first()
+            if email_verify:
+                url = reverse('user:resend_verification')
+                query_string = urlencode({'email': email})
+                full_url = f"{url}?{query_string}"
+                messages.error(request, 
+                    f'Account already exists but not verified yet. <a href="{full_url}">Click here to resend verification email</a>')
+                return render(request, "registration/signup.html", {'form': form})
+            else:
+                messages.error(request, 'Email already registered and verified. Try logging in.')
+                return render(request, "registration/signup.html", {'form': form})
         if form.is_valid():
+            
             signup_as = form.cleaned_data['role']
             preobj=form.save(commit=False)
             preobj.is_landload=True if signup_as=='landload' else False
             preobj.is_active=False
             preobj.save()
+            otp = generate_otp()
             email1 = CustomUser.objects.get(email=email)
             UserNumberVerify.objects.create(user=preobj)
             messages.success(request,'Please Verify your email.')
             token = get_random_string(16)
-            UserEmailVerify(user=email1, link=token).save()
+            UserEmailVerify(user=email1, link=token,otp=otp).save()
             temp_url=redirect('user:userverify', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
-            verification_mail(token, email)
+            verification_mail(token, email,otp,preobj)
             msg = 'The activation link has been send to your Email.'
-            return redirect('user:login')
+            # return redirect('user:login')
+            return redirect('user:verify_otp', id=preobj.id)
         else:
             error_messages = '<br>'.join(
                 [f"{error}" for field_errors in form.errors.values() for error in field_errors]
             )
             messages.error(request, mark_safe(error_messages))
     return render(request,'registration/signup.html',{'form':form})
+
+def resend_verification(request):
+    email = request.GET.get('email')
+    user = CustomUser.objects.filter(email=email).first()
+    
+    if user:
+        otp = generate_otp()
+        token = get_random_string(16)
+        # link = request.build_absolute_uri(reverse('verify_otp_link', args=[user.id]))
+        
+        # Update or create OTP record
+        obj, created = UserEmailVerify.objects.update_or_create(
+            user=user, verify=False,
+            defaults={'otp': otp, 'link': token}
+        )
+        temp_url=redirect('user:userverify', id=token)
+        token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
+        verification_mail(token, email,otp,user)
+        messages.success(request, "Verification email resent.")
+    
+    return redirect('user:verify_otp', id=user.id)
+
+def verify_otp(request, id):
+    user = CustomUser.objects.get(id=id)
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp_number')
+        print('eeeeeeeeeeee:',entered_otp)
+        try:
+            otp_obj = UserEmailVerify.objects.filter(user=user, verify=False).latest('created_at')
+            if otp_obj.otp == entered_otp:
+                
+                otp_obj.verify = True
+                otp_obj.save()
+                user.is_active = True
+                user.is_verify= True
+                user.save()
+                messages.success(request, "Email verified successfully!")
+                return redirect('user:login')
+                
+            else:
+                messages.error(request, "Invalid OTP.")
+        except UserEmailVerify.DoesNotExist:
+            messages.error(request, "OTP verification failed.")
+    return render(request, 'registration/otpverify.html', {'user': user})
 
 def forgetpassword(request):
     form = ResetPasswordForm()
@@ -209,12 +277,12 @@ def userverify(request, id):
         obj.verify = True
         obj.save()
         obj1 = CustomUser.objects.get(email=obj.user.email)
-        msg = 'Once your profile is approved, we will notify you, and you will be able to log in.'
-        if obj1.role=="tenant":
-            obj1.is_active = True
-            obj1.is_verify = True
-            obj1.save()
-            msg='Email verified successfully Please login'
+        msg = 'Thank you! Your email address is now verified Please login'
+        # if obj1.role=="tenant":
+        obj1.is_active = True
+        obj1.is_verify = True
+        obj1.save()
+            # msg='Email verified successfully Please login'
         messages.success(request, msg)
     return redirect('user:login')
 
@@ -222,5 +290,5 @@ def checkemail(request):
     # email_template = "email/invitation.html"
     # context_data = {'data': 'kaifkhan'}
     # objectdata_rendered = Template(objectdata.body).render(Context(context_data))
-    return render(request,'email/tenant_invitation.html',#{'object':objectdata,"data":"kaif","objectdata_rendered":objectdata_rendered}
+    return render(request,'email/verification.html',#{'object':objectdata,"data":"kaif","objectdata_rendered":objectdata_rendered}
                   )

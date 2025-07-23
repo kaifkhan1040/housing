@@ -7,7 +7,7 @@ from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordIn
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
-
+import re
 
 class CustomUserCreationForm(UserCreationForm):
     
@@ -35,6 +35,15 @@ class CustomUserCreationForm(UserCreationForm):
                 'type': 'date',
                 'class': "form-control mb-2",}),
                 }
+        
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,12}$'
+        if not re.match(pattern, password):
+            raise forms.ValidationError(
+                "Password must be 8–12 characters long, include at least one uppercase letter, one lowercase letter, and one symbol."
+            )
+        return password
 
 
 class SetLocationForm(ModelForm):

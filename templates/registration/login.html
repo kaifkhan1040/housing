@@ -75,7 +75,7 @@
                                 <form class="auth-login-form mt-2" action="" method="POST">{% csrf_token %}
                                     <div class="mb-1">
                                         <label class="form-label" for="login-email">Email</label>
-                                        <input class="form-control" id="login-email" type="text" required value="{{cookies1}}" name="email" placeholder="john@example.com" aria-describedby="login-email" autofocus="" tabindex="1" />
+                                        <input class="form-control" id="login-email" type="text" value="{{ email }}" required value="{{cookies1}}" name="email" placeholder="john@example.com" aria-describedby="login-email" autofocus="" tabindex="1" />
                                     </div>
                                     <div class="mb-1">
                                         <div class="d-flex justify-content-between">
@@ -95,14 +95,25 @@
                 <label for="login_as" style="display: block; margin-bottom: 5px;">Login As:</label>
                 <select id="login_as" name="login_as" class="form-select" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
                     <option value="" disabled selected>Select</option>
-                    <option value="landload">Landlord</option>
-                    <option value="tenant">Tenant</option>
+                    <option value="landload" {% if role == "landload" %}selected{% endif %}>Landlord</option>
+                    <option value="tenant" {% if role == "tenant" %}selected{% endif %}>Tenant</option>
                 </select>
             </div>
                                     <button class="btn btn-primary w-100" tabindex="4">Sign in</button>
                                 </form>
                                 <p class="text-center mt-2"><span>New on our platform?</span><a href="{% url 'user:signup' %}"><span>&nbsp;Create an account</span></a></p>
-
+                                {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                            <div class="alert alert-danger" role="alert">
+                                {{message|safe}}
+                            </div>
+                                {% else %}
+                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                {{message|safe}}
+                            </div>
+                                {% endif %}
+                            {% endfor %}{% endif %}
                             </div>
                         </div>
                         <!-- /Login-->
@@ -132,7 +143,7 @@
     <!-- END: Page JS-->
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {% if messages %}
+    {% comment %} {% if messages %}
     <script>
         {% for message in messages %}
             let messageType = "{{ message.tags }}";  // Django message type (error, success, etc.)
@@ -163,7 +174,7 @@
             });
         {% endfor %}
     </script>
-{% endif %}
+{% endif %} {% endcomment %}
     <script>
         $(window).on('load', function() {
             if (feather) {

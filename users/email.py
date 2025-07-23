@@ -46,8 +46,8 @@ def send(
 
     try:
         connection = None
-        if smtp_config['email_host_password']:
-            if smtp_config:
+        if smtp_config:
+            if smtp_config['email_host_password']:
             
                 connection = get_connection(
                     host=smtp_config['email_host'],
@@ -63,8 +63,9 @@ def send(
 
         if bcc:
             msg.bcc = bcc
-        if smtp_config['from_email']:
-            from_email=smtp_config['from_email']
+        if smtp_config:
+            if smtp_config['from_email']:
+                from_email=smtp_config['from_email']
         if from_email:
             msg.from_email = from_email
 
@@ -145,8 +146,8 @@ def tenant_invitation_email(name,email,landload,token,tenant,landload_id=None):
         args=(mail_list, email_subject, email_template, context,mail_setting),
     ).start()
 
-def verification_mail(token,email):
-    mail_list, email_subject = email, 'Registration Verification'
+def verification_mail(token,email,otp,landload):
+    mail_list, email_subject,mail_setting = email, 'Registration Verification',None
     print("pass1")
     # if obj.status == "Waiting":
     #     mail_list = obj.doctors_call.user.email
@@ -162,13 +163,15 @@ def verification_mail(token,email):
     # objectdata=EmailTemplate.objects.get(id=2)
     context = {
         "data": token,
+        "otp":otp,
+        "landload":landload
         # "object":objectdata
         
         # "base_url": settings.DOMAIN + settings.MEDIA_URL,
     }
     Thread(
         target=send_from_template,
-        args=(mail_list, email_subject, email_template, context),
+        args=(mail_list, email_subject, email_template, context,mail_setting),
     ).start()
 
 

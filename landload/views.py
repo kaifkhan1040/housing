@@ -1,12 +1,13 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,\
-    FinancialOtherModel,PropertyImage,Expenses,EmailSettings
+    FinancialOtherModel,PropertyImage,Expenses,EmailSettings,Country
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
     DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
     ExpensesReadOnlyForm,TenantStep1Form,EmailSettingsForm
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
+from babel.numbers import get_currency_symbol
 
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -21,6 +22,12 @@ import json
 # Create your views here.
 def index(request):
     return render(request,'landload/index.html',{'is_dashboard':True})
+
+def get_symbol(currency_code):
+    try:
+        return get_currency_symbol(currency_code, locale='en')
+    except:
+        return '' 
 
 @login_required
 def setup_location(request):
@@ -116,7 +123,7 @@ def submit_step(request, step):
             temp=form.save()
             if temp.number_of_flat:
                 for i in range(int(temp.number_of_flat)):
-                    Rooms.objects.create(property=temp)
+                    Rooms.objects.create(property=temp,room_count=f"{i+1:02}")
             print('temp id',temp.id)
             return JsonResponse({'success': True,"formid":temp.id})
         else:
@@ -129,6 +136,8 @@ def listing_add(request):
     form = PropertyForm()
     form2 =FinancialBreakdownform()
     form3 = MultiImageForm()
+    symbol = get_symbol(request.user.country.currency)
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++++',symbol)
     if request.method == "POST":
         formid = request.POST.get('formid2') 
         print('form id',formid)
@@ -148,7 +157,7 @@ def listing_add(request):
                 )
    
 
-        return redirect('landload:listing')  # update as needed
+        return redirect('landload:listing') 
         
         # post_data = request.POST.copy()
         # # print('post')
@@ -172,7 +181,7 @@ def listing_add(request):
         #         [f"{error}" for field_errors in form.errors.values() for error in field_errors]
         #     )
         #     messages.error(request, mark_safe(error_messages))
-    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form,'is_listing':True,'form3':form3})
+    return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'video_form': video_form,'is_listing':True,'form3':form3,'symbol':symbol})
 
 @login_required(login_url='/')
 def listing_view(request,id):
@@ -182,13 +191,14 @@ def listing_view(request,id):
     property_obj2 = FinancialBreakdown.objects.filter(property__custom_id=id).first()
     property_obj3 = PropertyImage.objects.filter(property__custom_id=id).first()
     form3 = MultiImageReadOnlyForm()
+    symbol = get_symbol(request.user.country.currency)
     print('data',property_obj2,property_obj)
     if property_obj2:
         form2=FinancialBreakdownReadOnlyform(instance=property_obj2)
     form = PropertyReadOnlyForm(instance=property_obj)
     return render(request,'landload/add_listing.html',{'form':form,'form2':form2,'is_listing':True,
                                                        'property_id':property_obj.id,'property_obj':property_obj,'more_fun':True,
-                                                       'property_obj2':property_obj2,'form3':form3})
+                                                       'property_obj2':property_obj2,'form3':form3,'symbol':symbol})
 
 @login_required(login_url='/')
 def listing_dashboard(request,id):
@@ -221,7 +231,8 @@ def listing_update(request,id):
     garden_image_urls = list(garden_images.values('id','image'))
     common_area_image_urls = list(common_area_images.values('id','image'))
     residence_image_urls = list(residence_images.values('id','image'))
-
+    symbol = get_symbol(request.user.country.currency)
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++++',symbol)
     property_obj2 = FinancialBreakdown.objects.filter(property=id).first()
     form = PropertyForm(instance=property_obj)
     form2=FinancialBreakdownform()
@@ -278,6 +289,7 @@ def listing_update(request,id):
                                                         'garden_images_json': garden_image_urls,
                                                         'common_area_images_json': common_area_image_urls,
                                                         'residence_images_json': residence_image_urls,
+                                                        'symbol':symbol,
                                                         })
 
 
@@ -320,6 +332,7 @@ def room(request,id):
 
     property_obj = get_object_or_404(Property, pk=id)
     existing_rooms = Rooms.objects.filter(property=property_obj).order_by('id')
+    symbol = get_symbol(request.user.country.currency)
 
     if request.method == 'POST':
         room_ids = request.POST.getlist('room_id')  
@@ -352,7 +365,8 @@ def room(request,id):
         'rooms': existing_rooms,
         # 'extra_rooms_needed': int(property_obj.rooms) - existing_rooms.count(),
         'room_range':range(int(property_obj.number_of_flat)),
-        'is_listing':True
+        'is_listing':True,
+        'symbol':symbol
     }
     return render(request,'landload/room.html',context)
 

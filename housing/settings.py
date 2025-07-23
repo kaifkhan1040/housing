@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'landload.middleware.LocationRequiredMiddleware',
+    # 'landload.middleware.LocationRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'housing.urls'

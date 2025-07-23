@@ -216,33 +216,33 @@
           <input type="hidden" name="formid" {% if property_obj %}value="{{property_obj.id}}"{% endif %}value="">  
           <div class="row mb-2">
             <div class="form-group col-md-3">
-              <label class="form-label" for="first-name">Monthly Rental</label>
+              <label class="form-label" for="first-name">Monthly Rental {{symbol}}</label>
               {{form2.monthly_rental}}
             </div>
             <div class="form-group col-md-3">
-              <label class="form-label" for="last-name">Tax</label>
+              <label class="form-label" for="last-name">Tax {{symbol}}</label>
               {{form2.tax}}
             </div>
             <div class="form-group col-md-3">
-              <label class="form-label" for="last-name">Cleaning</label>
+              <label class="form-label" for="last-name">Cleaning {{symbol}}</label>
               {{form2.cleaning}}
             </div>
             <div class="form-group col-md-3">
-              <label class="form-label" for="last-name">Electricity</label>
+              <label class="form-label" for="last-name">Electricity {{symbol}}</label>
               {{form2.electricity}}
             </div>
           </div>
           <div class="row mb-2">
             <div class="form-group col-md-3">
-              <label class="form-label" for="country">Gas</label>
+              <label class="form-label" for="country">Gas {{symbol}}</label>
               {{form2.gas}}
             </div>
             <div class="form-group col-md-3">
-              <label class="form-label" for="country">Internet</label>
+              <label class="form-label" for="country">Internet {{symbol}}</label>
               {{form2.internet}}
             </div>
             <div class="form-group col-md-3">
-              <label class="form-label" for="country">Water</label>
+              <label class="form-label" for="country">Water {{symbol}}</label>
               {{form2.water}}
             </div>
             <div class="form-group col-md-3">
@@ -254,7 +254,7 @@
           </div>
           <div class="row mb-2">
             <div class="form-group col-md-3">
-              <label class="form-label" for="country">One Time Setup Cost </label>
+              <label class="form-label" for="country">One Time Setup Cost {{symbol}}</label>
               {{form2.one_time_setup_cost}}
             </div>
             <div class="form-group col-md-9">
@@ -302,7 +302,7 @@
 
                   <div class="col-md-2 col-12">
                     <div class="form-group">
-                      <label for="itemcost">Amount</label>
+                      <label for="itemcost">Amount {{symbol}}</label>
                       <input
                         type="number"
                         class="form-control"
@@ -400,7 +400,7 @@
         <form method="post" id="form-step-3" enctype="multipart/form-data">
           {% csrf_token %}
     
-          <input type="hidden" name="formid2" {% if property_obj %} value="{{property_obj.id}}"{% endif %} value=""> 
+          <input type="hidden" name="formid2" {% if property_obj %} value="{{property_obj.id}}"{% endif %}> 
 
        {{ outside_images_json|json_script:"outside-images-json" }}
        {{ parking_images_json|json_script:"parking-images-json" }}
@@ -1280,7 +1280,7 @@ function submitForm(step) {
     const form = document.getElementById(`form-step-${step}`);
     const formData = new FormData(form);
 
-    fetch(`/landload/submit-step/${step}/`, {
+    fetch(`/landlord/submit-step/${step}/`, {
         method: 'POST',
         headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
@@ -1415,7 +1415,7 @@ console.log('carouselId:', carouselId);
   if (!confirm('Are you sure you want to delete this image?')) return;
 
   const csrftoken = getCookie('csrftoken');
-  fetch(`/landload/delete-image/${imageId}/`, {
+  fetch(`/landlord/delete-image/${imageId}/`, {
     method: 'POST',
     headers: {
       'X-CSRFToken': csrftoken,
@@ -1503,7 +1503,7 @@ if (slideToRemove) {
         <script>
              function deactivate(property_id) {
                     var id =property_id
-                    var approveLandloadUrl='/landload/deactivate_property/'+id
+                    var approveLandloadUrl='/landlord/deactivate_property/'+id
                     Swal.fire({
 
                     title: "Are you sure?",

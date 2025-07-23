@@ -62,8 +62,19 @@
                         <!-- Login-->
                         <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
-                                <h2 class="card-title fw-bold mb-1">Welcome to Help Desk</h2>
+                                <h2 class="card-title fw-bold mb-1">Welcome to MISU HOUSING</h2>
                                 <p class="card-text mb-2">Please Verify your OTP</p>
+                                
+                                <form class="auth-login-form mt-2" action="" method="POST">{% csrf_token %}
+                                    <div class="mb-1">
+                                        <label class="form-label" for="register-email">OTP</label>
+                                        <input class="form-control" id="register-email"  type="text" maxlength="6" minlength="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Enter your number" aria-describedby="register-email" name="otp_number" tabindex="2" />
+                                    </div>
+                                    <div class="mb-1">
+                                    </div>
+                                    <button class="btn btn-primary w-100" tabindex="4">Verify</button>
+                                </form>
+                                <p class="text-center mt-2"><span>New on our platform?</span><a href="/user/signup/"><span>&nbsp;Create an account</span></a></p>
                                 {% if messages %}
                             {% for message in messages %}
                                 {% if message.tags == 'error' %}
@@ -76,21 +87,12 @@
                             </div>
                                 {% endif %}
                             {% endfor %}{% endif %}
-                                <form class="auth-login-form mt-2" action="" method="POST">{% csrf_token %}
-                                    <div class="mb-1">
-                                        <label class="form-label" for="register-email">OTP</label>
-                                        <input class="form-control" id="register-email"  type="text" maxlength="6" minlength="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Enter your number" aria-describedby="register-email" name="otp_number" tabindex="2" />
-                                    </div>
-                                    <div class="mb-1">
-                                    </div>
-                                    <button class="btn btn-primary w-100" tabindex="4">Verify</button>
-                                </form>
-                                <p class="text-center mt-2"><span>New on our platform?</span><a href="/user/signup/"><span>&nbsp;Create an account</span></a></p>
                                 {% comment %} <div class="divider my-2">
                                     <div class="divider-text">or</div>
                                 </div>
                                 <div class="auth-footer-btn d-flex justify-content-center"><a class="btn btn-facebook" href="#"><i data-feather="facebook"></i></a><a class="btn btn-twitter white" href="#"><i data-feather="twitter"></i></a><a class="btn btn-google" href="#"><i data-feather="mail"></i></a><a class="btn btn-github" href="#"><i data-feather="github"></i></a></div> {% endcomment %}
                             </div>
+                            
                         </div>
                         <!-- /Login-->
                     </div>

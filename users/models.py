@@ -77,6 +77,8 @@ class UserEmailVerify(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     link = models.CharField(max_length=500)
     verify = models.BooleanField(default=False)
+    otp = models.CharField(max_length=6, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.user)

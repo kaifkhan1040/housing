@@ -62,8 +62,8 @@
                         <!-- Register-->
                         <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
-                                <h2 class="card-title fw-bold mb-1">Registation for MISU HOUSING</h2>
-                                <p class="card-text mb-2">Make your app management easy and fun!</p>
+                                <h5 class="card-title fw-bold mb-1">Registation for MISU HOUSING</h5>
+                                {% comment %} <p class="card-text mb-2">Make your app management easy and fun!</p> {% endcomment %}
                                 
                                 <form class="auth-register-form mt-2" action="" method="POST">
                                     {% csrf_token %}
@@ -91,17 +91,31 @@
                                         <input class="form-control" id="register-email" type="text" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" placeholder="Enter your number" aria-describedby="register-email" name="phone_number" tabindex="2" />
                                     </div>
                                     
-                                    <div class="mb-1">
-                                        <label class="form-label" for="password">Password</label>
-                                        <div class="input-group input-group-merge form-password-toggle">
-                                            <input class="form-control form-control-merge" required id="password" type="password" name="password1" placeholder="············" aria-describedby="register-password" tabindex="3" /><span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
-                                        </div>
-                                    </div>
+                                   <div class="mb-1">
+  <label class="form-label" for="password">Password</label>
+  <div class="input-group input-group-merge form-password-toggle">
+    <input class="form-control form-control-merge"
+           required id="password"
+           type="password" name="password1"
+           placeholder="············"
+           aria-describedby="register-password"
+           tabindex="3"
+           oninput="validatePassword()" />
+    <span class="input-group-text cursor-pointer" onclick="togglePassword(this)">
+      <i data-feather="eye"></i>
+    </span>
+  </div>
+  <small id="passwordHelp" class="text-danger d-none">
+    Password must be 8–12 characters, include 1 uppercase, 1 lowercase, and 1 symbol.
+  </small>
+</div>
                                     
                                     <div class="mb-1">
                                         <label class="form-label" for="register-password">Confirm Password</label>
                                         <div class="input-group input-group-merge form-password-toggle">
-                                            <input class="form-control form-control-merge" required id="register-password" type="password" name="password2" placeholder="············" aria-describedby="register-password" tabindex="3" /><span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
+                                            <input class="form-control form-control-merge" required id="register-password" type="password" name="password2"
+                                             placeholder="············" aria-describedby="register-password" tabindex="3" />
+                                            <span class="input-group-text cursor-pointer"  onclick="togglePassword(this)"><i data-feather="eye"></i></span>
                                         </div>
                                     </div>
                                     <div class="mb-1">
@@ -113,6 +127,18 @@
                                     <button class="btn btn-primary w-100" tabindex="5">Sign up</button>
                                 </form>
                                 <p class="text-center mt-2"><span>Already have an account?</span><a href="{% url 'user:login' %}"><span>&nbsp;Sign in instead</span></a></p>
+                                {% if messages %}
+                            {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                            <div class="alert alert-danger" role="alert">
+                                {{message|safe}}
+                            </div>
+                                {% else %}
+                            <div class="alert alert-{{ message.tags }}" role="alert">
+                                {{message|safe}}
+                            </div>
+                                {% endif %}
+                            {% endfor %}{% endif %}
                                 {% comment %} <div class="divider my-2">
                                     <div class="divider-text">or</div>
                                 </div> {% endcomment %}
@@ -124,7 +150,42 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div><script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+    feather.replace();
+  });
+
+  function togglePassword(span) {
+    const input = span.previousElementSibling; // ← Select the <input> before the <span>
+    const icon = span.querySelector("i");
+
+    if (!input || !icon) return;
+
+    if (input.type === "password") {
+      input.type = "text";
+      icon.setAttribute("data-feather", "eye-off");
+    } else {
+      input.type = "password";
+      icon.setAttribute("data-feather", "eye");
+    }
+
+    feather.replace();
+  }
+
+  function validatePassword() {
+    const password = document.getElementById("password").value;
+    const helpText = document.getElementById("passwordHelp");
+    const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,12}$/;
+
+    if (pattern.test(password)) {
+      helpText.classList.add("d-none");
+    } else {
+      helpText.classList.remove("d-none");
+    }
+  }
+</script>
+
     <!-- END: Content-->
 
 
@@ -145,7 +206,7 @@
     <script src="{% static 'app-assets/js/scripts/pages/auth-register.js' %}"></script>
     <!-- END: Page JS-->
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {% if messages %}
+    {% comment %} {% if messages %}
     <script>
         {% for message in messages %}
             let messageType = "{{ message.tags }}";  // Django message type (error, success, etc.)
@@ -174,7 +235,7 @@
             });
         {% endfor %}
     </script>
-{% endif %}
+{% endif %} {% endcomment %}
 
     <script>
         $(window).on('load', function() {

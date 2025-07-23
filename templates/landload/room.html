@@ -75,7 +75,7 @@
                                                         {% comment %} <label for="username"></label> {% endcomment %}
                                                         {% comment %} <h4 class="mt-2">Room {{forloop.counter}}</h4> {% endcomment %}
                                                         <label class="form-label d-block ">Room {{ forloop.counter }}</label>
-                                                        <input type="text" class="form-control"  value="{{ room.room_code }}" readonly >
+                                                        <input type="text" class="form-control"  value="{{ room.room_count }}" readonly >
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2">
@@ -126,7 +126,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="form-group">
-                                                        <label class="form-label d-block" for="username">Rent Amount</label>
+                                                        <label class="form-label d-block" for="username">Rent Amount {{symbol}}</label>
                                                         <input type='number' class="form-control" {% if room.rent_ammount %}value={{room.rent_ammount}} {% endif %} name='rent_ammount'>
                                                         
                                                     </div>

@@ -460,11 +460,27 @@
                 </li>  {% endcomment %}
                 <!-- <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">landloads</span></a> -->
                 <li class=" nav-item {% if is_listing %}active{% endif %} "  ><a class="d-flex align-items-center" href="{% url 'landload:listing' %}"><i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="User">Listings</span></a>
-                    <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="message-square"></i><span class="menu-title text-truncate" data-i18n="User">Messages</span></a>
-                    <li class=" nav-item {% if is_tenant %}active{% endif %} "><a class="d-flex align-items-center" href="{% url 'landload:tenant' %}"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Tenants</span></a>
-                <li class=" nav-item {% if is_payment %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:dues' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Payments</span></a>
-                <li class=" nav-item {% if is_expence %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:expense' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Expenses</span></a>
-                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="activity"></i><span class="menu-title text-truncate" data-i18n="User">Action</span></a>
+                <li class=" nav-item {% if is_tenant %}active{% endif %} "><a class="d-flex align-items-center" href="{% url 'landload:tenant' %}"><i data-feather="user"></i><span class="menu-title text-truncate" data-i18n="User">Tenants</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="message-square"></i><span class="menu-title text-truncate" data-i18n="User">Messages</span></a>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="message-square"></i><span class="menu-title text-truncate" data-i18n="User">Finance</span></a>
+                <ul class="menu-content">
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Dues</span></a>
+                    <li><a class="d-flex align-items-center {% if is_payment %}active{% endif %}" href="{% url 'landload:dues' %}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Payments</span></a>
+                    <li><a class="d-flex align-items-center {% if is_expence %}active{% endif %}" href="{% url 'landload:expense' %}"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Expenses  </span></a>
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Deposits</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="message-square"></i><span class="menu-title text-truncate" data-i18n="User">Tasks</span></a>
+                <ul class="menu-content">
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Action</span></a>
+                    <li><a class="d-flex align-items-center" href="#"><i data-feather="circle"></i><span class="menu-item text-truncate" data-i18n="List">Notes</span></a>
+                        </li>
+                    </ul>
+                </li>
+                {% comment %} <li class=" nav-item {% if is_payment %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:dues' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Payments</span></a>
+                <li class=" nav-item {% if is_expence %}active{% endif %}"><a class="d-flex align-items-center" href="{% url 'landload:expense' %}"><i data-feather="dollar-sign"></i><span class="menu-title text-truncate" data-i18n="User">Expenses</span></a> {% endcomment %}
+                {% comment %} <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="activity"></i><span class="menu-title text-truncate" data-i18n="User">Action</span></a> {% endcomment %}
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="tool"></i><span class="menu-title text-truncate" data-i18n="User">Maintenance</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="User">Agents</span></a>
                 <li class=" nav-item"><a class="d-flex align-items-center" href="#"><i data-feather="bar-chart-2"></i><span class="menu-title text-truncate" data-i18n="User">Reports</span></a>
