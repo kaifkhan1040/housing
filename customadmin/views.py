@@ -12,6 +12,7 @@ from users.models import CustomUser
 from users.email import sent_invitation
 from django.contrib.sites.shortcuts import get_current_site
 from users.email import account_activation_mail,account_rejected_mail
+from landload.models import LandlordProfile
 
 # Create your views here.
 def index(request):
@@ -31,6 +32,14 @@ def landload_list(request):
         "data":data,"all_user":all_user,"landload":landload,
         "tenet":tenet,"landload_request":landload_request
     })
+
+def payment_token(request,pk):
+    obj=LandlordProfile.objects.filter(landlord__id=pk).first()
+    if request.method=="POST":
+        token = get_random_string(6)
+        obj.payment_code=token
+        obj.save()
+    return render(request,'customadmin/payment_token.html',{'obj':obj})
 
 
 @login_required(login_url='')

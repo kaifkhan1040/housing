@@ -1,9 +1,9 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,\
-    FinancialOtherModel,PropertyImage,Expenses,EmailSettings,Country
+    FinancialOtherModel,PropertyImage,Expenses,EmailSettings,Country,LandlordProfile,LandloadDoucment
 from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
     DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
-    ExpensesReadOnlyForm,TenantStep1Form,EmailSettingsForm
+    ExpensesReadOnlyForm,TenantStep1Form,EmailSettingsForm,LandlordProfileForm,IdProffForm
 from django.db.models import Q
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -19,9 +19,107 @@ from django.utils.safestring import mark_safe
 from users.forms import SetLocationForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+import pytz
 # Create your views here.
 def index(request):
+    data=LandlordProfile.objects.filter(landlord=request.user).first()
+    is_locked=data.is_locked if data else True
+    if is_locked:
+        return redirect('landload:onboading')
     return render(request,'landload/index.html',{'is_dashboard':True})
+
+def onboad_step(request, step):
+    if request.method == 'POST':
+        profile, created  = LandlordProfile.objects.get_or_create(landlord=request.user)
+        post_data = request.POST.copy()
+        if step == '1':
+            post_data['landlord']=request.user
+            form1=LandlordProfileForm(post_data, instance=profile)
+            if form1.is_valid():
+                form1.save()
+                return JsonResponse({'success': True,"formid":'formid'})
+            else:
+            # Return form errors if you want to handle invalid data client‑side
+                return JsonResponse({'success': False, 'errors': form1.errors}, status=400)
+        elif step =='2':
+            try:
+                first_name=request.POST.get('first_name')
+                middle_name=request.POST.get('middle_name')
+                last_name=request.POST.get('last_name')
+                email=request.POST.get('email')
+                phone_number=request.POST.get('phone_number')
+                address=request.POST.get('address')
+                billing_address=request.POST.get('billing_address')
+                user=CustomUser.objects.get(id=request.user.id)
+                user.first_name=first_name if first_name else request.user.first_name
+                user.middle_name=middle_name if middle_name else request.user.middle_name
+                user.last_name=last_name if last_name else request.user.last_name
+                user.email=email if email else request.user.email
+                user.phone_number=phone_number if phone_number else request.user.phone_number
+                user.address=address if address else request.user.address
+                user_data=user.save()
+                profile.billing_address=billing_address if billing_address else None
+                profile.save()
+                return JsonResponse({'success': True,"formid":'formid'})
+            except Exception as e:
+                return JsonResponse({'success': False, 'errors': e.messages}, status=400)
+        elif step =='3':
+            try:
+                files = request.FILES.getlist('id_proff')
+                for file in files:
+                    LandloadDoucment.objects.create(
+                        landlord=profile,
+                        upload_document=file
+                    )
+                return JsonResponse({'success': True,"formid":'formid'})
+            except Exception as e:
+                return JsonResponse({'success': False, 'errors': e.messages}, status=400)
+            
+        elif step =='4':
+            selected_plan=request.POST.get('selected_plan')
+            profile.subscription=selected_plan
+            profile.save()
+            return JsonResponse({'success': True,"formid":'formid'})
+        elif step =='5':
+            code=request.POST.get('payment_code')
+            if code==profile.payment_code:
+                profile.is_locked=False
+                profile.save()
+                return JsonResponse({'success': True,"formid":'formid'})
+            else:
+                return JsonResponse({'success': False, 'errors': 'Payment Code is not Valid'}, status=400)
+
+
+
+
+
+def locationdetails(request):
+    
+    country_name = request.GET.get("country")
+    try:
+        country = Country.objects.get(id=country_name)
+        tz_list = pytz.country_timezones.get(country.iso.upper(), ['UTC'])
+        print('time=====>>>>>>>>>>>>>>','name:',country.name,tz_list)
+        return JsonResponse({
+            "currency": country.currency,
+            "timezone": [(tz, tz) for tz in tz_list],
+        })
+    except Country.DoesNotExist:
+        return JsonResponse({"error": "Country not found"}, status=404)
+    
+def onboading(request):
+    data=LandlordProfile.objects.filter(landlord=request.user).first()
+    is_locked=data.is_locked if data else True
+    form1=LandlordProfileForm(instance=data) if data else LandlordProfileForm()
+    idproffform=IdProffForm()
+    doclandload=None
+    if data:
+        doclandload=LandloadDoucment.objects.filter(landlord=data)
+        docland_image_urls = list(doclandload.values('id','upload_document'))
+    
+    return render(request,'landload/onboading.html',{'is_dashboard':True,'is_locked':is_locked,'form1':form1,'profile_data':request.user,
+                                                     'idproffform':idproffform,'data':data,'doclandload':doclandload,
+                                                     'docland_image_urls':docland_image_urls})
 
 def get_symbol(currency_code):
     try:
@@ -62,6 +160,7 @@ def listing(request):
             Q(postcode__icontains=query)
         )
     return render(request,'landload/listing.html',{'property':property,'search_field':True,'is_listing':True})
+
 @login_required(login_url='/')
 def submit_step(request, step):
     if request.method == 'POST':
@@ -393,7 +492,6 @@ def tenant(request):
 @login_required(login_url='/')
 def listing_list(request):
     data = []
-    print('*'*1000)
     tenant_qs  = Property.objects.filter(landload=request.user,is_active=True)
     for i, obj in enumerate(tenant_qs, start=1):
         data.append({
@@ -474,7 +572,7 @@ def tenant_add(request):
             user_data, created = CustomUser.objects.get_or_create(first_name=first_name,last_name=last_name,
                                       middle_name=middle_name,email=email,is_verify=True,
                                       phone_number=phone_number,defaults={
-                                                                'password': 'Tenant@123',  # this sets plain text! must set hash below
+                                                                'password': 'Tenant@123',
                                                                 'role': 'tenant'
                                                             })
             if created:

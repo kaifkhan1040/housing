@@ -40,6 +40,11 @@ urlpatterns = [
     path('setup-location/', views.setup_location, name='setup_location'),
     path('submit-step/<str:step>/', views.submit_step, name='submit_step'),
     path('delete-image/<int:image_id>/', views.delete_property_image, name='delete_property_image'),
+
+    path('onboading',views.onboading,name='onboading'),
+    path('locationdetails',views.locationdetails,name='locationdetails'),
+    path('onboad-step/<str:step>/', views.onboad_step, name='onboad_step'),
+
    
 
     

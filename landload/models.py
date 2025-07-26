@@ -2,6 +2,8 @@ from django.db import models
 from django.db import transaction
 # Create your models here.
 from users.models import CustomUser
+from django.utils import timezone
+import pytz
 
 class Property(models.Model):
     ROOM_CHOICES = [(str(i), i) for i in range(1, 11)]
@@ -149,6 +151,8 @@ class EmailSettings(models.Model):
     def __str__(self):
         return f"{self.landlord.first_name}'s Email Settings"
 
+
+
 class Country(models.Model):
     name = models.CharField(max_length=60, unique=True)
     iso = models.CharField(max_length=2)
@@ -163,6 +167,26 @@ class Country(models.Model):
     def __str__(self):
         return self.name
 
+class LandlordProfile(models.Model):
+    landlord = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='landlord_profile')
+    country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.SET_NULL)
+    currency = models.CharField(max_length=50)
+    time_zone = models.CharField(max_length=50, choices=[(tz, tz) for tz in pytz.common_timezones],
+        default='UTC'
+        )
+    user_data_hosting_location = models.CharField(max_length=50,choices=[('North America','North America'),('EU','EU'),
+                                                                         ('Middle East','Middle East'),('Singapore','Singapore'),
+                                                                         ('India','India')])
+    billing_address=models.CharField(max_length=500,null=True,blank=True)
+    subscription = models.CharField(max_length=50,choices=[('basic','basic'),('standard','standard'),('enterprise','enterprise')],null=True,blank=True)
+    payment_code = models.CharField(max_length=6,null=True,blank=True)
+    is_locked= models.BooleanField(default=True)
+
+class LandloadDoucment(models.Model):
+    landlord = models.ForeignKey(LandlordProfile, on_delete=models.CASCADE, related_name='idproff')
+    upload_document = models.ImageField(upload_to='landload/id_proff')
+
+
 
 
 class Tenant(models.Model):
@@ -173,11 +197,11 @@ class Tenant(models.Model):
         ('Visa', 'Visa'),
     ]
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,blank=True)
-    landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='landload_properties')
-    property=models.ForeignKey(Property,on_delete=models.CASCADE)
-    room=models.ForeignKey(Rooms,on_delete=models.CASCADE)
-    rent=models.FloatField()
-    deposit=models.FloatField()
+    landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='landload_properties',null=True,blank=True)
+    property=models.ForeignKey(Property,on_delete=models.CASCADE,null=True,blank=True)
+    room=models.ForeignKey(Rooms,on_delete=models.CASCADE,null=True,blank=True)
+    rent=models.FloatField(default=0.0)
+    deposit=models.FloatField(default=0.0)
     photo=models.ImageField(upload_to='tenant/photo',blank=True,null=True)
     id_proof=models.ImageField(upload_to='tenant/id_proof',blank=True,null=True)
     address_proof=models.ImageField(upload_to='tenant/address_proof',blank=True,null=True)

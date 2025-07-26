@@ -133,7 +133,7 @@
                                     {% for i in data %}
                                     <tr>
                                         <td>{{forloop.counter}}</td>
-                                        <td>{{i.first_name}}</td>
+                                        <td><a href="{% url 'customadmin:payment_token' pk=i.id %}">{{i.first_name}}</a></td>
                                         <td>{{i.last_name}}</td>
                                         <td>{{i.email}}</td>
                                         <td>{{i.status}}</td>

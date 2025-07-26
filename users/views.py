@@ -23,6 +23,7 @@ import re
 import random
 from django.urls import reverse
 from django.utils.http import urlencode
+from landload.models import Tenant
 
 def generate_otp():
     return str(random.randint(100000, 999999))
@@ -127,12 +128,14 @@ def signup(request):
             preobj.is_landload=True if signup_as=='landload' else False
             preobj.is_active=False
             preobj.save()
+            if signup_as=='tenant':
+                Tenant.objects.create(user=preobj)
             otp = generate_otp()
             email1 = CustomUser.objects.get(email=email)
             UserNumberVerify.objects.create(user=preobj)
             messages.success(request,'Please Verify your email.')
             token = get_random_string(16)
-            UserEmailVerify(user=email1, link=token,otp=otp).save()
+            UserEmailVerify(user=email1, link=token,otp=otp,verify=False).save()
             temp_url=redirect('user:userverify', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             verification_mail(token, email,otp,preobj)

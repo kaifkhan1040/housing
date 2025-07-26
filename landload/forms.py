@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses,AddressHistory,EmailSettings
+from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses,AddressHistory,EmailSettings,LandlordProfile
 from django.forms.widgets import FileInput
 
 class PropertyForm(ModelForm):
@@ -292,6 +292,21 @@ class TenantBankForm(forms.ModelForm):
         widgets = {
             'account_type': forms.RadioSelect(attrs={'class': 'form-check-input'}),
         }
+
+class LandlordProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['country'].widget.attrs.update({'class': 'select2 form-control customtext-change'})
+        self.fields['time_zone'].widget.attrs.update({'class': 'select2 form-control customtext-change'})
+        self.fields['user_data_hosting_location'].widget.attrs.update({'class': 'select2 form-control customtext-change'})
+        self.fields['currency'].widget.attrs.update({'class': 'form-control','readonly':True})
+
+    class Meta:
+        model = LandlordProfile
+        fields=['country','time_zone','user_data_hosting_location','currency']
+
+class IdProffForm(forms.Form):
+    id_proff = forms.FileField(widget=MultiImageInput(attrs={'multiple': True,'class':'form-control','hidden':True}), required=False)
 
 class EmailSettingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

@@ -148,6 +148,11 @@ def tenant_invitation_email(name,email,landload,token,tenant,landload_id=None):
 
 def verification_mail(token,email,otp,landload):
     mail_list, email_subject,mail_setting = email, 'Registration Verification',None
+    if landload.role=='landload':
+        email_subject='Misu Housing - Landlord Signup Verification'
+    elif landload.role=='tenant':
+        email_subject='Misu Housing - Tenant Signup Verification'
+    
     print("pass1")
     # if obj.status == "Waiting":
     #     mail_list = obj.doctors_call.user.email
