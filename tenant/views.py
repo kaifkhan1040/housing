@@ -12,8 +12,11 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 @login_required(login_url='/')
 def index(request):
-    return redirect('tenant:tenant_step1')
-    return render(request,'tenant/index.html',{"is_locked":True})
+    tenant=Tenant.objects.get(user=request.user)
+    is_locked=False if tenant.is_agree else True
+    if is_locked:
+        return redirect('tenant:tenant_step1')
+    return render(request,'tenant/index.html',{"is_locked":is_locked})
 
 
 @login_required(login_url='/')
@@ -102,9 +105,11 @@ def tenantverify(request, id):
 def tenant_step1(request):
     tenant = Tenant.objects.filter(user=request.user, is_active=True).first()
     form = TenantStep1Form(instance=tenant)
+    is_locked=False if tenant.is_agree else True
     if not tenant:
         tenant = Tenant(user=request.user)
-
+    if not tenant.property:
+        return render(request, 'tenant/onboad_message.html', {'tenant_obj':tenant,"is_locked":is_locked})
     if request.method == 'POST':
         print('*'*1000)
         agree_data=request.POST.get('agree')
@@ -112,7 +117,7 @@ def tenant_step1(request):
         if agree_data:
             tenant.is_agree=True if agree_data else False
             tenant.save()
-            messages.success(request,'Please wait while we complete the referencing checklist')
+            messages.success(request,'On boading completed')
             return redirect('tenant:home')
         # form = TenantStep1Form(request.POST, instance=tenant)
         # if form.is_valid():
@@ -131,7 +136,7 @@ def tenant_step1(request):
     form4=TenantDocumentsForm(instance=tenant)
 
     return render(request, 'tenant/step1.html', {'tenant_obj':tenant,'form': form,'form2':form2,'form3':form3,\
-                                                  'step': 1,"is_locked":True,'is_onbonding':True,'formaddress':formaddress,\
+                                                  'step': 1,"is_locked":is_locked,'is_onbonding':True,'formaddress':formaddress,\
                                                     'form4':form4,'addhistory':addhistory,'professhistory':professhistory,'tenant':tenant})
 
 def submit_step(request, step):
