@@ -108,6 +108,7 @@ def locationdetails(request):
         return JsonResponse({"error": "Country not found"}, status=404)
     
 def onboading(request):
+    docland_image_urls=None
     data=LandlordProfile.objects.filter(landlord=request.user).first()
     is_locked=data.is_locked if data else True
     form1=LandlordProfileForm(instance=data) if data else LandlordProfileForm()
