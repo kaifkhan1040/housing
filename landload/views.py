@@ -111,6 +111,8 @@ def onboading(request):
     docland_image_urls=None
     data=LandlordProfile.objects.filter(landlord=request.user).first()
     is_locked=data.is_locked if data else True
+    if is_locked==False:
+        return redirect('landload:home')
     form1=LandlordProfileForm(instance=data) if data else LandlordProfileForm()
     idproffform=IdProffForm()
     doclandload=None
@@ -458,7 +460,7 @@ def room(request,id):
                 # room.rent = float(rent)
                 
         messages.success(request, f'Rooms has been updated successfully!')
-        return redirect('landload:listing_view', id=property_obj.custom_id)
+        return redirect('landload:room', id=property_obj.id)
 
     context = {
         'property_obj': property_obj,
@@ -704,7 +706,7 @@ def tenant_invite_add(request):
             temp_url=redirect('tenant:tenantverify', id=token)
             token = 'http://'+str(get_current_site(request).domain)+str(temp_url.url)
             tenant_invitation_email(user.first_name if user.first_name else ''+' '+user.last_name if user.last_name else "",
-            user.email,request.user.first_name+' '+request.user.last_name if request.user.last_name else '',token,tenant,landload_id=request.user.id)
+            user.email,request.user,token,tenant,landload_id=request.user.id)
             messages.success(request, f'Tenant has been Created successfully!')
             return redirect('landload:tenant')
         else:

@@ -8,6 +8,8 @@ from django.core.mail import EmailMultiAlternatives,get_connection
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from landload.models import EmailSettings
+from babel.numbers import get_currency_symbol
+
 # from landload.models import EmailTemplate
 logger = logging.getLogger(__name__)
 
@@ -120,11 +122,18 @@ def account_activation_mail(name,email):
         args=(mail_list, email_subject, email_template, context),
     ).start()
 
+def get_symbol(currency_code):
+    try:
+        return get_currency_symbol(currency_code, locale='en')
+    except:
+        return '' 
+    
 def tenant_invitation_email(name,email,landload,token,tenant,landload_id=None):
     print('&'*1000,landload_id)
     '''just for customized the email via admin'''
     mail_list, email_subject,mail_setting = email, 'Invitation to Complete Your Tenant Profile',None
     email_template = "email/tenant_invitation.html"
+    symbol = get_symbol(landload.country.currency)
     if landload_id:
         landload_mail=EmailSettings.objects.filter(landlord=landload_id).first()
         print('landload mail=================>',landload_mail)
@@ -136,7 +145,8 @@ def tenant_invitation_email(name,email,landload,token,tenant,landload_id=None):
         "email":email,
         'landload':landload,
         'token':token,
-        'tenant':tenant
+        'tenant':tenant,
+        'symbol':symbol
         # "object":objectdata
         
         # "base_url": settings.DOMAIN + settings.MEDIA_URL,

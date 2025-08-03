@@ -38,7 +38,7 @@
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; font-weight: bold;">Rent:</td>
-                  <td style="padding: 6px 0;">₹{{tenant.rent}}</td>
+                  <td style="padding: 6px 0;">{% if symbol %}{{symbol|safe}}{% else %}₹{% endif %}{{tenant.rent}}</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; font-weight: bold;">Move-in / Start Date:</td>
@@ -46,7 +46,7 @@
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; font-weight: bold;">Deposit:</td>
-                  <td style="padding: 6px 0;">₹{{tenant.deposit}}</td>
+                  <td style="padding: 6px 0;">{% if symbol %}{{symbol|safe}}{% else %}₹{% endif %}{{tenant.deposit}}</td>
                 </tr>
               </table>
 

@@ -2,15 +2,15 @@
 {% block content %}
 <div class="content-overlay"></div>
 <div class="header-navbar-shadow"></div>
-<div class="content-wrapper container-xxl p-0">
+<div class="content-wrapper flex-grow-1 container-p-y">
     <div class="content-header row">
     </div>
-    <div class="content-body">
+    {% comment %} <div class="content-body"> {% endcomment %}
         
         <!-- users list start -->
-        <section class="app-user-list">
-            <div class="row g-3">
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
+        
+            <div class="row g-6">
+                {% comment %} <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2">
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="mb-1 fw-bold text-center">Revenue</h5>
@@ -72,6 +72,115 @@
                             </ul>
                         </div>
                     </div>
+                </div> {% endcomment %}
+                 <div class="col-lg-3 col-sm-6">
+                  <div class="card card-border-shadow-primary h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-center align-items-center mb-2">
+                        
+                        <h4 class="mb-0">REVENUE</h4>
+                      </div>
+                        <div class=" d-flex justify-content-center justify-content-between">
+                            <span class="text-heading fw-medium">Net Revenue</span>
+                            <small class="text-body-secondary">₹00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Earnings</span>
+                            <small class="text-body-secondary">₹00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Expenses</span>
+                            <small class="text-body-secondary">₹00</small>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Losses</span>
+                            <small class="text-body-secondary">₹00</small>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                  <div class="card card-border-shadow-warning h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-center align-items-center mb-2">
+                        
+                        <h4 class="mb-0">DUES</h4>
+                      </div>
+                      
+                      <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Total Dues</span>
+                            <small class="text-body-secondary">₹00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Longest</span>
+                            <small class="text-body-secondary">pending</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Highest</span>
+                            <small class="text-body-secondary">pending</small>
+                        </div>
+
+                       
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                  <div class="card card-border-shadow-danger h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-center align-items-center mb-2">
+                        
+                        <h4 class="mb-0">LISTINGS</h4>
+                      </div>
+                      
+                       <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Total Listed</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Occupied</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Empty</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                  <div class="card card-border-shadow-info h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-center align-items-center mb-2">
+                        
+                        <h4 class="mb-0 ">Tickets</h4>
+                      </div>
+                      <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Total Tickets</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">In Progress</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Resolved</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+                        <div class=" d-flex justify-content-between">
+                            <span class="text-heading fw-medium">Longest Open</span>
+                            <small class="text-body-secondary">00</small>
+                        </div>
+                    </div>
+                  </div>
                 </div>
             </div>
                 {% comment %} <div class='row'>
@@ -109,7 +218,7 @@
                     <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1" >Go</button>
                 </div>
             </div> {% endcomment %}
-            <h2 class="mb-0 me-3 mb-2 mt-2">Financials</h2>
+            {% comment %} <h2 class="mb-0 me-3 mb-2 mt-2">Financials</h2>
 
             <div class="row">
                 <div class="col-lg-3 col-sm-6">
@@ -162,7 +271,7 @@
          
         
         
-        </section>
+       
         <section class="app-user-list">
             <h2 class="mb-2">Dues & Collection</h2>
             <div class="row">
@@ -187,7 +296,7 @@
          
         
         
-        </section>
+        <div class="content-body">
         <section class="app-user-list">
             <h2 class="mb-2">Property & Tenants</h2>
             <div class="row">
@@ -271,7 +380,7 @@
          
         
         
-        </section>
+        </section> {% endcomment %}
         <!-- users list ends -->
 
     </div>

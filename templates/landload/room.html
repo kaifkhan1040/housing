@@ -94,8 +94,8 @@
                                                     <div class="form-group">
                                                         <label class="form-label d-block " for="username">Ensuite</label>
                                                        <select name="ensuite" class="form-select">
-                                                            <option value="1" {% if room.ensuite %}selected{% endif %}>Yes</option>
-                                                            <option value="0" {% if not room.ensuite %}selected{% endif %}>No</option>
+                                                            <option value="Yes" {% if room.ensuite == "Yes" %}selected{% endif %}>Yes</option>
+                                                            <option value="No" {% if room.ensuite == "No" %}selected{% endif %}>No</option>
                                                         </select>
                                                         
                                                     </div>
@@ -127,7 +127,7 @@
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label class="form-label d-block" for="username">Rent Amount {{symbol}}</label>
-                                                        <input type='number' class="form-control" {% if room.rent_ammount %}value={{room.rent_ammount}} {% endif %} name='rent_ammount'>
+                                                        <input type='number' required class="form-control" {% if room.rent_ammount %}value={{room.rent_ammount}} {% endif %} name='rent_ammount'>
                                                         
                                                     </div>
                                                 </div>
