@@ -3,7 +3,7 @@ from users.models import CustomUser
 from django.forms import EmailInput
 from django.forms import ModelForm, TextInput, EmailInput, CharField, PasswordInput, ChoiceField, BooleanField, \
     NumberInput, DateInput
-from .models import Property,Rooms,Tenant,Dues,FinancialBreakdown,Expenses,AddressHistory,EmailSettings,LandlordProfile
+from .models import Property,Rooms,Tenant,Payment,FinancialBreakdown,Expenses,AddressHistory,EmailSettings,LandlordProfile
 from django.forms.widgets import FileInput
 
 class PropertyForm(ModelForm):
@@ -116,7 +116,7 @@ class RoomsForm(ModelForm):
             #      'rent': forms.RadioSelect(attrs={'class': 'form-check-input'}),
             # }
 
-class DuesForm(ModelForm):
+class PaymentForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
@@ -125,10 +125,10 @@ class DuesForm(ModelForm):
         self.fields['method'].widget.attrs.update({'class': 'form-select valid'})
 
     class Meta:
-            model = Dues
+            model = Payment
             fields = "__all__"
 
-class DuesReadOnlyForm(DuesForm):
+class PaymentReadOnlyForm(PaymentForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
@@ -147,7 +147,7 @@ class ExpensesForm(ModelForm):
             model = Expenses
             fields = "__all__"
 
-class ExpensesReadOnlyForm(DuesForm):
+class ExpensesReadOnlyForm(PaymentForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():

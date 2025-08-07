@@ -24,6 +24,7 @@ import random
 from django.urls import reverse
 from django.utils.http import urlencode
 from landload.models import Tenant
+from django.utils import timezone
 
 def generate_otp():
     return str(random.randint(100000, 999999))

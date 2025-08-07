@@ -1,8 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Property,Rooms,Tenant,TenentProfileVerify,Dues,FinancialBreakdown,\
+from .models import Property,Rooms,Tenant,TenentProfileVerify,Payment,FinancialBreakdown,\
     FinancialOtherModel,PropertyImage,Expenses,EmailSettings,Country,LandlordProfile,LandloadDoucment
-from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,DuesForm,\
-    DuesReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
+from .forms import PropertyForm,PropertyReadOnlyForm,RoomsForm,TenantForm,TenantReadOnlyForm,TenantInviteForm,PaymentForm,\
+    PaymentReadOnlyForm,FinancialBreakdownform,MultiImageForm,FinancialBreakdownReadOnlyform,MultiImageReadOnlyForm,ExpensesForm,\
     ExpensesReadOnlyForm,TenantStep1Form,EmailSettingsForm,LandlordProfileForm,IdProffForm
 from django.db.models import Q
 from django.contrib import messages
@@ -20,13 +20,26 @@ from users.forms import SetLocationForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 import pytz
+from django.db.models import Sum
+
+def get_symbol(currency_code):
+    try:
+        return get_currency_symbol(currency_code, locale='en')
+    except:
+        return '' 
 # Create your views here.
 def index(request):
     data=LandlordProfile.objects.filter(landlord=request.user).first()
+    total_earnings = Payment.objects.filter(landload=request.user).aggregate(total=Sum('amount'))['total'] or 0
+    total_expenses = Expenses.objects.filter(landload=request.user).aggregate(total=Sum('amount'))['total'] or 0
+    profit = total_earnings-total_expenses
+    listing=Property.objects.filter(landload=request.user).count()
+    symbol = get_symbol(request.user.country.currency)
     is_locked=data.is_locked if data else True
     if is_locked:
         return redirect('landload:onboading')
-    return render(request,'landload/index.html',{'is_dashboard':True})
+    return render(request,'landload/index.html',{'is_dashboard':True,'total_earnings':total_earnings,'total_expenses':total_expenses,
+                                                 "profit":profit,'symbol':symbol,'listing':listing})
 
 def onboad_step(request, step):
     if request.method == 'POST':
@@ -124,11 +137,7 @@ def onboading(request):
                                                      'idproffform':idproffform,'data':data,'doclandload':doclandload,
                                                      'docland_image_urls':docland_image_urls})
 
-def get_symbol(currency_code):
-    try:
-        return get_currency_symbol(currency_code, locale='en')
-    except:
-        return '' 
+
 
 @login_required
 def setup_location(request):
@@ -513,7 +522,7 @@ def listing_list(request):
 def payment_list(request):
     data = []
     print('*'*1000)
-    tenant_qs  = Dues.objects.filter(landload=request.user,is_active=True)
+    tenant_qs  = Payment.objects.filter(landload=request.user,is_active=True)
     for i, obj in enumerate(tenant_qs, start=1):
         data.append({
             'responsive_id':"",
@@ -723,7 +732,7 @@ def dues(request):
     query = request.GET.get('q', '')
     # print('*'*1000)
     # print(query)
-    dues = Dues.objects.filter(landload=request.user,is_active=True)
+    dues = Payment.objects.filter(landload=request.user,is_active=True)
     if query:
         dues = dues.filter(
             Q(tenant_name__icontains=query) |
@@ -736,14 +745,14 @@ def dues(request):
 @login_required(login_url='/')
 def dues_add(request):
     property = Property.objects.filter(landload=request.user,is_active=True)
-    form = DuesForm()
+    form = PaymentForm()
     if request.method == "POST":
         post_data = request.POST.copy()
         # print('post')
         # print(request.POST)
         post_data['landload']=request.user
         post_data['is_active']=True
-        form = DuesForm(post_data,request.FILES)
+        form = PaymentForm(post_data,request.FILES)
         if form.is_valid():
             # form['landload']=request.user
        
@@ -761,8 +770,8 @@ def dues_add(request):
 @login_required(login_url='/')
 def dues_view(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
-    property_obj = get_object_or_404(Dues, custom_id=id)
-    form = DuesReadOnlyForm(instance=property_obj)
+    property_obj = get_object_or_404(Payment, custom_id=id)
+    form = PaymentReadOnlyForm(instance=property_obj)
     rooms=Rooms.objects.filter(property=property_obj.property)
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'more_fun':True,'property':property,
                                                     'rooms':rooms,'is_payment':True})
@@ -770,13 +779,13 @@ def dues_view(request,id):
 @login_required(login_url='/')
 def dues_update(request,id):
     property = Property.objects.filter(landload=request.user,is_active=True)
-    property_obj = get_object_or_404(Dues, pk=id)
+    property_obj = get_object_or_404(Payment, pk=id)
     rooms=Rooms.objects.filter(property=property_obj.property)
     if request.method == 'POST':
         post_data = request.POST.copy()
         post_data['landload']=request.user
         post_data['is_active']=True
-        form = DuesForm(post_data, request.FILES, instance=property_obj)
+        form = PaymentForm(post_data, request.FILES, instance=property_obj)
         if form.is_valid():
             obj=form.save()
             
@@ -789,14 +798,14 @@ def dues_update(request,id):
             )
             messages.error(request, mark_safe(error_messages))
     else:
-        form = DuesForm(instance=property_obj)
+        form = PaymentForm(instance=property_obj)
     return render(request,'landload/add_dues.html',{'form':form,'property_id':id,'property_obj':property_obj,'property':property,
                                                     'rooms':rooms,'is_payment':True})
 
 
 @login_required(login_url='/')
 def deactivate_dues(request,id):
-    obj=Dues.objects.get(custom_id=id)
+    obj=Payment.objects.get(custom_id=id)
     obj.is_active=False
     obj.save()
     return JsonResponse(True,safe=False)

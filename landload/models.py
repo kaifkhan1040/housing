@@ -302,7 +302,7 @@ class TenentProfileVerify(models.Model):
         return str(self.tenant)
 
 
-class Dues(models.Model):
+class Payment(models.Model):
     custom_id = models.CharField(max_length=10, unique=True, blank=True)
     property = models.ForeignKey(Property,on_delete=models.CASCADE)
     room = models.ForeignKey(Rooms,on_delete=models.CASCADE)
@@ -311,7 +311,7 @@ class Dues(models.Model):
     amount = models.FloatField()
     method = models.CharField(max_length=50,choices=[("Cash",'cash'),('Account Transfer','Account Transfer')])
     paid_date = models.DateField(auto_now_add=True)
-    proof = models.ImageField(upload_to='Dues/proof/',null=True,blank=True)
+    proof = models.ImageField(upload_to='Payment/proof/',null=True,blank=True)
     is_active = models.BooleanField(default=True)
     landload = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     # is_active =models.BooleanField(default=True)
@@ -321,7 +321,7 @@ class Dues(models.Model):
         if not self.custom_id:
             with transaction.atomic():
                 # Lock the table during ID generation
-                last_obj = Dues.objects.select_for_update().order_by('-id').first()
+                last_obj = Payment.objects.select_for_update().order_by('-id').first()
                 if last_obj and last_obj.custom_id.startswith('Pay'):
                     try:
                         last_number = int(last_obj.custom_id[2:])
@@ -334,7 +334,7 @@ class Dues(models.Model):
                 # Loop to ensure uniqueness
                 while True:
                     candidate_id = f'Pay{next_number}'
-                    if not Dues.objects.filter(custom_id=candidate_id).exists():
+                    if not Payment.objects.filter(custom_id=candidate_id).exists():
                         self.custom_id = candidate_id
                         break
                     next_number += 1
@@ -360,7 +360,7 @@ class Expenses(models.Model):
         if not self.custom_id:
             with transaction.atomic():
                 # Lock the table during ID generation
-                last_obj = Dues.objects.select_for_update().order_by('-id').first()
+                last_obj = Expenses.objects.select_for_update().order_by('-id').first()
                 if last_obj and last_obj.custom_id.startswith('EXP'):
                     try:
                         last_number = int(last_obj.custom_id[2:])
@@ -373,7 +373,7 @@ class Expenses(models.Model):
                 # Loop to ensure uniqueness
                 while True:
                     candidate_id = f'EXP{next_number}'
-                    if not Dues.objects.filter(custom_id=candidate_id).exists():
+                    if not Expenses.objects.filter(custom_id=candidate_id).exists():
                         self.custom_id = candidate_id
                         break
                     next_number += 1
