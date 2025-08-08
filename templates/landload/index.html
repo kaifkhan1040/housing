@@ -1,8 +1,6 @@
 {% extends 'landload/basic.html' %} 
 {% block content %}
-<div class="content-overlay"></div>
-<div class="header-navbar-shadow"></div>
-<div class="content-wrapper flex-grow-1 container-p-y">
+ <div class="container-xxl flex-grow-1 container-p-y">
     <div class="content-header row">
     </div>
     {% comment %} <div class="content-body"> {% endcomment %}
@@ -76,8 +74,12 @@
                  <div class="col-lg-3 col-sm-6">
                   <div class="card card-border-shadow-primary h-100">
                     <div class="card-body">
-                      <div class="d-flex justify-content-center align-items-center mb-2">
-                        
+                      <div class="d-flex  align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-primary"
+                            ><i class="icon-base ti tabler-currency-dollar icon-28px"></i
+                          ></span>
+                        </div>
                         <h4 class="mb-0">REVENUE</h4>
                       </div>
                         <div class=" d-flex justify-content-center justify-content-between">
@@ -105,14 +107,18 @@
                 <div class="col-lg-3 col-sm-6">
                   <div class="card card-border-shadow-warning h-100">
                     <div class="card-body">
-                      <div class="d-flex justify-content-center align-items-center mb-2">
-                        
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-warning"
+                            ><i class="icon-base ti tabler-alert-triangle icon-28px"></i
+                          ></span>
+                        </div>
                         <h4 class="mb-0">DUES</h4>
                       </div>
                       
                       <div class=" d-flex justify-content-between">
                             <span class="text-heading fw-medium">Total Dues</span>
-                            <small class="text-body-secondary">₹00</small>
+                            <small class="text-body-secondary">{{symbol|safe}} 00</small>
                         </div>
 
                         <div class=" d-flex justify-content-between">
@@ -132,8 +138,12 @@
                 <div class="col-lg-3 col-sm-6">
                   <div class="card card-border-shadow-danger h-100">
                     <div class="card-body">
-                      <div class="d-flex justify-content-center align-items-center mb-2">
-                        
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-danger"
+                            ><i class="icon-base ti tabler-git-fork icon-28px"></i
+                          ></span>
+                        </div>
                         <h4 class="mb-0">LISTINGS</h4>
                       </div>
                       
@@ -157,8 +167,12 @@
                 <div class="col-lg-3 col-sm-6">
                   <div class="card card-border-shadow-info h-100">
                     <div class="card-body">
-                      <div class="d-flex justify-content-center align-items-center mb-2">
-                        
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="avatar me-4">
+                          <span class="avatar-initial rounded bg-label-info"
+                            ><i class="icon-base ti tabler-clock icon-28px"></i
+                          ></span>
+                        </div>
                         <h4 class="mb-0 ">Tickets</h4>
                       </div>
                       <div class=" d-flex justify-content-between">

@@ -34,7 +34,12 @@ def index(request):
     total_expenses = Expenses.objects.filter(landload=request.user).aggregate(total=Sum('amount'))['total'] or 0
     profit = total_earnings-total_expenses
     listing=Property.objects.filter(landload=request.user).count()
-    symbol = get_symbol(request.user.country.currency)
+    print(request.user.country)
+    try:
+        symbol = get_symbol(data.currency)
+    except:
+        symbol=''
+    print('*'*100,symbol)
     is_locked=data.is_locked if data else True
     if is_locked:
         return redirect('landload:onboading')
@@ -70,6 +75,7 @@ def onboad_step(request, step):
                 user.email=email if email else request.user.email
                 user.phone_number=phone_number if phone_number else request.user.phone_number
                 user.address=address if address else request.user.address
+
                 user_data=user.save()
                 profile.billing_address=billing_address if billing_address else None
                 profile.save()

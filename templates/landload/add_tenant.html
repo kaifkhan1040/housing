@@ -18,36 +18,26 @@
     {% block content %}
 
 
-        <div class="content-overlay"></div>
-        <div class="header-navbar-shadow"></div>
-        <div class="content-wrapper container-xxl p-0">
-            <div class="content-header row">
-                <div class="content-header-left col-md-9 col-12 mb-2">
-                  <div class="row breadcrumbs-top">
-                      <div class="col-12">
-                           <a href="{% url 'landload:home' %}"><h2 class="content-header-title float-start mb-0">Home</h2></a>
-                          <div class="breadcrumb-wrapper">
-                                <ol class="breadcrumb">
-                                  <li class="breadcrumb-item">
-                                     
-                                    <a href="{% url 'landload:tenant' %}">Tenant</a>
-                                  </li>
-                                  <li class="breadcrumb-item active">
-                                    Add Tenant
-                                  </li>
-                                 
-                              </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="content-body">
+        <div class="container-xxl flex-grow-1 container-p-y">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+  
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'landload:home' %}">Home</a></li>
+          <li class="breadcrumb-item " aria-current="page"><a href="{% url 'landload:tenant' %}">Tenants</a></li>
+          <li class="breadcrumb-item active">Details</li>
+        </ol>
+      </nav>
+    </div>
                 <!-- users edit start -->
-                <section class="app-user-edit">
-                    <div class="card">
+                 <div class="row g-6 mb-6">
+                <!-- users edit start -->
+               
+                   <div class="col-md">
+                  <div class="card">
+                    
                         <div class="card-body">
-                            <div class="tab-content">
+                            
                                 <div class="row mb-2">
                                     <div class="col-md-6">
                                         {% comment %} <h4 class="card-title">Tenant >{% if more_fun %} update{% else %} Add {% endif %}</h4> {% endcomment %}
@@ -396,8 +386,6 @@
                                                     </div>
 
 
-                                                    
-                                                  
                                                     <div class="col-12 d-flex flex-sm-row flex-column mt-2">
                                                         <button type="submit" class="btn btn-primary mb-1 mb-sm-0 mr-0 mr-sm-1 me-1"  {% if more_fun %} disabled  readonly {% endif %} >Sent Invite</button>
                                                         <button type="reset" class="btn btn-outline-secondary"  {% if more_fun %} disabled  readonly {% endif %} >Reset</button>
@@ -407,11 +395,8 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-                        </div>
                     </div>
-                </section>
+                
                 <!-- users edit ends -->
 
             </div>
