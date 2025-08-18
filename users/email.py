@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from landload.models import EmailSettings
 from babel.numbers import get_currency_symbol
-
+from landload.models import LandlordProfile
 # from landload.models import EmailTemplate
 logger = logging.getLogger(__name__)
 
@@ -133,6 +133,7 @@ def tenant_invitation_email(name,email,landload,token,tenant,landload_id=None):
     '''just for customized the email via admin'''
     mail_list, email_subject,mail_setting = email, 'Invitation to Complete Your Tenant Profile',None
     email_template = "email/tenant_invitation.html"
+    data=LandlordProfile.objects.filter(landlord=landload).first()
     symbol = get_symbol(landload.country.currency)
     if landload_id:
         landload_mail=EmailSettings.objects.filter(landlord=landload_id).first()

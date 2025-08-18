@@ -1,4 +1,5 @@
 {% extends 'landload/basic.html' %} 
+{% load static %}
 {% block content %}
  <div class="container-xxl flex-grow-1 container-p-y">
     <div class="content-header row">
@@ -154,12 +155,12 @@
 
                         <div class=" d-flex justify-content-between">
                             <span class="text-heading fw-medium">Occupied</span>
-                            <small class="text-body-secondary">00</small>
+                            <small class="text-body-secondary">{{occupied}}</small>
                         </div>
 
                         <div class=" d-flex justify-content-between">
                             <span class="text-heading fw-medium">Empty</span>
-                            <small class="text-body-secondary">00</small>
+                            <small class="text-body-secondary">{{empty}}</small>
                         </div>
                     </div>
                   </div>
@@ -196,6 +197,138 @@
                     </div>
                   </div>
                 </div>
+                <div class="col-xxl-7 col-12">
+                  <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                      <div class="card-title m-0">
+                        <h5 class="mb-1">Earning Reports</h5>
+                        <p class="card-subtitle">Yearly Earnings Overview</p>
+                      </div>
+                      <div class="dropdown">
+                        <button
+                          class="btn btn-text-secondary rounded-pill text-body-secondary border-0 p-2 me-n1"
+                          type="button"
+                          id="earningReportsTabsId"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                          <i class="icon-base ti tabler-dots-vertical icon-md text-body-secondary"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="earningReportsTabsId">
+                          <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <ul class="nav nav-tabs widget-nav-tabs pb-8 gap-4 mx-1 d-flex flex-nowrap" role="tablist">
+                        <li class="nav-item">
+                          <a
+                            href="javascript:void(0);"
+                            class="nav-link btn active d-flex flex-column align-items-center justify-content-center"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-orders-id"
+                            aria-controls="navs-orders-id"
+                            aria-selected="true">
+                            <div class="badge bg-label-secondary rounded p-2">
+                              <i class="icon-base ti tabler-shopping-cart icon-md"></i>
+                            </div>
+                            <h6 class="tab-widget-title mb-0 mt-2">Profit</h6>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a
+                            href="javascript:void(0);"
+                            class="nav-link btn d-flex flex-column align-items-center justify-content-center"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-sales-id"
+                            aria-controls="navs-sales-id"
+                            aria-selected="false">
+                            <div class="badge bg-label-secondary rounded p-2">
+                              <i class="icon-base ti tabler-chart-bar-popular icon-md"></i>
+                            </div>
+                            <h6 class="tab-widget-title mb-0 mt-2">Loss</h6>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a
+                            href="javascript:void(0);"
+                            class="nav-link btn d-flex flex-column align-items-center justify-content-center"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-profit-id"
+                            aria-controls="navs-profit-id"
+                            aria-selected="false">
+                            <div class="badge bg-label-secondary rounded p-2">
+                              <i class="icon-base ti tabler-currency-dollar icon-md"></i>
+                            </div>
+                            <h6 class="tab-widget-title mb-0 mt-2">Spend</h6>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a
+                            href="javascript:void(0);"
+                            class="nav-link btn d-flex flex-column align-items-center justify-content-center"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            data-bs-target="#navs-income-id"
+                            aria-controls="navs-income-id"
+                            aria-selected="false">
+                            <div class="badge bg-label-secondary rounded p-2">
+                              <i class="icon-base ti tabler-chart-pie-2 icon-md"></i>
+                            </div>
+                            <h6 class="tab-widget-title mb-0 mt-2">Earned</h6>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a
+                            href="javascript:void(0);"
+                            class="nav-link btn d-flex align-items-center justify-content-center disabled"
+                            role="tab"
+                            data-bs-toggle="tab"
+                            aria-selected="false">
+                            <div class="badge bg-label-secondary rounded p-2">
+                              <i class="icon-base ti tabler-plus icon-md"></i>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                      <div class="tab-content p-0 ms-0 ms-sm-2">
+                        <div class="tab-pane fade show active" id="navs-orders-id" role="tabpanel">
+                          <div id="earningReportsTabsOrders"></div>
+                        </div>
+                        <div class="tab-pane fade" id="navs-sales-id" role="tabpanel">
+                          <div id="earningReportsTabsSales"></div>
+                        </div>
+                        <div class="tab-pane fade" id="navs-profit-id" role="tabpanel">
+                          <div id="earningReportsTabsProfit"></div>
+                        </div>
+                        <div class="tab-pane fade" id="navs-income-id" role="tabpanel">
+                          <div id="earningReportsTabsIncome"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Revenue Report -->
+                <div class="col-xxl-5">
+                  <div class="card h-100">
+                    <div class="card-body p-0">
+                      <div class="row row-bordered g-0">
+                        <div class="col-md-12 position-relative p-6">
+                          <div class="card-header d-inline-block p-0 text-wrap position-absolute">
+                            <h5 class="m-0 card-title">Revenue Report</h5>
+                          </div>
+                          <div id="totalRevenueChart" class="mt-n1"></div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--/ Revenue Report -->
             </div>
                 {% comment %} <div class='row'>
                 <div class="col-md-1 mb-1">
@@ -397,10 +530,16 @@
         </section> {% endcomment %}
         <!-- users list ends -->
 
+<!-- Earning Reports Tabs-->
+                
     </div>
 </div>
 {% endblock content %}
-{% block scriptjs %}
 
+{% block scriptjs %}
+    
+<script src="{% static 'v2/assets/js/dashboards-crm.js' %}"></script>
+
+    <script src="{% static 'v2/assets/js/app-ecommerce-dashboard.js' %}"></script>
 
 {% endblock scriptjs %}

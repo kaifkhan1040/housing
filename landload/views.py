@@ -43,8 +43,11 @@ def index(request):
     is_locked=data.is_locked if data else True
     if is_locked:
         return redirect('landload:onboading')
+    tenants_with_properties = Tenant.objects.filter(landload=request.user, property__isnull=False).distinct().count()
+    empty=listing-tenants_with_properties
     return render(request,'landload/index.html',{'is_dashboard':True,'total_earnings':total_earnings,'total_expenses':total_expenses,
-                                                 "profit":profit,'symbol':symbol,'listing':listing})
+                                                 "profit":profit,'symbol':symbol,'listing':listing,'occupied':tenants_with_properties,
+                                                 'empty':empty})
 
 def onboad_step(request, step):
     if request.method == 'POST':
@@ -248,12 +251,13 @@ def submit_step(request, step):
         
 @login_required(login_url='/')      
 def listing_add(request):
+    data=LandlordProfile.objects.filter(landlord=request.user).first()
     video_form=''
     print('*'*1000,request.method)
     form = PropertyForm()
     form2 =FinancialBreakdownform()
     form3 = MultiImageForm()
-    symbol = get_symbol(request.user.country.currency)
+    symbol = get_symbol(data.currency)
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++',symbol)
     if request.method == "POST":
         formid = request.POST.get('formid2') 
@@ -308,7 +312,8 @@ def listing_view(request,id):
     property_obj2 = FinancialBreakdown.objects.filter(property__custom_id=id).first()
     property_obj3 = PropertyImage.objects.filter(property__custom_id=id).first()
     form3 = MultiImageReadOnlyForm()
-    symbol = get_symbol(request.user.country.currency)
+    data=LandlordProfile.objects.filter(landlord=request.user).first()
+    symbol = get_symbol(data.currency)
     print('data',property_obj2,property_obj)
     if property_obj2:
         form2=FinancialBreakdownReadOnlyform(instance=property_obj2)
@@ -348,7 +353,8 @@ def listing_update(request,id):
     garden_image_urls = list(garden_images.values('id','image'))
     common_area_image_urls = list(common_area_images.values('id','image'))
     residence_image_urls = list(residence_images.values('id','image'))
-    symbol = get_symbol(request.user.country.currency)
+    data=LandlordProfile.objects.filter(landlord=request.user).first()
+    symbol = get_symbol(data.currency)
     print('+++++++++++++++++++++++++++++++++++++++++++++++++++',symbol)
     property_obj2 = FinancialBreakdown.objects.filter(property=id).first()
     form = PropertyForm(instance=property_obj)
@@ -449,7 +455,8 @@ def room(request,id):
 
     property_obj = get_object_or_404(Property, pk=id)
     existing_rooms = Rooms.objects.filter(property=property_obj).order_by('id')
-    symbol = get_symbol(request.user.country.currency)
+    data=LandlordProfile.objects.filter(landlord=request.user).first()
+    symbol = get_symbol(data.currency)
 
     if request.method == 'POST':
         room_ids = request.POST.getlist('room_id')  

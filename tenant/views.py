@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 @login_required(login_url='/')
 def index(request):
-    tenant=Tenant.objects.get(user=request.user)
+    tenant=Tenant.objects.filter(user=request.user).first()
     is_locked=False if tenant.is_agree else True
     if is_locked:
         return redirect('tenant:tenant_step1')
