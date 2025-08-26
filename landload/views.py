@@ -20,34 +20,50 @@ from users.forms import SetLocationForm
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 import pytz
-from django.db.models import Sum
+from django.db.models.functions import Cast
+
+from django.db.models import Sum,IntegerField
 
 def get_symbol(currency_code):
     try:
         return get_currency_symbol(currency_code, locale='en')
     except:
         return '' 
+    
 # Create your views here.
 def index(request):
     data=LandlordProfile.objects.filter(landlord=request.user).first()
     total_earnings = Payment.objects.filter(landload=request.user).aggregate(total=Sum('amount'))['total'] or 0
     total_expenses = Expenses.objects.filter(landload=request.user).aggregate(total=Sum('amount'))['total'] or 0
     profit = total_earnings-total_expenses
-    listing=Property.objects.filter(landload=request.user).count()
-    print(request.user.country)
+    listing=Property.objects.filter(landload=request.user)
+    payment=Payment.objects.filter(landload=request.user)
+    expense=Expenses.objects.filter(landload=request.user)
+    # print(request.user.country)
     try:
         symbol = get_symbol(data.currency)
     except:
         symbol=''
-    print('*'*100,symbol)
+    # print('*'*100,symbol)
     is_locked=data.is_locked if data else True
     if is_locked:
         return redirect('landload:onboading')
-    tenants_with_properties = Tenant.objects.filter(landload=request.user, property__isnull=False).distinct().count()
-    empty=listing-tenants_with_properties
+    tenants_with_properties = Tenant.objects.filter(
+                                    landload=request.user,
+                                    room__isnull=False
+                                ).count()
+    total_rooms = Rooms.objects.filter(
+                            property__landload=request.user
+                        ).aggregate(
+                            total=Sum(Cast('room_count', IntegerField()))
+                        )['total'] or 0
+    empty=total_rooms-tenants_with_properties
+    chart_data = {
+        "values": [tenants_with_properties, empty],
+    }
     return render(request,'landload/index.html',{'is_dashboard':True,'total_earnings':total_earnings,'total_expenses':total_expenses,
-                                                 "profit":profit,'symbol':symbol,'listing':listing,'occupied':tenants_with_properties,
-                                                 'empty':empty})
+                                                 "profit":profit,'symbol':symbol,'listing':total_rooms,'occupied':tenants_with_properties,
+                                                 'empty':empty,"chart_data": json.dumps(chart_data),'payment':payment,'expense':expense})
 
 def onboad_step(request, step):
     if request.method == 'POST':
@@ -121,7 +137,7 @@ def locationdetails(request):
     try:
         country = Country.objects.get(id=country_name)
         tz_list = pytz.country_timezones.get(country.iso.upper(), ['UTC'])
-        print('time=====>>>>>>>>>>>>>>','name:',country.name,tz_list)
+        # print('time=====>>>>>>>>>>>>>>','name:',country.name,tz_list)
         return JsonResponse({
             "currency": country.currency,
             "timezone": [(tz, tz) for tz in tz_list],

@@ -1,5 +1,8 @@
 {% extends 'landload/basic.html' %} 
 {% load static %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'v2/assets/vendor/libs/chartjs/chartjs.css' %}" />
+{% endblock style %}
 {% block content %}
  <div class="container-xxl flex-grow-1 container-p-y">
     <div class="content-header row">
@@ -197,7 +200,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-xxl-7 col-12">
+
+
+                <div class="col-xxl-8 col-12">
                   <div class="card h-100">
                     <div class="card-header d-flex justify-content-between">
                       <div class="card-title m-0">
@@ -205,7 +210,7 @@
                         <p class="card-subtitle">Yearly Earnings Overview</p>
                       </div>
                       <div class="dropdown">
-                        <button
+                        {% comment %} <button
                           class="btn btn-text-secondary rounded-pill text-body-secondary border-0 p-2 me-n1"
                           type="button"
                           id="earningReportsTabsId"
@@ -213,11 +218,11 @@
                           aria-haspopup="true"
                           aria-expanded="false">
                           <i class="icon-base ti tabler-dots-vertical icon-md text-body-secondary"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="earningReportsTabsId">
+                        </button> {% endcomment %}
+                        {% comment %} <div class="dropdown-menu dropdown-menu-end" aria-labelledby="earningReportsTabsId">
                           <a class="dropdown-item" href="javascript:void(0);">View More</a>
                           <a class="dropdown-item" href="javascript:void(0);">Delete</a>
-                        </div>
+                        </div> {% endcomment %}
                       </div>
                     </div>
                     <div class="card-body">
@@ -264,7 +269,7 @@
                             <div class="badge bg-label-secondary rounded p-2">
                               <i class="icon-base ti tabler-currency-dollar icon-md"></i>
                             </div>
-                            <h6 class="tab-widget-title mb-0 mt-2">Spend</h6>
+                            <h6 class="tab-widget-title mb-0 mt-2">Spend vs<br> Earned</h6>
                           </a>
                         </li>
                         <li class="nav-item">
@@ -279,19 +284,20 @@
                             <div class="badge bg-label-secondary rounded p-2">
                               <i class="icon-base ti tabler-chart-pie-2 icon-md"></i>
                             </div>
-                            <h6 class="tab-widget-title mb-0 mt-2">Earned</h6>
+                            <h6 class="tab-widget-title mb-0 mt-2">Maintenance</h6>
                           </a>
                         </li>
                         <li class="nav-item">
                           <a
                             href="javascript:void(0);"
-                            class="nav-link btn d-flex align-items-center justify-content-center disabled"
+                            class="nav-link btn d-flex align-items-center justify-content-center flex-column "
                             role="tab"
                             data-bs-toggle="tab"
                             aria-selected="false">
                             <div class="badge bg-label-secondary rounded p-2">
-                              <i class="icon-base ti tabler-plus icon-md"></i>
+                               <i class="icon-base ti tabler-file-invoice icon-md"></i>
                             </div>
+                            <h6 class="tab-widget-title mb-0 mt-2">Bills</h6>
                           </a>
                         </li>
                       </ul>
@@ -313,13 +319,13 @@
                   </div>
                 </div>
                 <!-- Revenue Report -->
-                <div class="col-xxl-5">
+                {% comment %} <div class="col-xxl-5">
                   <div class="card h-100">
                     <div class="card-body p-0">
                       <div class="row row-bordered g-0">
                         <div class="col-md-12 position-relative p-6">
                           <div class="card-header d-inline-block p-0 text-wrap position-absolute">
-                            <h5 class="m-0 card-title">Revenue Report</h5>
+                            <h5 class="m-0 card-title">Occupied vs Empty</h5>
                           </div>
                           <div id="totalRevenueChart" class="mt-n1"></div>
                         </div>
@@ -327,7 +333,452 @@
                       </div>
                     </div>
                   </div>
+                </div> {% endcomment %}
+
+                <div class="col-lg-4 col-12">
+                  <div class="card h-100">
+                    <div class="card-header header-elements">
+                      <h5 class="card-title mb-0">Occupied vs Empty</h5>
+                      <div class="card-header-elements ms-auto py-0 dropdown">
+                        {% comment %} <button
+                          type="button"
+                          class="btn dropdown-toggle hide-arrow p-0"
+                          id="heat-chart-dd"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false">
+                          <i class="icon-base ti tabler-dots-vertical icon-lg"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="heat-chart-dd">
+                          <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
+                        </div> {% endcomment %}
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <canvas id="polarChart" class="chartjs" data-height="337"></canvas>
+                    </div>
+                  </div>
                 </div>
+
+                {% comment %} profit by property {% endcomment %}
+
+                 <div class="col-xxl-4 col-md-6 order-1 order-xl-0">
+                  <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                      <div class="card-title mb-0">
+                        <h5 class="mb-1">Profit by Properties</h5>
+                        <p class="card-subtitle">Monthly profit Overview</p>
+                      </div>
+                      <div class="dropdown">
+                        {% comment %} <button
+                          class="btn btn-text-secondary btn-icon rounded-pill text-body-secondary border-0 me-n1"
+                          type="button"
+                          id="salesByCountry"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                          <i class="icon-base ti tabler-dots-vertical icon-22px text-body-secondary"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesByCountry">
+                          <a class="dropdown-item" href="javascript:void(0);">Download</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                        </div> {% endcomment %}
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <ul class="p-0 m-0">
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-us rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$8,567k</h6>
+                              </div>
+                              <small class="text-body">United states</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                25.8%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-br rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$2,415k</h6>
+                              </div>
+                              <small class="text-body">Brazil</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-down"></i>
+                                6.2%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-in rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$865k</h6>
+                              </div>
+                              <small class="text-body">India</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                12.4%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-au rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$745k</h6>
+                              </div>
+                              <small class="text-body">Australia</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-down"></i>
+                                11.9%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-fr rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$45</h6>
+                              </div>
+                              <small class="text-body">France</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                16.2%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-cn rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$12k</h6>
+                              </div>
+                              <small class="text-body">China</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                14.8%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                {% comment %} profit by property {% endcomment %}
+
+                {% comment %} loss by property {% endcomment %}
+                 <div class="col-xxl-4 col-md-6 order-1 order-xl-0">
+                  <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                      <div class="card-title mb-0">
+                        <h5 class="mb-1">Loss by Properties</h5>
+                        <p class="card-subtitle">Monthly Loss Overview</p>
+                      </div>
+                      <div class="dropdown">
+                        {% comment %} <button
+                          class="btn btn-text-secondary btn-icon rounded-pill text-body-secondary border-0 me-n1"
+                          type="button"
+                          id="salesByCountry"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                          <i class="icon-base ti tabler-dots-vertical icon-22px text-body-secondary"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesByCountry">
+                          <a class="dropdown-item" href="javascript:void(0);">Download</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                        </div> {% endcomment %}
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <ul class="p-0 m-0">
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-us rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$8,567k</h6>
+                              </div>
+                              <small class="text-body">United states</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                25.8%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-br rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$2,415k</h6>
+                              </div>
+                              <small class="text-body">Brazil</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-down"></i>
+                                6.2%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-in rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$865k</h6>
+                              </div>
+                              <small class="text-body">India</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                12.4%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-au rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$745k</h6>
+                              </div>
+                              <small class="text-body">Australia</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-down"></i>
+                                11.9%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center mb-4">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-fr rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$45</h6>
+                              </div>
+                              <small class="text-body">France</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                16.2%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="d-flex align-items-center">
+                          <div class="avatar flex-shrink-0 me-4">
+                            <i class="fis fi fi-cn rounded-circle fs-2"></i>
+                          </div>
+                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="me-2">
+                              <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-1">$12k</h6>
+                              </div>
+                              <small class="text-body">China</small>
+                            </div>
+                            <div class="user-progress">
+                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
+                                <i class="icon-base ti tabler-chevron-up"></i>
+                                14.8%
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                {% comment %} loss by property {% endcomment %}
+
+
+                <!-- Last payment -->
+                <div class="col-md-6 col-12">
+                  <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h5 class="card-title m-0 me-2">Payments</h5>
+                      <div class="dropdown">
+                        {% comment %} <button
+                          class="btn btn-text-secondary rounded-pill text-body-secondary border-0 p-2 me-n1"
+                          type="button"
+                          id="teamMemberList"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                          <i class="icon-base ti tabler-dots-vertical icon-md text-body-secondary"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="teamMemberList">
+                          <a class="dropdown-item" href="javascript:void(0);">Download</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                        </div> {% endcomment %}
+                      </div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-borderless border-top">
+                        <thead class="border-bottom">
+                          <tr>
+                            <th>Date</th>
+                            <th>By</th>
+                            <th>For</th>
+                            <th>Mode</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in payment %}
+                          <tr>
+                            <td class="pt-5">
+                              <small class="text-body text-nowrap">{{i.paid_date|safe}}</small>
+                              
+                            </td>
+                            <td class="pt-5">
+                              <div class="d-flex flex-column">
+                                <p class="mb-0 text-heading">{{i.tenant_name}}</p>
+                                
+                              </div>
+                            </td>
+                            <td class="pt-5"><p class="mb-0 text-heading">{{i.m_for}}</p></td>
+                            <td class="pt-5"><p class="mb-0 text-heading">{{i.method}}</p></td>
+                            <td class="pt-5"><span class="badge bg-label-success">Verified</span></td>
+                            <td class="pt-5">
+                              <p class="mb-0 text-heading">{{symbol|safe}} {{i.amount}}</p>
+                            </td>
+                          </tr>
+                         {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!--/ Last payment -->
+                <!-- Last Expenses -->
+                <div class="col-md-6 col-12">
+                  <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h5 class="card-title m-0 me-2">Expenses</h5>
+                      <div class="dropdown">
+                        {% comment %} <button
+                          class="btn btn-text-secondary rounded-pill text-body-secondary border-0 p-2 me-n1"
+                          type="button"
+                          id="teamMemberList"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">
+                          <i class="icon-base ti tabler-dots-vertical icon-md text-body-secondary"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="teamMemberList">
+                          <a class="dropdown-item" href="javascript:void(0);">Download</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                          <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                        </div> {% endcomment %}
+                      </div>
+                    </div>
+                   <div class="table-responsive">
+                      <table class="table table-borderless border-top">
+                        <thead class="border-bottom">
+                          <tr>
+                            <th>Date</th>
+                            <th>By</th>
+                            <th>For</th>
+                            <th>Mode</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in expense %}
+                          <tr>
+                            <td class="pt-5">
+                              <small class="text-body text-nowrap">{{i.paid_date|safe}}</small>
+                              
+                            </td>
+                            <td class="pt-5">
+                              <div class="d-flex flex-column">
+                                <p class="mb-0 text-heading">{{i.tenant_name}}</p>
+                                
+                              </div>
+                            </td>
+                            <td class="pt-5"><p class="mb-0 text-heading">{{i.m_for}}</p></td>
+                            <td class="pt-5"><p class="mb-0 text-heading">{{i.method}}</p></td>
+                            <td class="pt-5"><span class="badge bg-label-success">Verified</span></td>
+                            <td class="pt-5">
+                              <p class="mb-0 text-heading">{{symbol|safe}} {{i.amount}}</p>
+                            </td>
+                          </tr>
+                         {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!--/ Last Expenses -->
                 <!--/ Revenue Report -->
             </div>
                 {% comment %} <div class='row'>
@@ -537,9 +988,15 @@
 {% endblock content %}
 
 {% block scriptjs %}
-    
+    <script>
+  // Pass Django context variables into JS
+  const chartData = JSON.parse('{{ chart_data|safe|escapejs }}');
+</script>
 <script src="{% static 'v2/assets/js/dashboards-crm.js' %}"></script>
-
+<script src="{% static 'v2/assets/vendor/libs/chartjs/chartjs.js' %}"></script>
     <script src="{% static 'v2/assets/js/app-ecommerce-dashboard.js' %}"></script>
+    <script src="{% static 'v2/assets//js/charts-chartjs-legend.js' %}"></script>
+    <script src="{% static 'v2/assets/js/charts-chartjs.js' %}"></script>
+
 
 {% endblock scriptjs %}

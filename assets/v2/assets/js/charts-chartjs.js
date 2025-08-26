@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', function (e) {
     greyLightColor = '#EDF1F4',
     blueColor = '#2B9AFF',
     blueLightColor = '#84D0FF',
-    blueDarkColor = '#1D9FF2';
+    blueDarkColor = '#1D9FF2',
+    greenColor='#0ae820ff',
+    redColor='#e80a0aff';
 
   // overriding color variables for chartjs
   let cardColor, headingColor, labelColor, borderColor, legendColor, info, danger, primary;
@@ -404,12 +406,12 @@ document.addEventListener('DOMContentLoaded', function (e) {
     const polarChartVar = new Chart(polarChart, {
       type: 'polarArea',
       data: {
-        labels: ['Africa', 'Asia', 'Europe', 'America', 'Antarctica', 'Australia'],
+        labels: ['Occupied', 'Empty'],
         datasets: [
           {
             label: 'Population (millions)',
-            backgroundColor: [purpleColor, yellowColor, orangeColor, oceanBlueColor, greyColor, cyanColor],
-            data: [19, 17.5, 15, 13.5, 11, 9],
+            backgroundColor: [greenColor, redColor, orangeColor, oceanBlueColor, greyColor, cyanColor],
+            data: chartData.values,
             borderWidth: 0
           }
         ]
