@@ -692,6 +692,7 @@
                           </tr>
                         </thead>
                         <tbody>
+                          {% if payment %}
                           {% for i in payment %}
                           <tr>
                             <td class="pt-5">
@@ -712,6 +713,13 @@
                             </td>
                           </tr>
                          {% endfor %}
+                         {% else %}
+                         <tr>
+                              <td colspan="6" class="text-center pt-5">
+                                  <p class="mb-0 text-muted">No payments available</p>
+                              </td>
+                          </tr>
+                            {% endif %}
                         </tbody>
                       </table>
                     </div>
@@ -753,6 +761,7 @@
                           </tr>
                         </thead>
                         <tbody>
+                          {% if expense %}
                           {% for i in expense %}
                           <tr>
                             <td class="pt-5">
@@ -773,6 +782,14 @@
                             </td>
                           </tr>
                          {% endfor %}
+                          
+                         {% else %}
+                         <tr>
+                              <td colspan="6" class="text-center pt-5">
+                                  <p class="mb-0 text-muted">No payments available</p>
+                              </td>
+                          </tr>
+                            {% endif %}
                         </tbody>
                       </table>
                     </div>
