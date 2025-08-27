@@ -388,7 +388,8 @@
                       </div>
                     </div>
                     <div class="card-body">
-                      <ul class="p-0 m-0">
+                      <ul class="p-0 m-0" style="max-height: 400px; overflow-y: auto;">
+                        {% for i in profit_by_property %}
                         <li class="d-flex align-items-center mb-4">
                           <div class="avatar flex-shrink-0 me-4">
                             <i class="fis fi fi-us rounded-circle fs-2"></i>
@@ -396,113 +397,28 @@
                           <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                             <div class="me-2">
                               <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$8,567k</h6>
+                                <h6 class="mb-0 me-1">{{symbol|safe}} {{i.this_month_profit}}</h6>
                               </div>
-                              <small class="text-body">United states</small>
+                              <small class="text-body">{{i.property_name}}</small>
                             </div>
+                            {% if i.change_status == 'increase' %}
                             <div class="user-progress">
                               <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
                                 <i class="icon-base ti tabler-chevron-up"></i>
-                                25.8%
+                                {{i.percent_change}}%
                               </p>
                             </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-br rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$2,415k</h6>
-                              </div>
-                              <small class="text-body">Brazil</small>
-                            </div>
-                            <div class="user-progress">
+                            {% else %}
+                             <div class="user-progress">
                               <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
                                 <i class="icon-base ti tabler-chevron-down"></i>
-                                6.2%
+                                {{i.percent_change}}%
                               </p>
                             </div>
+                            {% endif %}
                           </div>
                         </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-in rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$865k</h6>
-                              </div>
-                              <small class="text-body">India</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-up"></i>
-                                12.4%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-au rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$745k</h6>
-                              </div>
-                              <small class="text-body">Australia</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-down"></i>
-                                11.9%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-fr rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$45</h6>
-                              </div>
-                              <small class="text-body">France</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-up"></i>
-                                16.2%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-cn rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$12k</h6>
-                              </div>
-                              <small class="text-body">China</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-up"></i>
-                                14.8%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
+                     {% endfor %}
                       </ul>
                     </div>
                   </div>
@@ -535,121 +451,43 @@
                       </div>
                     </div>
                     <div class="card-body">
-                      <ul class="p-0 m-0">
+                      <ul class="p-0 m-0" style="max-height: 400px; overflow-y: auto;">
+                        {% for i in loss_by_property %}
                         <li class="d-flex align-items-center mb-4">
                           <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-us rounded-circle fs-2"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="fs-2 rounded-circle" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+                              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                            </svg>
                           </div>
+
                           <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                             <div class="me-2">
                               <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$8,567k</h6>
+                                <h6 class="mb-0 me-1">{{symbol|safe}} {{i.this_month_profit}}</h6>
                               </div>
-                              <small class="text-body">United states</small>
+                              <small class="text-body">{{i.property_name}}</small>
                             </div>
+                            {% if i.change_status == 'loss-to-profit' %}
                             <div class="user-progress">
                               <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
                                 <i class="icon-base ti tabler-chevron-up"></i>
-                                25.8%
+                                {{i.percent_change}}%
                               </p>
                             </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-br rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$2,415k</h6>
-                              </div>
-                              <small class="text-body">Brazil</small>
-                            </div>
-                            <div class="user-progress">
+                            {% else %}
+                             <div class="user-progress">
                               <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
                                 <i class="icon-base ti tabler-chevron-down"></i>
-                                6.2%
+                                {{i.percent_change}}%
                               </p>
                             </div>
+                            {% endif %}
                           </div>
                         </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-in rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$865k</h6>
-                              </div>
-                              <small class="text-body">India</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-up"></i>
-                                12.4%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-au rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$745k</h6>
-                              </div>
-                              <small class="text-body">Australia</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-danger fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-down"></i>
-                                11.9%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center mb-4">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-fr rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$45</h6>
-                              </div>
-                              <small class="text-body">France</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-up"></i>
-                                16.2%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="d-flex align-items-center">
-                          <div class="avatar flex-shrink-0 me-4">
-                            <i class="fis fi fi-cn rounded-circle fs-2"></i>
-                          </div>
-                          <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="me-2">
-                              <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$12k</h6>
-                              </div>
-                              <small class="text-body">China</small>
-                            </div>
-                            <div class="user-progress">
-                              <p class="text-success fw-medium mb-0 d-flex align-items-center gap-1">
-                                <i class="icon-base ti tabler-chevron-up"></i>
-                                14.8%
-                              </p>
-                            </div>
-                          </div>
-                        </li>
+                     {% endfor %}
                       </ul>
                     </div>
                   </div>

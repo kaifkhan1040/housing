@@ -21,7 +21,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 import pytz
 from django.db.models.functions import Cast
-
+from django.utils.timezone import now
+import datetime
 from django.db.models import Sum,IntegerField
 
 def get_symbol(currency_code):
@@ -30,6 +31,111 @@ def get_symbol(currency_code):
     except:
         return '' 
     
+
+
+
+def monthly_profit_comparison_by_property(request):
+    today = now().date()
+
+    # Current month range
+    this_month_start = today.replace(day=1)
+    this_month_end = today
+
+    # Last month range
+    first_day_this_month = today.replace(day=1)
+    last_month_end = first_day_this_month - datetime.timedelta(days=1)
+    last_month_start = last_month_end.replace(day=1)
+
+    properties_data = []
+    properties_data_loss=[]
+
+    # Get all properties for this landlord
+    properties =properties = Property.objects.filter(
+        id__in=Payment.objects.filter(landload=request.user).values_list('property', flat=True).distinct(),
+        landload=request.user  # in case Property also has landload field
+    )
+    print('properties',properties)
+    for prop_id in properties:
+        # This month totals
+        this_month_payments = Payment.objects.filter(
+            property_id=prop_id,
+            landload=request.user,
+            paid_date__range=[this_month_start, this_month_end]
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        this_month_expenses = Expenses.objects.filter(
+            property_id=prop_id,
+            landload=request.user,
+            paid_date__range=[this_month_start, this_month_end]
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        this_month_profit = this_month_payments - this_month_expenses
+
+        # Last month totals
+        last_month_payments = Payment.objects.filter(
+            property_id=prop_id,
+            landload=request.user,
+            paid_date__range=[last_month_start, last_month_end]
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        last_month_expenses = Expenses.objects.filter(
+            property_id=prop_id,
+            landload=request.user,
+            paid_date__range=[last_month_start, last_month_end]
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        last_month_profit = last_month_payments - last_month_expenses
+        print('last_month_profit',last_month_profit)
+        # Calculate percentage change
+        change = None
+        status = 'no-data'
+        if last_month_profit > 0:
+            raw = (this_month_profit - last_month_profit) / last_month_profit * 100
+            change = round(raw, 2)
+            if change > 0:
+                status = 'increase'
+            elif change < 0:
+                status = 'decrease'
+            else:
+                status = 'no-change'
+            properties_data.append({
+            'property_name': prop_id.short_name,
+            'last_month_profit': last_month_profit,
+            'this_month_profit': this_month_profit,
+            'percent_change': change,
+            'change_status': status,
+            })
+
+        elif last_month_profit < 0:
+            if this_month_profit < 0:
+                # Both months losses → compare as % improvement in loss
+                raw = (this_month_profit - last_month_profit) / abs(last_month_profit) * 100
+                print('loss ma ',raw)
+                change = round(raw, 2)
+                status = 'loss-change'
+            elif this_month_profit >= 0:
+                raw = (this_month_profit - last_month_profit) / abs(last_month_profit) * 100
+                print('loss ma ',raw)
+                change = round(raw, 2)
+                status = 'loss-to-profit'
+            
+            properties_data_loss.append({
+            'property_name': prop_id.short_name,
+            # 'property_name':prop_name,
+            'last_month_profit': last_month_profit,
+            'this_month_profit': this_month_profit,
+            'percent_change': change,
+            'change_status': status,
+            })
+
+        else:  # last_month_profit == 0
+            if this_month_profit != 0:
+                status = 'from-zero'
+            else:
+                status = 'no-change'
+
+        
+    return properties_data,properties_data_loss
 # Create your views here.
 def index(request):
     data=LandlordProfile.objects.filter(landlord=request.user).first()
@@ -40,6 +146,8 @@ def index(request):
     payment=Payment.objects.filter(landload=request.user)
     expense=Expenses.objects.filter(landload=request.user)
     # print(request.user.country)
+    profit_by_property,loss_by_property=monthly_profit_comparison_by_property(request)
+    print(profit_by_property,'loss',loss_by_property)
     try:
         symbol = get_symbol(data.currency)
     except:
@@ -63,7 +171,8 @@ def index(request):
     }
     return render(request,'landload/index.html',{'is_dashboard':True,'total_earnings':total_earnings,'total_expenses':total_expenses,
                                                  "profit":profit,'symbol':symbol,'listing':total_rooms,'occupied':tenants_with_properties,
-                                                 'empty':empty,"chart_data": json.dumps(chart_data),'payment':payment,'expense':expense})
+                                                 'empty':empty,"chart_data": json.dumps(chart_data),'payment':payment,'expense':expense,
+                                                 'profit_by_property':profit_by_property,'loss_by_property':loss_by_property})
 
 def onboad_step(request, step):
     if request.method == 'POST':
